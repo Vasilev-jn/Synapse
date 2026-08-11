@@ -101,12 +101,36 @@ def find_cdp_endpoint() -> str:
             "Сначала вручную запустите профиль AdsPower."
         )
 
-    devtools_file = max(candidates, key=lambda path: path.stat().st_mtime)
-    lines = devtools_file.read_text(encoding="utf-8").splitlines()
-    if len(lines) < 2:
-        raise RuntimeError(f"Некорректный файл CDP: {devtools_file}")
+    errors: list[str] = []
+    for devtools_file in sorted(candidates, key=lambda path: path.stat().st_mtime, reverse=True):
+        try:
+            lines = devtools_file.read_text(encoding="utf-8").splitlines()
+        except OSError as error:
+            errors.append(f"{devtools_file}: {error}")
+            continue
+        if not lines:
+            errors.append(f"{devtools_file}: пустой DevToolsActivePort")
+            continue
+        port = lines[0].strip()
+        if not port.isdigit():
+            errors.append(f"{devtools_file}: некорректный порт {port!r}")
+            continue
+        endpoint = f"http://127.0.0.1:{port}"
+        try:
+            with urllib.request.urlopen(f"{endpoint}/json/version", timeout=3) as response:
+                payload = json.loads(response.read().decode("utf-8", errors="replace"))
+        except Exception as error:
+            errors.append(f"{endpoint}: /json/version не ответил: {error}")
+            continue
+        if payload.get("webSocketDebuggerUrl"):
+            return endpoint
+        errors.append(f"{endpoint}: нет webSocketDebuggerUrl в /json/version")
 
-    return f"ws://127.0.0.1:{lines[0].strip()}{lines[1].strip()}"
+    raise RuntimeError(
+        "Не нашёл живой CDP endpoint AdsPower. "
+        "Откройте профиль AdsPower вручную и попробуйте снова. "
+        f"Проверенные варианты: {'; '.join(errors[-5:])}"
+    )
 
 
 def safe_filename(value: str) -> str:
@@ -1255,22 +1279,26 @@ def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = N
     if CONTROL_STOP_FILE.exists():
         CONTROL_STOP_FILE.unlink()
     ws_endpoint = find_cdp_endpoint()
+    write_monitor_status(status="connecting_adspower", cdp_endpoint=ws_endpoint)
+    print(f"[ADSPOWER] Подключаемся к CDP: {ws_endpoint}", flush=True)
     seen_urls = seed_seen_urls_from_saved_items(load_seen_urls())
     failed_urls = load_failed_urls()
     save_seen_urls(seen_urls)
 
     with sync_playwright() as playwright:
         try:
-            browser = playwright.chromium.connect_over_cdp(ws_endpoint)
+            browser = playwright.chromium.connect_over_cdp(ws_endpoint, timeout=15_000)
         except Exception as error:
             raise RuntimeError(
                 "Не удалось подключиться к AdsPower. "
+                f"CDP endpoint: {ws_endpoint}. "
                 "Сначала вручную откройте профиль и повторите запуск."
             ) from error
 
         if not browser.contexts:
             raise RuntimeError("AdsPower не предоставил контекст браузера")
 
+        write_monitor_status(status="running", cdp_endpoint=ws_endpoint)
         print("[ADSPOWER] Playwright подключён к открытому профилю")
         print(
             "[MONITOR] Постоянный режим: пауза 50 секунд "

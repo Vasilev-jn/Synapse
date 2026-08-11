@@ -35,6 +35,7 @@ CRM_OUT_LOG = PROJECT_ROOT / "crm_telegram.out.log"
 CRM_ERR_LOG = PROJECT_ROOT / "crm_telegram.err.log"
 DEFAULT_ARTEM_ID = "660501420"
 TERMINAL_MONITOR_STATUSES = {"stopped", "finished", "crashed", "failed", "error"}
+MONITOR_STARTUP_WAIT_SECONDS = 22
 
 
 KEYBOARD = {
@@ -194,6 +195,47 @@ def write_panel_monitor_status(status: str, **extra: Any) -> None:
         pass
 
 
+def wait_monitor_startup(process: subprocess.Popen) -> str:
+    deadline = time.time() + MONITOR_STARTUP_WAIT_SECONDS
+    last_status = "starting"
+    while time.time() < deadline:
+        status_data = load_monitor_status() or {}
+        last_status = str(status_data.get("status") or last_status)
+        if last_status == "running":
+            pids = monitor_pids()
+            return f"Монитор запущен и подключился к AdsPower: PID {', '.join(map(str, pids)) or process.pid}"
+        if last_status in {"failed", "error"}:
+            return (
+                "Монитор стартовал, но упал при запуске.\n"
+                f"Причина: {escape(status_data.get('last_error') or status_data.get('reason') or tail_file(MONITOR_ERR_LOG, 1200))}"
+            )
+        if process.poll() is not None:
+            return (
+                "Монитор завершился сразу после запуска.\n"
+                f"Статус: {escape(human_monitor_status(last_status))}\n"
+                f"Последняя ошибка:\n{escape(tail_file(MONITOR_ERR_LOG, 1200))}"
+            )
+        time.sleep(0.5)
+
+    if process.poll() is None and last_status in {"starting", "connecting_adspower"}:
+        try:
+            process.terminate()
+        except OSError:
+            pass
+        write_panel_monitor_status(
+            status="failed",
+            reason="startup_timeout_waiting_for_adspower_cdp",
+            last_error="Монитор завис на подключении к AdsPower/CDP. Закройте и заново откройте профиль AdsPower.",
+        )
+        return (
+            "Монитор завис на подключении к AdsPower/CDP и был остановлен.\n"
+            "Что сделать: закрой профиль AdsPower, открой его заново и нажми «Начать поиск» ещё раз."
+        )
+
+    pids = monitor_pids()
+    return f"Монитор запущен: PID {', '.join(map(str, pids)) or process.pid}. Статус: {escape(human_monitor_status(last_status))}"
+
+
 def crm_pids() -> list[int]:
     return process_ids_matching("uvicorn app.main")
 
@@ -258,11 +300,7 @@ def start_monitor(target_url: str | None) -> str:
         stderr=err,
         creationflags=0x08000000,
     )
-    time.sleep(3)
-    pids = monitor_pids()
-    if pids:
-        return f"Монитор запущен: PID {', '.join(map(str, pids))}"
-    return f"Команда запуска отправлена, но PID не найден. Последняя ошибка:\n{escape(tail_file(MONITOR_ERR_LOG, 1200))}"
+    return wait_monitor_startup(process)
 
 
 def stop_monitor() -> str:
@@ -306,11 +344,14 @@ def status_text(state: dict[str, Any]) -> str:
     status_lines: list[str] = []
     if status_data:
         raw_status = str(status_data.get("status") or "unknown")
+        if not monitor and raw_status in {"starting", "connecting_adspower", "stopping"}:
+            raw_status = "stopped"
         status_icon = {
             "ok": "✅",
             "error": "⚠️",
             "stopping": "🟡",
             "starting": "🟦",
+            "connecting_adspower": "🔌",
             "stopped": "⏹",
             "finished": "🏁",
             "failed": "❌",
@@ -365,6 +406,7 @@ def human_monitor_status(status: str) -> str:
         "error": "последний цикл с ошибкой",
         "stopping": "останавливается",
         "starting": "запускается",
+        "connecting_adspower": "подключается к AdsPower",
         "stopped": "остановлен",
         "finished": "завершён по лимиту времени",
         "failed": "упал при запуске",
