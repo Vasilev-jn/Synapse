@@ -34,6 +34,7 @@ MONITOR_ERR_LOG = PROJECT_ROOT / "monitor_telegram.err.log"
 CRM_OUT_LOG = PROJECT_ROOT / "crm_telegram.out.log"
 CRM_ERR_LOG = PROJECT_ROOT / "crm_telegram.err.log"
 DEFAULT_ARTEM_ID = "660501420"
+TERMINAL_MONITOR_STATUSES = {"stopped", "finished", "crashed", "failed", "error"}
 
 
 KEYBOARD = {
@@ -158,6 +159,41 @@ def monitor_pids() -> list[int]:
     return process_ids_matching("qa_automation.py")
 
 
+def kill_monitor_pids(pids: list[int]) -> None:
+    for pid in pids:
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except OSError:
+            pass
+    time.sleep(1)
+    still_running = [pid for pid in pids if pid in monitor_pids()]
+    for pid in still_running:
+        try:
+            os.kill(pid, signal.SIGTERM)
+        except OSError:
+            pass
+
+
+def monitor_status_value() -> str | None:
+    status_data = load_monitor_status()
+    if not status_data:
+        return None
+    value = status_data.get("status")
+    return str(value).strip().lower() if value is not None else None
+
+
+def write_panel_monitor_status(status: str, **extra: Any) -> None:
+    payload = {
+        "status": status,
+        "updated_at": datetime.now().isoformat(timespec="seconds"),
+        **extra,
+    }
+    try:
+        MONITOR_STATUS_FILE.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    except OSError:
+        pass
+
+
 def crm_pids() -> list[int]:
     return process_ids_matching("uvicorn app.main")
 
@@ -190,8 +226,13 @@ def start_crm() -> str:
 
 
 def start_monitor(target_url: str | None) -> str:
-    if monitor_pids():
-        return f"Монитор уже запущен: PID {', '.join(map(str, monitor_pids()))}"
+    pids = monitor_pids()
+    status_value = monitor_status_value()
+    if pids and (STOP_FLAG.exists() or status_value in TERMINAL_MONITOR_STATUSES):
+        kill_monitor_pids(pids)
+        pids = monitor_pids()
+    if pids:
+        return f"Монитор уже запущен: PID {', '.join(map(str, pids))}"
     if STOP_FLAG.exists():
         try:
             STOP_FLAG.unlink()
@@ -201,6 +242,7 @@ def start_monitor(target_url: str | None) -> str:
     if target_url:
         args.extend(["--target-url", target_url])
     MONITOR_OUT_LOG.parent.mkdir(parents=True, exist_ok=True)
+    write_panel_monitor_status(status="starting", target_url=target_url)
     out = MONITOR_OUT_LOG.open("a", encoding="utf-8")
     err = MONITOR_ERR_LOG.open("a", encoding="utf-8")
     process = subprocess.Popen(
@@ -221,7 +263,9 @@ def stop_monitor() -> str:
     STOP_FLAG.write_text(datetime.now().isoformat(timespec="seconds"), encoding="utf-8")
     pids = monitor_pids()
     if not pids:
+        write_panel_monitor_status(status="stopped", reason="stop_requested_but_process_not_found")
         return "Флаг остановки поставлен. Монитор сейчас не найден."
+    write_panel_monitor_status(status="stopping", pids=pids)
     return f"Флаг остановки поставлен. Монитор завершится мягко. PID: {', '.join(map(str, pids))}"
 
 
@@ -256,6 +300,10 @@ def status_text(state: dict[str, Any]) -> str:
             "ok": "✅",
             "error": "⚠️",
             "stopping": "🟡",
+            "starting": "🟦",
+            "stopped": "⏹",
+            "finished": "🏁",
+            "failed": "❌",
         }.get(raw_status, "ℹ️")
         status_lines.extend(
             [
@@ -306,6 +354,10 @@ def human_monitor_status(status: str) -> str:
         "ok": "последний цикл без ошибок",
         "error": "последний цикл с ошибкой",
         "stopping": "останавливается",
+        "starting": "запускается",
+        "stopped": "остановлен",
+        "finished": "завершён по лимиту времени",
+        "failed": "упал при запуске",
     }.get(status, status)
 
 

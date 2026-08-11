@@ -1281,6 +1281,8 @@ def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = N
         monitor_started_at = time.time()
         bootstrap_completed = False
         runtime_limit = max_runtime_seconds or MONITOR_MAX_RUNTIME_SECONDS
+        finish_status = "finished"
+        finish_reason = "runtime_limit_reached"
         while time.time() - monitor_started_at < runtime_limit:
             if CONTROL_STOP_FILE.exists():
                 log_event(
@@ -1295,6 +1297,8 @@ def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = N
                     seen_count=len(seen_urls),
                     failed_count=len(failed_urls),
                 )
+                finish_status = "stopped"
+                finish_reason = "stop_flag_requested"
                 break
             cycle_number += 1
             cycle_started_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -1376,8 +1380,20 @@ def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = N
             runtime_seconds=int(time.time() - monitor_started_at),
             seen_count=len(seen_urls),
             failed_count=len(failed_urls),
+            status=finish_status,
+            reason=finish_reason,
         )
-        print("[MONITOR] Лимит 2 часа достигнут, завершаю работу")
+        write_monitor_status(
+            status=finish_status,
+            reason=finish_reason,
+            cycle_number=cycle_number,
+            seen_count=len(seen_urls),
+            failed_count=len(failed_urls),
+        )
+        if finish_status == "stopped":
+            print("[MONITOR] Остановлен по команде, завершаю работу")
+        else:
+            print("[MONITOR] Лимит времени достигнут, завершаю работу")
         # Профиль AdsPower не закрываем.
 
 
@@ -1391,4 +1407,12 @@ if __name__ == "__main__":
         help="Override monitor runtime limit",
     )
     args = parser.parse_args()
-    run_qa(args.target_url, max_runtime_seconds=args.max_runtime_seconds)
+    try:
+        run_qa(args.target_url, max_runtime_seconds=args.max_runtime_seconds)
+    except Exception as error:
+        write_monitor_status(
+            status="failed",
+            reason=str(error),
+            last_error=str(error),
+        )
+        raise
