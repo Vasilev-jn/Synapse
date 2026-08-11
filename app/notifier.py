@@ -297,6 +297,10 @@ def format_profit_evaluation_message(evaluation: dict[str, object]) -> str:
     if has_unpriced_items(items, risks):
         lines.append("Профит не учитывает позиции «непонятно».")
 
+    if not has_priced_items(items):
+        expected_sell_total = None
+        expected_profit = None
+
     lines.extend(
         [
             "",
@@ -445,6 +449,13 @@ def has_unpriced_items(items: object, risks: object) -> bool:
     ):
         return True
     return False
+
+
+def has_priced_items(items: object) -> bool:
+    return isinstance(items, list) and any(
+        isinstance(item, dict) and item.get("expected_sell_price") is not None
+        for item in items
+    )
 
 
 def value_from_dict(payload: object, key: str) -> object:

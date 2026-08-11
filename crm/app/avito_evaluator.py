@@ -40,6 +40,41 @@ PRIMARY_MARKET_DAYS = 30
 EXTENDED_MARKET_DAYS = 90
 PRICE_TRIM_PERCENT = 0.03
 PRICE_TRIM_MIN_COUNT = 20
+GENERIC_MATCH_TOKENS = {
+    "ps",
+    "ps4",
+    "ps5",
+    "playstation",
+    "sony",
+    "game",
+    "games",
+    "disc",
+    "disk",
+    "for",
+    "on",
+    "new",
+    "edition",
+    "collection",
+    "the",
+    "of",
+    "and",
+    "игра",
+    "игры",
+    "диск",
+    "диски",
+    "для",
+    "на",
+    "сони",
+    "плейстейшен",
+    "коллекция",
+    "часть",
+    "лот",
+    "лотом",
+    "комплект",
+    "набор",
+    "новый",
+    "новая",
+}
 
 
 @dataclass
@@ -95,7 +130,7 @@ def evaluate_avito_listing_payload(
     if not source_items:
         risks.append("no_extracted_items")
 
-    normalized_items = normalize_extracted_items(source_items)
+    normalized_items = normalize_extracted_items(source_items, listing=listing)
     account_bonus = console_account_subscription_bonus(
         listing=listing,
         raw_json=raw_json,
@@ -153,6 +188,8 @@ def evaluate_avito_listing_payload(
         result = evaluate_extracted_item(session, item)
         if result is None:
             risks.append(f"no_price_for:{item['name']}")
+            if item.get("unsafe_match_reason"):
+                risks.append(str(item["unsafe_match_reason"]))
             response_items.append(
                 {
                     "input_name": item["name"],
@@ -885,7 +922,122 @@ def item_is_console(item: dict[str, Any]) -> bool:
     return bool(re.search(r"\b(ps4|ps5|playstation\s*[45])\b", text))
 
 
-def normalize_extracted_items(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+def listing_guard_text(listing: dict[str, Any]) -> str:
+    raw_json = listing_raw_json(listing)
+    parts: list[str] = [
+        str(listing.get("title") or ""),
+        str(listing.get("description") or ""),
+    ]
+    for key in ("raw_card_texts", "raw_detail_texts"):
+        rows = raw_json.get(key)
+        if isinstance(rows, list):
+            parts.extend(str(row or "") for row in rows)
+    return "\n".join(part for part in parts if part)
+
+
+def first_listing_text_line(listing_text: str) -> str:
+    for line in str(listing_text or "").splitlines():
+        clean = line.strip()
+        if clean:
+            return clean
+    return ""
+
+
+def distinctive_tokens(value: Any) -> set[str]:
+    return {
+        token
+        for token in normalize_lookup_text(str(value or "")).split()
+        if len(token) >= 3 and token not in GENERIC_MATCH_TOKENS and not token.isdigit()
+    }
+
+
+def has_distinctive_overlap(left: Any, right: Any) -> bool:
+    left_tokens = distinctive_tokens(left)
+    right_tokens = distinctive_tokens(right)
+    return bool(left_tokens and right_tokens and left_tokens & right_tokens)
+
+
+def listing_has_strong_console_evidence(listing_text: str) -> bool:
+    text = normalize_lookup_text(listing_text)
+    return bool(
+        re.search(r"\b(ps4|ps5|playstation 4|playstation 5)\b", text)
+        and any(
+            marker in text
+            for marker in (
+                "slim",
+                "fat",
+                "pro",
+                "digital",
+                "500",
+                "825",
+                "1tb",
+                "1 тб",
+                "1000",
+                "cuh",
+                "приставка",
+                "приставку",
+                "консоль",
+                "консолью",
+            )
+        )
+    )
+
+
+def listing_looks_like_game_disc(listing_text: str) -> bool:
+    text = normalize_lookup_text(listing_text)
+    return any(marker in text for marker in ("диск", "диски", "игра", "игры", "disc", "disk", "game")) and bool(
+        re.search(r"\b(ps4|ps5|playstation 4|playstation 5)\b", text)
+    )
+
+
+def clear_unsafe_catalog_match(item: dict[str, Any], *, listing_text: str, reason: str) -> None:
+    title = first_listing_text_line(listing_text)
+    if title:
+        item["name"] = title
+    item["canonical_name"] = None
+    item["catalog_item_id"] = None
+    item["catalog_entry_id"] = None
+    item["unsafe_match_reason"] = reason
+    if item_is_console(item) and listing_looks_like_game_disc(listing_text):
+        item["item_type"] = "game"
+
+
+def guard_unsafe_extracted_item(item: dict[str, Any], *, listing_text: str) -> None:
+    if not listing_text:
+        return
+    item_name = item.get("name") or ""
+    canonical = item.get("canonical_name") or ""
+    catalog_id = item.get("catalog_item_id") or item.get("catalog_entry_id")
+    if item_is_console(item) and listing_looks_like_game_disc(listing_text) and not listing_has_strong_console_evidence(listing_text):
+        clear_unsafe_catalog_match(
+            item,
+            listing_text=listing_text,
+            reason="console_match_rejected_for_game_disc_listing",
+        )
+        return
+    if distinctive_tokens(listing_text) and item_name and distinctive_tokens(item_name) and not has_distinctive_overlap(item_name, listing_text):
+        clear_unsafe_catalog_match(
+            item,
+            listing_text=listing_text,
+            reason="llm_item_name_not_found_in_listing_text",
+        )
+        return
+    if (
+        distinctive_tokens(listing_text)
+        and canonical
+        and catalog_id
+        and distinctive_tokens(canonical)
+        and not has_distinctive_overlap(canonical, f"{item_name}\n{listing_text}")
+    ):
+        clear_unsafe_catalog_match(
+            item,
+            listing_text=listing_text,
+            reason="catalog_match_not_supported_by_listing_text",
+        )
+
+
+def normalize_extracted_items(items: list[dict[str, Any]], *, listing: dict[str, Any] | None = None) -> list[dict[str, Any]]:
+    listing_text = listing_guard_text(listing or {})
     result: list[dict[str, Any]] = []
     for raw in items:
         if not isinstance(raw, dict):
@@ -950,20 +1102,21 @@ def normalize_extracted_items(items: list[dict[str, Any]]) -> list[dict[str, Any
         quantity = int(safe_float(raw.get("quantity")) or 1)
         quantity = max(1, quantity)
         explicit_price = first_price(raw, "buy_price_used", "buy_price", "item_price", "price", "cost")
-        result.append(
-            {
-                "name": name,
-                "canonical_name": str(raw.get("canonical_name") or "").strip() or None,
-                "catalog_item_id": str(raw.get("catalog_item_id") or "").strip() or None,
-                "catalog_entry_id": int(safe_float(raw.get("catalog_entry_id")) or 0) or None,
-                "quantity": quantity,
-                "platform": raw.get("platform") or raw.get("platform_or_model"),
-                "item_type": raw.get("item_type") or raw.get("type"),
-                "buy_price_used": explicit_price,
-                "has_explicit_buy_price": explicit_price is not None,
-                "buy_price_reason": None,
-            }
-        )
+        item = {
+            "name": name,
+            "canonical_name": str(raw.get("canonical_name") or "").strip() or None,
+            "catalog_item_id": str(raw.get("catalog_item_id") or "").strip() or None,
+            "catalog_entry_id": int(safe_float(raw.get("catalog_entry_id")) or 0) or None,
+            "quantity": quantity,
+            "platform": raw.get("platform") or raw.get("platform_or_model"),
+            "item_type": raw.get("item_type") or raw.get("type"),
+            "buy_price_used": explicit_price,
+            "has_explicit_buy_price": explicit_price is not None,
+            "buy_price_reason": None,
+            "unsafe_match_reason": None,
+        }
+        guard_unsafe_extracted_item(item, listing_text=listing_text)
+        result.append(item)
     return dedupe_console_items(result)
 
 

@@ -5,6 +5,7 @@ import logging
 import http.client
 import re
 from datetime import datetime
+from pathlib import Path
 from typing import Any
 from urllib.parse import urlsplit
 from urllib.error import HTTPError, URLError
@@ -16,6 +17,43 @@ from .llm_analyzer import interpret_listing_price_for_record
 DEFAULT_CRM_MARKET_API_URL = "http://127.0.0.1:8001/api/market/imports/avito"
 DEFAULT_CRM_MARKET_EVALUATE_API_URL = "http://127.0.0.1:8001/api/market/evaluate-avito-listing"
 STALE_CRM_HOSTS = {"192.168.0.48", "192.168.0.49"}
+ALIAS_REVIEW_QUEUE_PATH = Path("json_responses") / "alias_review_queue.jsonl"
+
+GENERIC_MATCH_TOKENS = {
+    "ps",
+    "ps4",
+    "ps5",
+    "playstation",
+    "sony",
+    "game",
+    "games",
+    "disc",
+    "disk",
+    "for",
+    "on",
+    "new",
+    "edition",
+    "collection",
+    "the",
+    "of",
+    "and",
+    "игра",
+    "игры",
+    "диск",
+    "диски",
+    "для",
+    "на",
+    "сони",
+    "плейстейшен",
+    "коллекция",
+    "часть",
+    "лот",
+    "лотом",
+    "комплект",
+    "набор",
+    "новый",
+    "новая",
+}
 
 
 def avito_external_id(url: str | None) -> str | None:
@@ -265,6 +303,168 @@ def crm_evaluation_url() -> str | None:
     return import_url.rstrip("/") + "/evaluate-avito-listing"
 
 
+def alias_review_record(
+    *,
+    item: dict[str, Any],
+    listing_text: str,
+    reason: str,
+) -> dict[str, Any]:
+    return {
+        "queued_at": datetime.now().isoformat(timespec="seconds"),
+        "reason": reason,
+        "listing_title": first_listing_text_line(listing_text),
+        "raw_item_name": item.get("name") or item.get("title"),
+        "raw_canonical_name": item.get("canonical_name"),
+        "raw_catalog_item_id": item.get("catalog_item_id"),
+        "raw_catalog_entry_id": item.get("catalog_entry_id"),
+        "raw_item_type": item.get("item_type") or item.get("type"),
+    }
+
+
+def append_alias_review_record(record: dict[str, Any]) -> None:
+    try:
+        ALIAS_REVIEW_QUEUE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        with ALIAS_REVIEW_QUEUE_PATH.open("a", encoding="utf-8") as file:
+            file.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+    except OSError as error:
+        logging.warning("alias_review_queue_write_failed error=%s", error)
+
+
+def normalize_guard_text(value: Any) -> str:
+    text = str(value or "").casefold().replace("ё", "е").replace("С‘", "Рµ")
+    parts: list[str] = []
+    current: list[str] = []
+    for char in text:
+        if char.isalnum():
+            current.append(char)
+        elif current:
+            parts.append("".join(current))
+            current = []
+    if current:
+        parts.append("".join(current))
+    return " ".join(parts)
+
+
+def distinctive_tokens(value: Any) -> set[str]:
+    return {
+        token
+        for token in normalize_guard_text(value).split()
+        if len(token) >= 3 and token not in GENERIC_MATCH_TOKENS and not token.isdigit()
+    }
+
+
+def has_distinctive_overlap(left: Any, right: Any) -> bool:
+    left_tokens = distinctive_tokens(left)
+    right_tokens = distinctive_tokens(right)
+    return bool(left_tokens and right_tokens and left_tokens & right_tokens)
+
+
+def first_listing_text_line(listing_text: str) -> str:
+    for line in str(listing_text or "").splitlines():
+        clean = line.strip()
+        if clean:
+            return clean
+    return ""
+
+
+def listing_has_strong_console_evidence(listing_text: str) -> bool:
+    text = normalize_guard_text(listing_text)
+    return bool(
+        re.search(r"\b(ps4|ps5|playstation 4|playstation 5)\b", text)
+        and any(
+            marker in text
+            for marker in (
+                "slim",
+                "fat",
+                "pro",
+                "digital",
+                "500",
+                "825",
+                "1tb",
+                "1 тб",
+                "1000",
+                "cuh",
+                "приставка",
+                "приставку",
+                "консоль",
+                "консолью",
+            )
+        )
+    )
+
+
+def listing_looks_like_game_disc(listing_text: str) -> bool:
+    text = normalize_guard_text(listing_text)
+    return any(marker in text for marker in ("диск", "диски", "игра", "игры", "disc", "disk", "game")) and bool(
+        re.search(r"\b(ps4|ps5|playstation 4|playstation 5)\b", text)
+    )
+
+
+def item_looks_like_console(item: dict[str, Any]) -> bool:
+    item_type = str(item.get("item_type") or item.get("type") or "").strip().lower()
+    text = normalize_guard_text(
+        " ".join(
+            str(item.get(key) or "")
+            for key in ("name", "canonical_name", "catalog_item_id", "catalog_entry_id")
+        )
+    )
+    return item_type in {"console", "game_console"} or (
+        bool(re.search(r"\b(ps4|ps5|playstation 4|playstation 5)\b", text))
+        and any(marker in text for marker in ("slim", "fat", "pro", "digital", "500", "825", "1tb", "1000"))
+    )
+
+
+def clear_catalog_match_for_alias_review(item: dict[str, Any], *, listing_text: str, reason: str) -> None:
+    append_alias_review_record(alias_review_record(item=item, listing_text=listing_text, reason=reason))
+    title = first_listing_text_line(listing_text)
+    if title:
+        item["name"] = title
+    item["canonical_name"] = None
+    item["catalog_item_id"] = None
+    item["catalog_entry_id"] = None
+    item["catalog_match_confidence"] = "none"
+    item["missing_data_reason"] = reason
+    item["use_for_market_pricing"] = False
+    item["use_for_lot_cost_estimate"] = False
+    if item_looks_like_console(item) and listing_looks_like_game_disc(listing_text):
+        item["item_type"] = "game"
+        item["type"] = "game"
+
+
+def guard_unsafe_llm_match(item: dict[str, Any], *, listing_text: str) -> None:
+    if not listing_text:
+        return
+    item_name = item.get("name") or item.get("title") or ""
+    canonical = item.get("canonical_name") or ""
+    catalog_id = item.get("catalog_item_id") or item.get("catalog_entry_id")
+    if item_looks_like_console(item) and listing_looks_like_game_disc(listing_text) and not listing_has_strong_console_evidence(listing_text):
+        clear_catalog_match_for_alias_review(
+            item,
+            listing_text=listing_text,
+            reason="console_match_rejected_for_game_disc_listing",
+        )
+        return
+    if distinctive_tokens(listing_text) and item_name and distinctive_tokens(item_name) and not has_distinctive_overlap(item_name, listing_text):
+        clear_catalog_match_for_alias_review(
+            item,
+            listing_text=listing_text,
+            reason="llm_item_name_not_found_in_listing_text",
+        )
+        return
+    if (
+        distinctive_tokens(listing_text)
+        and canonical
+        and catalog_id
+        and distinctive_tokens(canonical)
+        and not has_distinctive_overlap(canonical, f"{item_name}\n{listing_text}")
+    ):
+        clear_catalog_match_for_alias_review(
+            item,
+            listing_text=listing_text,
+            reason="catalog_match_not_supported_by_listing_text",
+        )
+
+
 def normalize_extracted_items_for_crm(items: object, *, listing_text: str = "") -> list[dict[str, Any]]:
     if not isinstance(items, list):
         return []
@@ -280,7 +480,9 @@ def normalize_extracted_items_for_crm(items: object, *, listing_text: str = "") 
         if copied.get("price_rub") is None and copied.get("price") is not None:
             copied["price_rub"] = copied.get("price")
         fix_obvious_item_type_mistakes(copied)
-        refine_console_catalog_match(copied, listing_text=listing_text)
+        guard_unsafe_llm_match(copied, listing_text=listing_text)
+        if not copied.get("missing_data_reason"):
+            refine_console_catalog_match(copied, listing_text=listing_text)
         normalized.append(copied)
     return dedupe_console_items(normalized)
 

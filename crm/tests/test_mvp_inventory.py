@@ -874,6 +874,62 @@ def test_avito_listing_evaluator_does_not_use_game_price_for_controller(tmp_path
         app.dependency_overrides.clear()
 
 
+def test_avito_listing_evaluator_rejects_unsafe_llm_catalog_match(db_session) -> None:
+    from app.avito_evaluator import evaluate_avito_listing_payload
+
+    data = evaluate_avito_listing_payload(
+        db_session,
+        listing={
+            "title": "Uncharted collection ps4",
+            "description": "Disc in good condition",
+            "price": 1100,
+        },
+        extracted_items=[
+            {
+                "name": "Horizon Zero Dawn",
+                "canonical_name": "Horizon Zero Dawn",
+                "catalog_item_id": "horizon_zero_dawn",
+                "item_type": "game",
+            }
+        ],
+    )
+
+    item = data["items"][0]
+    assert item["name"] == "Uncharted collection ps4"
+    assert item["canonical_name"] != "Horizon Zero Dawn"
+    assert item["expected_sell_price"] is None
+    assert item["matched_by"] is None
+    assert "llm_item_name_not_found_in_listing_text" in data["risks"]
+
+
+def test_avito_listing_evaluator_rejects_console_match_for_game_disc(db_session) -> None:
+    from app.avito_evaluator import evaluate_avito_listing_payload
+
+    data = evaluate_avito_listing_payload(
+        db_session,
+        listing={
+            "title": "AD Infinitum PS5 (NEW)",
+            "description": "Game Ad Infinitum for PS5, physical disc",
+            "price": 2990,
+        },
+        extracted_items=[
+            {
+                "name": "PlayStation 5 Disc",
+                "canonical_name": "PlayStation 5 Disc",
+                "catalog_entry_id": 64,
+                "item_type": "console",
+            }
+        ],
+    )
+
+    item = data["items"][0]
+    assert item["name"] == "AD Infinitum PS5 (NEW)"
+    assert item["item_type"] == "game"
+    assert item["expected_sell_price"] is None
+    assert item["matched_by"] is None
+    assert "console_match_rejected_for_game_disc_listing" in data["risks"]
+
+
 def test_avito_listing_evaluator_does_not_price_unknown_game_list(tmp_path) -> None:
     from app.main import app, get_db, settings
 

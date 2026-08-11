@@ -99,3 +99,22 @@ def test_analysis_message_marks_unpriced_items_as_unknown() -> None:
     assert "PlayStation 4 Slim 1TB — 14018 ₽" in text
     assert "Unknown PS4 game — непонятно" in text
     assert "Профит не учитывает позиции «непонятно»." in text
+
+
+def test_analysis_message_does_not_show_fake_negative_profit_when_nothing_is_priced() -> None:
+    evaluation = {
+        "total": {
+            "buy_total": 1100,
+            "expected_sell_total": 0,
+            "expected_profit": -1100,
+        },
+        "items": [
+            {"name": "Uncharted collection ps4", "buy_price_used": None, "expected_sell_price": None},
+        ],
+        "risks": ["profit_excludes_unpriced_items"],
+    }
+
+    text = format_profit_evaluation_message(evaluation)
+
+    assert "-1100" not in text
+    assert "Uncharted collection ps4" in text
