@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Каталог{% endblock %}
+{% block content %}
+<h1>Каталог</h1>
+<section class="panel">
+  <h2>Добавить каталожную позицию</h2>
+  <form method="post" action="/catalog/new" class="form-grid">
+    <label>Категория <select name="category_id">{% for c in categories %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select></label>
+    <label>Основное название <input name="name" required></label>
+    <label>Альтернативное 1 <input name="alias_1"></label>
+    <label>Альтернативное 2 <input name="alias_2"></label>
+    <button class="button">Добавить</button>
+  </form>
+</section>
+<section class="panel table-scroll">
+  <table>
+    <tr><th>Название</th><th>Aliases</th><th>Категория</th><th>Всего</th><th>Есть</th><th>Продано</th><th>Рынок</th><th>Редактирование</th></tr>
+    {% for entry in entries %}
+    {% set available = entry.items|selectattr("status", "equalto", "Есть")|list|length %}
+    {% set sold = entry.items|selectattr("status", "equalto", "Продан")|list|length %}
+    {% set estimate = estimates[entry.id] %}
+    <tr>
+      <td>{{ entry.name }}</td>
+      <td>{{ entry.aliases|map(attribute="name")|join(", ") }}</td>
+      <td>{{ entry.category.name }}</td><td>{{ entry.items|length }}</td><td>{{ available }}</td><td>{{ sold }}</td>
+      <td>{% if estimate.count %}{{ money(estimate.median_price) }} / {{ estimate.count }} / {{ estimate.confidence }}{% else %}Нет рыночных данных{% endif %}</td>
+      <td>
+        <form method="post" action="/catalog/{{ entry.id }}/edit" class="inline-form">
+          <input name="name" value="{{ entry.name }}"><select name="category_id">{% for c in categories %}<option value="{{ c.id }}" {% if c.id==entry.category_id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select>
+          <input name="alias_1" value="{{ entry.aliases[0].name if entry.aliases|length > 0 else '' }}"><input name="alias_2" value="{{ entry.aliases[1].name if entry.aliases|length > 1 else '' }}"><button>OK</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</section>
+<section class="panel">
+  <h2>Объединить ошибочные позиции</h2>
+  <form method="post" action="/catalog/merge" class="filters" onsubmit="return confirm('Перенести товары и рыночные связи в целевую позицию?')">
+    <select name="source_id">{% for e in entries %}<option value="{{ e.id }}">{{ e.name }}</option>{% endfor %}</select>
+    <span>→</span>
+    <select name="target_id">{% for e in entries %}<option value="{{ e.id }}">{{ e.name }}</option>{% endfor %}</select>
+    <button>Объединить</button>
+  </form>
+</section>
+{% endblock %}

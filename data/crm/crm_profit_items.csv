@@ -1,0 +1,662 @@
+﻿id;item_type;canonical_name;price_source;price_confidence;base_market_price_rub;quick_sell_price_rub;net_after_sale_rub;max_buy_price_rub;friend_resale_price_rub;shop_median_rub;aliases
+console:ps4_fat;console;PlayStation 4 Fat;manual_console_catalog;manual;13000;13000;11830.0;11500;;;ps4 fat | ps4 phat | playstation 4 fat | playstation 4 phat | пс4 фат | плойка фат | cuh 1000 | cuh 1100 | cuh 1200
+console:ps4_pro;console;PlayStation 4 PRO;manual_console_catalog;manual;20000;20000;18200.0;17900;;;ps4 pro | playstation 4 pro | ps4 pro 1tb | пс4 про | плойка про | cuh 7000 | cuh 7100 | cuh 7200
+console:ps4_slim;console;PlayStation 4 Slim;manual_console_catalog;manual;15000;15000;13650.0;13350;;;ps4 slim | playstation 4 slim | ps4 slim 500gb | ps4 slim 1tb | пс4 слим | плойка слим | cuh 2000 | cuh 2100 | cuh 2200
+controller:dualshock4_original;controller;DualShock 4 Original;manual_controller_value;manual;1300;1300;1183.0;850;;;dualshock 4 | dualshock4 | ds4 | ориг геймпад ps4 | оригинальный геймпад ps4 | джойстик ps4 оригинал
+controller:ps4_third_party;controller;PS4 Controller Third-party;manual_controller_value;manual;700;700;637.0;300;;;геймпад ps4 не оригинал | неориг геймпад ps4 | джойстик ps4 не оригинал | совместимый геймпад ps4 | controller ps4
+game:call_of_duty_modern_warfare_remastered;game;Call of Duty Modern Warfare Remastered;friend_resale_price;high;5199;4150;3726.5;3400;5199;;cod modern warfare remastered | modern warfare remastered | call of duty 4 remastered | cod 4 remastered | mw remastered | mwr | Call of Duty Modern Warfare Remastered
+game:call_of_duty_modern_warfare_2;game;Call of Duty Modern Warfare 2;friend_resale_price;high;2399;1900;1679.0;1350;2399;5000;call of duty modern warfare -2400/ | call of duty modern warfare 2-2000/ | modern warfare 2 | cod modern warfare 2 | mw2 | mw ii | modern warfare ii | modern warfare 2 2022 | Call of Duty Modern Warfare 2
+game:call_of_duty_modern_warfare_3;game;Call of Duty Modern Warfare 3;friend_resale_price;high;3099;2500;2225.0;1900;3099;;modern warfare 3 | cod modern warfare 3 | mw3 | mw iii | modern warfare iii | modern warfare 3 2023 | Call of Duty Modern Warfare 3
+game:resident_evil_4_remake;game;Resident Evil 4 Remake;friend_resale_price;high;1799;1450;1269.5;950;1799;;resident evil 4 | resident evil 4 remastered | re4 | re4 remake | re 4 remake | Resident Evil 4 Remake
+game:red_dead_redemption_2;game;Red Dead Redemption 2;friend_resale_price;high;1799;1450;1269.5;950;1799;2200;rdr 2 read dead redemption | rdr 2 рs4 совместим рs | rdr 2 ,red dead redemption | rdr2 | rdr 2 | red dead 2 | rdr ii | Red Dead Redemption 2
+game:god_of_war;game;God Of War;friend_resale_price;high;1099;900;769.0;450;1099;1200;god of war 4 | god war ps4 | бог войны | God Of War
+game:cyberpunk_2077;game;Cyberpunk 2077;friend_resale_price;high;1599;1300;1133.0;800;1599;2000;cyberpunk | киберпанк 2077 | Cyberpunk 2077
+game:skyrim;game;Skyrim;friend_resale_price;high;3499;2800;2498.0;2150;3499;3000;skyrim v | skyrim anniversary edition | ❌elder scrolls 5 skyrim special edition | skyrim special edition | 🎮the elder scrolls v: skyrim | elder scrolls 5 skyrim | Skyrim
+game:call_of_duty_black_ops_3;game;Call of Duty Black Ops 3;friend_resale_price;high;2199;1750;1542.5;1200;2199;;black ops 3 | call of duty black ops iii | cod black ops 3 | cod bo3 | black ops iii | bo3 | Call of Duty Black Ops 3
+game:far_cry_4_limited_edition;game;Far Cry 4 Limited Edition;friend_resale_price;high;2199;1750;1542.5;1200;2199;;far cry 4 | far cry 4 limited | Far Cry 4 Limited Edition
+game:l_a_noire;game;L.A. Noire;friend_resale_price;high;7199;5750;5182.5;4850;7199;;la noire | L.A. Noire
+game:elden_ring;game;Elden Ring;friend_resale_price;high;1999;1600;1406.0;1100;1999;2150;elden ring ps4 | elden ring ps5 | Elden Ring
+game:hogwarts_legacy;game;Hogwarts Legacy;friend_resale_price;high;1699;1350;1178.5;850;1699;2190;hogwarts ps4 | hogwarts ps5 | хогвартс legacy | хогвартс легаси | Hogwarts Legacy
+game:resident_evil_6;game;Resident Evil 6;missing;missing;;;;;;;resident evil vi | re6 | re 6 | резидент эвил 6 | резидент ивел 6 | резик 6 | обитель зла 6 | Resident Evil 6
+game:god_of_war_ragnarok;game;God Of War Ragnarok;friend_resale_price;high;1799;1450;1269.5;950;1799;2900;god of war ragnarek | ragnarok ps4 | ragnarok ps5 | бог войны рагнарок | God Of War Ragnarok
+game:spider_man_game_of_the_year;game;Spider-Man Game of the Year;friend_resale_price;high;1899;1500;1315.0;1000;1899;;человек паук издание игра года | spider-man goty | Spider-Man Game of the Year
+game:the_sims_4;game;The Sims 4;friend_resale_price;high;2799;2250;1997.5;1650;2799;;sims 4 | The Sims 4
+game:ghost_of_tsushima;game;Ghost Of Tsushima;friend_resale_price;high;1599;1300;1133.0;800;1599;2275;ghost tsushima | ghost of tushima | призрак цусимы | Ghost Of Tsushima
+game:call_of_duty_infinite_warfare;game;Call Of Duty Infinite Warfare;friend_resale_price;high;1999;1600;1406.0;1100;1999;1900;cod infinite warfare | infinite warfare | infinity warfare | infiniti warfare | legacy edition infinite warfare | Call Of Duty Infinite Warfare
+game:spider_man_miles_morales;game;Spider Man Miles Morales;friend_resale_price;high;1799;1450;1269.5;950;1799;2550;miles morales | майлз моралес | Spider Man Miles Morales
+game:mafia_trilogy;game;Mafia Trilogy;friend_resale_price;high;1799;1450;1269.5;950;1799;2400;mafia definitive trilogy | mafia 1 2 3 | мафия trilogy | Mafia Trilogy
+game:call_of_duty_advanced_warfare;game;Call Of Duty Advanced Warfare;friend_resale_price;high;2399;1900;1679.0;1350;2399;2000;cod advanced warfare | advanced warfare | advanced warfire | adwanced warfare | advanced warfare ps4 | Call Of Duty Advanced Warfare
+game:nier_automata;game;Nier Automata;friend_resale_price;high;1499;1200;1042.0;700;1499;1750;nier automata game of the yorha | Nier Automata
+game:ratchet_and_clank;game;Ratchet And Clank;friend_resale_price;high;1099;900;769.0;450;1099;1590;ratchet clank | ratchet clank ps4 | ratchet clank диск | ratchet clark | ratchet clark ps4 | рэтчет кланк | ретчет кланк | рэтчет и кланк | ретчет и кланк | Ratchet And Clank
+game:resident_evil_2_remake;game;Resident Evil 2 Remake;missing;missing;;;;;;;resident evil 2 | re2 remake | re 2 remake | re2 | Resident Evil 2 Remake
+game:dark_souls_remastered;game;Dark Souls Remastered;friend_resale_price;high;1299;1050;905.5;600;1299;1300;dark souls remaster | dark souls 1 remastered | dark souls i remastered | Dark Souls Remastered
+game:it_takes_two;game;It Takes Two;friend_resale_price;high;1899;1500;1315.0;1000;1899;2600;it take two | takes two | it takes 2 | ит тейкс ту | ит тейкс 2 | ит тейк ту | нужны двое | нужен второй | It Takes Two
+game:resident_evil_3_remake;game;Resident Evil 3 Remake;missing;missing;;;;;;;resident evil 3 | re3 remake | re 3 remake | re3 | Resident Evil 3 Remake
+game:call_of_duty_black_ops_4;game;Call of Duty Black Ops 4;missing;missing;;;;;;;call of duty black ops iv | cod black ops 4 | cod bo4 | black ops 4 | black ops iv | bo4 | Call of Duty Black Ops 4
+game:far_cry_6;game;Far Cry 6;missing;missing;;;;;;;farcry 6 | farcry6 | фар край 6 | фаркрай 6 | Far Cry 6
+game:gran_turismo_7;game;Gran Turismo 7;missing;missing;;;;;;;grand turismo 7 | gt7 | Gran Turismo 7
+game:the_last_of_us_part_ii;game;The Last of Us Part II;shop_median_price;low;4000;3200;2862.0;2550;;4000;the last of us 2 remastered | the last of us 2 | last of us 2 | tlou 2 | The Last of Us Part II
+game:the_last_of_us_remastered;game;The Last of Us Remastered;missing;missing;;;;;;;last of us remastered | the last of us 1 | last of us 1 | The Last of Us Remastered
+game:dark_souls_2_scholar_of_the_first_sin;game;Dark Souls 2 Scholar of the First Sin;missing;missing;;;;;;;dark souls ii scholar of the first sin | dark souls 2 | dark souls ii | scholar of the first sin | Dark Souls 2 Scholar of the First Sin
+game:dark_souls_3;game;Dark Souls 3;missing;missing;;;;;;;dark souls iii | dark souls 3 the fire fades | the fire fades edition | Dark Souls 3
+game:resident_evil_village;game;Resident Evil Village;shop_median_price;low;1950;1550;1360.5;1050;;1950;resident evil 8 | re village | re8 | village resident evil | Resident Evil Village
+game:tomb_raider_definitive_edition;game;Tomb Raider Definitive Edition;missing;missing;;;;;;;tomb raider definitive | tomb raider ps4 | лара крофт definitive edition | лара крофт tomb raider | томб райдер definitive edition | Tomb Raider Definitive Edition
+game:call_of_duty_black_ops_6;game;Call of Duty Black Ops 6;missing;missing;;;;;;;cod black ops 6 | cod bo6 | black ops 6 | bo6 | Call of Duty Black Ops 6
+game:bloodborne;game;Bloodborne;shop_median_price;medium;1100;900;769.0;450;;1100;bloodborne goty | bloodborne game of the year | Bloodborne
+game:dying_light;game;Dying Light;shop_median_price;medium;2500;2000;1770.0;1450;;2500;dying light enhanced edition | dying light the following | даинг лайт | даинглайт | дайинг лайт | dlight | Dying Light
+game:dark_souls_trilogy;game;Dark Souls Trilogy;shop_median_price;low;2950;2350;2088.5;1750;;2950;dark souls трилогия | дарк соулс трилогия | соулсы трилогия | Dark Souls Trilogy
+game:crash_team_racing_nitro_fueled;game;Crash Team Racing Nitro-Fueled;missing;missing;;;;;;;ctr nitro fueled | ctr crash nitro fueled | crash racing | crash team racing | краш гонки | краш тим рейсинг | Crash Team Racing Nitro-Fueled
+game:assassin_s_creed_valhalla;game;Assassin S Creed Valhalla;shop_median_price;low;1550;1250;1087.5;750;;1550;assassins creed valhalla | assassin creed valhalla | ac valhalla | ас вальгалла | ассасин крид вальгалла | ассассин крид вальгалла | Assassin S Creed Valhalla
+game:call_of_duty_black_ops_cold_war;game;Call Of Duty Black Ops Cold War;shop_median_price;medium;2250;1800;1588.0;1250;;2250;cod cold war | black ops cold war | cold war | bo cold war | Call Of Duty Black Ops Cold War
+game:sekiro_shadows_die_twice;game;Sekiro Shadows Die Twice;missing;missing;;;;;;;sekiro | sekiro ps4 | Sekiro Shadows Die Twice
+game:call_of_duty_vanguard;game;Call Of Duty Vanguard;shop_median_price;medium;2745;2200;1952.0;1650;;2745;cod vanguard | vanguard ps4 | vanguard ps5 | Call Of Duty Vanguard
+game:silent_hill_2;game;Silent Hill 2;missing;missing;;;;;;;silent hill 2 remake | Silent Hill 2
+game:sonic_frontiers;game;Sonic Frontiers;shop_median_price;medium;2800;2250;1997.5;1650;;2800;соник фронтирс | соник фронтиерс | Sonic Frontiers
+game:call_of_duty_ghosts;game;Call Of Duty Ghosts;shop_median_price;medium;1900;1500;1315.0;1000;;1900;cod ghosts | cod ghost | ghosts ps4 | Call Of Duty Ghosts
+game:bloodborne_game_of_the_year_edition;game;Bloodborne Game Of The Year Edition;shop_median_price;medium;1800;1450;1269.5;950;;1800;bloodborne goty | bloodborne game of the year | бладборн game of the year | бладборн goty | Bloodborne Game Of The Year Edition
+game:persona_5_royal;game;Persona 5 Royal;missing;missing;;;;;;;persona 5 | p5 royal | Persona 5 Royal
+game:sniper_ghost_warrior_contracts_2;game;Sniper Ghost Warrior Contracts 2;missing;missing;;;;;;;sniper contracts 2 | sniper ghost contracts 2 | Sniper Ghost Warrior Contracts 2
+game:ufc;game;UFC;friend_resale_price;high;899;700;587.0;250;899;;UFC
+game:call_of_duty_modern_warfare;game;Call Of Duty Modern Warfare;shop_median_price;low;2500;2000;1770.0;1450;;2500;cod modern warfare | modern warfare 2019 | mw 2019 | mw2019 | modern warfare ps4 | Call Of Duty Modern Warfare
+game:call_of_duty_wwii;game;Call Of Duty Wwii;shop_median_price;medium;3500;2800;2498.0;2150;;3500;call of duty ww2 | cod wwii | cod ww2 | wwii ps4 | ww2 ps4 | world war ii | Call Of Duty Wwii
+game:dying_light_2_stay_human;game;Dying Light 2 Stay Human;shop_median_price;medium;2200;1750;1542.5;1200;;2200;dying light 2 | dying light stay human | даинг лайт 2 | даинглайт 2 | дайинг лайт 2 | stay human | Dying Light 2 Stay Human
+game:armored_core_vi_fires_of_rubicon;game;Armored Core VI Fires of Rubicon;missing;missing;;;;;;;armored core vi | armored core 6 | armored core fires of rubicon | Armored Core VI Fires of Rubicon
+game:stellar_blade;game;Stellar Blade;missing;missing;;;;;;;Stellar Blade
+game:stray;game;Stray;missing;missing;;;;;;;stray ps4 | stray ps5 | стрей | страй | Stray
+game:crash_bandicoot_n_sane_trilogy;game;Crash Bandicoot N Sane Trilogy;shop_median_price;low;2095;1700;1497.0;1150;;2095;crash bandicoot trilogy | crash trilogy | Crash Bandicoot N Sane Trilogy
+game:death_stranding;game;Death Stranding;shop_median_price;low;3395;2700;2407.0;2100;;3395;дес стрендинг | дез стрендинг | деф стрендинг | Death Stranding
+game:final_fantasy_xv_royal_edition;game;Final Fantasy Xv Royal Edition;shop_median_price;medium;1900;1500;1315.0;1000;;1900;final fantasy 15 royal edition | ff xv royal | ff15 royal | Final Fantasy Xv Royal Edition
+game:lego_batman_3_beyond_gotham;game;Lego Batman 3 Beyond Gotham;missing;missing;;;;;;;lego batman beyond gotham | lego batman 3 | лего бэтмен 3 | лего бэтмен за пределами готэма | Lego Batman 3 Beyond Gotham
+game:slime_rancher_deluxe_edition;game;Slime Rancher Deluxe Edition;missing;missing;;;;;;;slime rancher | слайм ранчер | слайм ранчер deluxe | слайм ренчер | Slime Rancher Deluxe Edition
+game:the_binding_of_isaac_repentance;game;The Binding of Isaac Repentance;missing;missing;;;;;;;binding of isaac repentance | binding isaac repentance | isaac repentance | айзек repentance | биндинг оф айзек | зэ байндинг оф айзек | The Binding of Isaac Repentance
+game:lego_marvel_super_heroes_2;game;Lego Marvel Super Heroes 2;missing;missing;;;;;;;лего марвел супер герои 2 | lego marvel superheroes 2 | Lego Marvel Super Heroes 2
+game:lego_marvel_avengers;game;Lego Marvel Avengers;missing;missing;;;;;;;lego avengers | лего марвел мстители | лего мстители | Lego Marvel Avengers
+game:nhl_24;game;NHL 24;missing;missing;;;;;;;нхл 24 | нхл24 | NHL 24
+game:lego_worlds;game;Lego Worlds;shop_median_price;medium;1400;1100;951.0;650;;1400;лего ворлдс | лего миры | Lego Worlds
+game:the_witcher_3_game_of_the_year;game;The Witcher 3 Game of the Year;friend_resale_price;high;1499;1200;1042.0;700;1499;;ведьмак 3 игра года | witcher 3 game of the year | The Witcher 3 Game of the Year
+game:the_witcher_3_wild_hunt;game;The Witcher 3 Wild Hunt;friend_resale_price;high;1299;1050;905.5;600;1299;;ведьмак 3 дикая охота | witcher 3 wild hunt | The Witcher 3 Wild Hunt
+game:nhl_22;game;NHL 22;missing;missing;;;;;;;нхл 22 | нхл22 | NHL 22
+game:god_of_war_3;game;God of War 3;friend_resale_price;high;999;800;678.0;350;999;1250;god of war 3 remastered | god of war 3 remastered (без коробки | бог войны 3 | God of War 3
+game:nhl_19;game;NHL 19;missing;missing;;;;;;;нхл 19 | нхл19 | NHL 19
+game:nhl_25;game;NHL 25;missing;missing;;;;;;;нхл 25 | нхл25 | NHL 25
+game:nhl_20;game;NHL 20;missing;missing;;;;;;;нхл 20 | нхл20 | NHL 20
+game:lego_marvel_super_heroes;game;Lego Marvel Super Heroes;shop_median_price;medium;1400;1100;951.0;650;;1400;лего марвел супер герои | lego marvel superheroes | Lego Marvel Super Heroes
+game:nba_2k23;game;NBA 2K23;missing;missing;;;;;;;nba2k23 | nba 23 | нба 2к23 | нба2к23 | NBA 2K23
+game:nhl_23;game;NHL 23;missing;missing;;;;;;;нхл 23 | нхл23 | NHL 23
+game:nhl_21;game;NHL 21;missing;missing;;;;;;;нхл 21 | нхл21 | NHL 21
+game:far_cry_5;game;Far Cry 5;friend_resale_price;high;1099;900;769.0;450;1099;1000;far cry 5 (без коробки | Far Cry 5
+game:infamous_first_light;game;Infamous First Light;friend_resale_price;high;2999;2400;2134.0;1800;2999;;первый свет | Infamous First Light
+game:lego_city_undercover;game;Lego City Undercover;shop_median_price;medium;1600;1300;1133.0;800;;1600;лего сити андеркавер | лего город undercover | Lego City Undercover
+game:nhl_18;game;NHL 18;missing;missing;;;;;;;нхл 18 | нхл18 | NHL 18
+game:nhl_16;game;NHL 16;missing;missing;;;;;;;нхл 16 | нхл16 | NHL 16
+game:nhl_17;game;NHL 17;missing;missing;;;;;;;нхл 17 | нхл17 | NHL 17
+game:lego_movie_2_videogame;game;Lego Movie 2 Videogame;missing;missing;;;;;;;lego movie 2 video game | лего фильм 2 | lego movie 2 | Lego Movie 2 Videogame
+game:lego_movie_videogame;game;Lego Movie Videogame;missing;missing;;;;;;;lego movie video game | лего фильм игра | lego movie | Lego Movie Videogame
+game:mortal_kombat_11;game;Mortal Kombat 11;friend_resale_price;high;1699;1350;1178.5;850;1699;1700;mortal kombat 11 (бесплатный апгрейд | mk11 | Mortal Kombat 11 (бесплатный PS5 апгрейд | Mortal Kombat 11
+game:nhl_15;game;NHL 15;missing;missing;;;;;;;нхл 15 | нхл15 | NHL 15
+game:uncharted_4;game;Uncharted 4;friend_resale_price;high;899;700;587.0;250;899;1500;uncharted 4 путь вора | Uncharted 4
+game:lego_dc_super_villains;game;Lego Dc Super Villains;shop_median_price;medium;1650;1300;1133.0;800;;1650;lego super villains | лего супер злодеи | лего дс супер злодеи | Lego Dc Super Villains
+game:lego_jurassic_world;game;Lego Jurassic World;missing;missing;;;;;;;лего мир юрского периода | лего юрский мир | Lego Jurassic World
+game:gta_5;game;GTA 5;friend_resale_price;high;1299;1050;905.5;600;1299;2000;gta 5: premium edition | gta 5 ps | grand theft auto v gta | grand theft auto v | гта 5 | GTA 5
+game:fallout_4;game;Fallout 4;friend_resale_price;high;2599;2100;1861.0;1550;2599;;Fallout 4
+game:lego_star_wars_the_skywalker_saga;game;Lego Star Wars The Skywalker Saga;shop_median_price;low;2400;1900;1679.0;1350;;2400;lego skywalker saga | lego звездные войны скайуокер сага | лего скайуокер сага | Lego Star Wars The Skywalker Saga
+game:battlefield_5;game;Battlefield 5;friend_resale_price;high;1499;1200;1042.0;700;1499;;battlefield v | Battlefield 5
+game:uncharted_collection;game;Uncharted Collection;friend_resale_price;high;1299;1050;905.5;600;1299;;uncharted коллекция | nathan drake collection | Uncharted Collection
+game:fifa_19;game;FIFA 19;friend_resale_price;high;999;800;678.0;350;999;;fifa 2019 | FIFA 19
+game:battlefield_2042;game;Battlefield 2042;friend_resale_price;high;1199;950;814.5;500;1199;;Battlefield 2042
+game:lego_harry_potter_collection;game;Lego Harry Potter Collection;shop_median_price;low;1445;1150;996.5;650;;1445;lego harry potter | лего гарри поттер | гарри поттер лего | Lego Harry Potter Collection
+game:borderlands_3;game;Borderlands 3;friend_resale_price;high;899;700;587.0;250;899;;Borderlands 3
+game:gran_turismo_sport_no_cover;game;Gran Turismo Sport no cover;friend_resale_price;high;499;400;314.0;0;499;;gran turismo sport без обложки | grand turismo sport без обложки | Gran Turismo Sport no cover
+game:hitman_2;game;Hitman 2;friend_resale_price;high;1999;1600;1406.0;1100;1999;;Hitman 2
+game:rise_of_the_tomb_raider;game;Rise of the Tomb Raider;friend_resale_price;high;1399;1100;951.0;650;1399;;rise of tomb raider | Rise of the Tomb Raider
+game:fnaf_security_breach;game;FNAF Security Breach;friend_resale_price;high;1599;1300;1133.0;800;1599;;five nights at freddy security breach | FNAF Security Breach
+game:horizon_zero_dawn_sealed;game;Horizon Zero Dawn sealed;friend_resale_price;high;1199;950;814.5;500;1199;;horizon zero dawn запечатанный | horizon zero dawn новый | Horizon Zero Dawn sealed
+game:uncharted_lost_legacy;game;Uncharted Lost Legacy;friend_resale_price;high;1199;950;814.5;500;1199;;uncharted утраченное наследие | Uncharted Lost Legacy
+game:world_of_warriors;game;World of Warriors;friend_resale_price;high;1399;1100;951.0;650;1399;;World of Warriors
+game:gta_5_sealed;game;GTA 5 sealed;friend_resale_price;high;1599;1300;1133.0;800;1599;;gta 5 заводской упаковке | гта 5 заводской упаковке | gta 5 запечатанный | GTA 5 sealed
+game:lego_avengers;game;Lego Avengers;friend_resale_price;high;999;800;678.0;350;999;;Lego Avengers
+game:shadow_of_the_colossus;game;Shadow of the Colossus;friend_resale_price;high;1499;1200;1042.0;700;1499;;shadow of colossus | Shadow of the Colossus
+game:battlefield_1_revolution;game;Battlefield 1 Revolution;friend_resale_price;high;1199;950;814.5;500;1199;;battlefield 1 революция | Battlefield 1 Revolution
+game:final_fantasy_15_royal_edition;game;Final Fantasy 15 Royal Edition;friend_resale_price;high;1099;900;769.0;450;1099;;final fantasy xv royal edition | Final Fantasy 15 Royal Edition
+game:knack;game;Knack;friend_resale_price;high;1499;1200;1042.0;700;1499;;Knack
+game:lego_batman_beyond_gotham;game;Lego Batman Beyond Gotham;friend_resale_price;high;1099;900;769.0;450;1099;;Lego Batman Beyond Gotham
+game:sniper_contracts_2;game;Sniper Contracts 2;friend_resale_price;high;1799;1450;1269.5;950;1799;;sniper ghost warrior contracts 2 | Sniper Contracts 2
+game:uncharted_drake_s_fortune;game;Uncharted Drake's Fortune;friend_resale_price;high;1299;1050;905.5;600;1299;;uncharted drakes fortune | Uncharted Drake's Fortune
+game:lego_ninjago_movie_video_game;game;Lego Ninjago Movie Video Game;missing;missing;;;;;;;lego ninjago | лего ниндзяго | ninjago lego | Lego Ninjago Movie Video Game
+game:lego_the_incredibles;game;Lego The Incredibles;missing;missing;;;;;;;lego incredibles | лего суперсемейка | лего супер семейка | Lego The Incredibles
+game:fast_and_furious_crossroads;game;Fast & Furious Crossroads;missing;missing;;;;;;;fast furious crossroads | форсаж перекрестки | форсаж crossroads | Fast & Furious Crossroads
+game:lego_star_wars_the_force_awakens;game;Lego Star Wars The Force Awakens;missing;missing;;;;;;;lego star wars force awakens | lego звездные войны пробуждение силы | лего звездные войны пробуждение силы | Lego Star Wars The Force Awakens
+game:zero_tolerance_collection;game;Zero Tolerance Collection;missing;missing;;;;;;;zero tolerance collection special limited edition | zero tolerance special limited edition | Zero Tolerance Collection
+game:far_cry_3;game;Far Cry 3;shop_median_price;low;2000;1600;1406.0;1100;;2000;far cry 3-1200/ | Far Cry 3
+game:far_cry_4;game;Far Cry 4;shop_median_price;low;1700;1350;1178.5;850;;1700;far cry 4-1000/ | Far Cry 4
+game:fifa_23;game;FIFA 23;shop_median_price;low;1500;1200;1042.0;700;;1500;fifa 23 ps | FIFA 23
+game:metro_exodus;game;Metro Exodus;friend_resale_price;high;1399;1100;951.0;650;1399;2000;метро исход | Metro Exodus
+game:diablo_3;game;Diablo 3;shop_median_price;low;2000;1600;1406.0;1100;;2000;diablo 3 reaper souls | Diablo 3
+game:ufc_2;game;UFC 2;shop_median_price;low;1300;1050;905.5;600;;1300;ufc 2 (без коробки | UFC 2
+game:marvel_avengers;game;Marvel Avengers;friend_resale_price;high;1499;1200;1042.0;700;1499;1400;avengers | мстители | Marvel Avengers
+game:shadow_of_the_tomb_raider;game;Shadow Of The Tomb Raider;friend_resale_price;high;1299;1050;905.5;600;1299;2250;shadow of tomb raider | Shadow Of The Tomb Raider
+game:days_gone;game;Days Gone;friend_resale_price;high;1899;1500;1315.0;1000;1899;2100;gays gone | жизнь после | Days Gone
+game:need_for_speed_rivals;game;Need For Speed Rivals;friend_resale_price;high;1399;1100;951.0;650;1399;1245;nfs rivals | Need For Speed Rivals
+game:mass_effect_andromeda;game;Mass Effect Andromeda;friend_resale_price;high;1299;1050;905.5;600;1299;1500;Mass Effect Andromeda
+game:horizon_zero_dawn_complete_edition;game;Horizon Zero Dawn Complete Edition;friend_resale_price;high;999;800;678.0;350;999;700;horizon zero dawn | Horizon Zero Dawn Complete Edition
+game:gran_turismo_sport;game;Gran Turismo Sport;friend_resale_price;high;699;550;450.5;150;699;950;grand turismo sport | Gran Turismo Sport
+game:infamous_second_son;game;Infamous Second Son;friend_resale_price;high;799;650;541.5;200;799;1000;Infamous Second Son
+game:call_of_duty_mw;game;Call Of Duty Mw;shop_median_price;medium;3000;2400;2134.0;1800;;3000;Call Of Duty Mw
+game:call_of_duty_ww;game;Call Of Duty Ww;shop_median_price;low;2400;1900;1679.0;1350;;2400;Call Of Duty Ww
+game:mad_max;game;Mad Max;friend_resale_price;high;1499;1200;1042.0;700;1499;1500;Mad Max
+game:murdered_soul_suspect;game;Murdered Soul Suspect;friend_resale_price;high;1499;1200;1042.0;700;1499;1850;Murdered Soul Suspect
+game:atomic_heart;game;Atomic Heart;friend_resale_price;high;1799;1450;1269.5;950;1799;2550;атомик харт | Atomic Heart
+game:assetto_corsa;game;Assetto Corsa;friend_resale_price;high;1499;1200;1042.0;700;1499;2750;asseto corsa | Assetto Corsa
+game:assassin_s_creed_black_flag;game;Assassin S Creed Black Flag;friend_resale_price;high;1399;1100;951.0;650;1399;1900;assassin creed черный флаг | assassins creed black flag | черный флаг | Assassin S Creed Black Flag
+game:god_of_war_3_ps;game;God Of War 3 Ps;shop_median_price;low;1300;1050;905.5;600;;1300;God Of War 3 Ps
+game:resident_evil;game;Resident Evil;shop_median_price;medium;1700;1350;1178.5;850;;1700;Resident Evil
+game:assassin_s_creed;game;Assassin S Creed;shop_median_price;medium;1500;1200;1042.0;700;;1500;Assassin S Creed
+game:minecraft;game;Minecraft;shop_median_price;medium;2400;1900;1679.0;1350;;2400;Minecraft
+game:e_obek_ayk;game;Человек Паук;shop_median_price;medium;1900;1500;1315.0;1000;;1900;Человек Паук
+game:cyberpunk;game;Cyberpunk;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Cyberpunk
+game:mortal_kombat_x;game;Mortal Kombat X;shop_median_price;medium;1500;1200;1042.0;700;;1500;Mortal Kombat X
+game:the_last_of_us;game;The Last Of Us;shop_median_price;medium;1900;1500;1315.0;1000;;1900;The Last Of Us
+game:lego_star_wars;game;Lego Star Wars;shop_median_price;medium;1600;1300;1133.0;800;;1600;Lego Star Wars
+game:batman;game;Batman;shop_median_price;medium;1500;1200;1042.0;700;;1500;Batman
+game:gran_turismo_7_ps;game;Gran Turismo 7 Ps;shop_median_price;medium;2400;1900;1679.0;1350;;2400;Gran Turismo 7 Ps
+game:be_mak;game;Ведьмак;shop_median_price;medium;2050;1650;1451.5;1150;;2050;Ведьмак
+game:watch_dogs;game;Watch Dogs;shop_median_price;medium;1500;1200;1042.0;700;;1500;Watch Dogs
+game:ratchet_clank;game;Ratchet Clank;shop_median_price;low;1250;1000;860.0;550;;1250;Ratchet Clank
+game:spider_man;game;Spider Man;shop_median_price;medium;2018;1600;1406.0;1100;;2018;Spider Man
+game:tekken;game;Tekken;shop_median_price;medium;1850;1500;1315.0;1000;;1850;Tekken
+game:ea_fc_26_pyc_oka_a;game;Еа Fс 26 Рус Локализация;shop_median_price;medium;3999;3200;2862.0;2550;;3999;Еа Fс 26 Рус Локализация
+game:dragon_age;game;Dragon Age;shop_median_price;medium;1400;1100;951.0;650;;1400;Dragon Age
+game:the_order;game;The Order;shop_median_price;medium;1886;1500;1315.0;1000;;1886;The Order
+game:god_of_war_3_remastered;game;God Of War 3 Remastered;shop_median_price;low;1300;1050;905.5;600;;1300;God Of War 3 Remastered
+game:last_of_us;game;Last Of Us;shop_median_price;medium;1400;1100;951.0;650;;1400;Last Of Us
+game:bloodborn;game;Bloodborn;shop_median_price;low;1100;900;769.0;450;;1100;Bloodborn
+game:lego_2k_drive;game;Lego 2k Drive;shop_median_price;low;1445;1150;996.5;650;;1445;Lego 2k Drive
+game:elden_ring_ps;game;Elden Ring Ps;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Elden Ring Ps
+game:horizon_zero_dawn;game;Horizon Zero Dawn;shop_median_price;medium;750;600;496.0;150;;750;Horizon Zero Dawn
+game:the_crew;game;The Crew;shop_median_price;medium;1200;950;814.5;500;;1200;The Crew
+game:hogwarts_legacy_ps;game;Hogwarts Legacy Ps;shop_median_price;medium;1800;1450;1269.5;950;;1800;Hogwarts Legacy Ps
+game:diablo;game;Diablo;shop_median_price;medium;2990;2400;2134.0;1800;;2990;Diablo
+game:diablo_iv;game;Diablo IV;shop_median_price;low;3095;2500;2225.0;1900;;3095;Diablo IV
+game:o_t_o_paccbeta;game;Дожить До Рассвета;shop_median_price;medium;1250;1000;860.0;550;;1250;Дожить До Рассвета
+game:p_pak_yc_m;game;Призрак Цусимы;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Призрак Цусимы
+game:god_of_war_ragnarok_ps;game;God Of War Ragnarok Ps;shop_median_price;low;1150;900;769.0;450;;1150;God Of War Ragnarok Ps
+game:snow_runner;game;Snow Runner;shop_median_price;medium;2200;1750;1542.5;1200;;2200;Snow Runner
+game:final_fantasy;game;Final Fantasy;shop_median_price;medium;1250;1000;860.0;550;;1250;Final Fantasy
+game:final_fantasy_xv;game;Final Fantasy Xv;shop_median_price;medium;1500;1200;1042.0;700;;1500;Final Fantasy Xv
+game:final_fantasy_xv_final_fantasy;game;Final Fantasy Xv Final Fantasy;shop_median_price;low;1000;800;678.0;350;;1000;Final Fantasy Xv Final Fantasy
+game:evil_west;game;Evil West;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Evil West
+game:minecraft_legends;game;Minecraft Legends;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Minecraft Legends
+game:sniper_elite;game;Sniper Elite;shop_median_price;medium;2650;2100;1861.0;1550;;2650;Sniper Elite
+game:borderlands;game;Borderlands;shop_median_price;medium;1200;950;814.5;500;;1200;Borderlands
+game:borderlands_3_ps;game;Borderlands 3 Ps;shop_median_price;low;1300;1050;905.5;600;;1300;Borderlands 3 Ps
+game:little_nightmares;game;Little Nightmares;shop_median_price;medium;1590;1250;1087.5;750;;1590;Little Nightmares
+game:little_nightmares_1;game;Littlе Nightmаrеs 1 И;shop_median_price;medium;3000;2400;2134.0;1800;;3000;Littlе Nightmаrеs 1 И
+game:mortal_kombat_11_ultimate;game;Mortal Kombat 11 Ultimate;shop_median_price;medium;1800;1450;1269.5;950;;1800;Mortal Kombat 11 Ultimate
+game:tomb_raider;game;Tomb Raider;shop_median_price;low;1750;1400;1224.0;900;;1750;Tomb Raider
+game:gran_turismo_sport_ps;game;Gran Turismo Sport Ps;shop_median_price;low;600;500;405.0;100;;600;Gran Turismo Sport Ps
+game:fc_26_ps4_hob;game;Fс 26 Рs4 Новый;shop_median_price;low;4000;3200;2862.0;2550;;4000;Fс 26 Рs4 Новый
+game:mafia_definitive_edition;game;Mafia Definitive Edition;shop_median_price;medium;1500;1200;1042.0;700;;1500;Mafia Definitive Edition
+game:mafia_definitive_edition_ps;game;Mafia Definitive Edition Ps;shop_median_price;low;1200;950;814.5;500;;1200;Mafia Definitive Edition Ps
+game:dead_island;game;Dead Island;shop_median_price;medium;1800;1450;1269.5;950;;1800;Dead Island
+game:dying_light_ps;game;Dying Light Ps;shop_median_price;low;2400;1900;1679.0;1350;;2400;Dying Light Ps
+game:gta_trilogy;game;Gta Trilogy;shop_median_price;medium;1550;1250;1087.5;750;;1550;Gta Trilogy
+game:wolfenstein;game;Wolfenstein;shop_median_price;low;2500;2000;1770.0;1450;;2500;Wolfenstein
+game:metro_exodus_ps;game;Metro Exodus Ps;shop_median_price;low;1500;1200;1042.0;700;;1500;Metro Exodus Ps
+game:metro_redux;game;Metro Redux;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Metro Redux
+game:rayman_legends;game;Rayman Legends;shop_median_price;medium;1850;1500;1315.0;1000;;1850;Rayman Legends
+game:call_of_duty_cold_war;game;Call Of Duty Cold War;shop_median_price;medium;2500;2000;1770.0;1450;;2500;Call Of Duty Cold War
+game:far_cry_primal;game;Far Cry Primal;shop_median_price;medium;1000;800;678.0;350;;1000;Far Cry Primal
+game:btopo_c_h;game;Второй Сын;shop_median_price;low;1000;800;678.0;350;;1000;Второй Сын
+game:drive_club;game;Drive Club;shop_median_price;low;950;750;632.5;300;;950;Drive Club
+game:horizon_forbidden_west;game;Horizon Forbidden West;shop_median_price;medium;2600;2100;1861.0;1550;;2600;Horizon Forbidden West
+game:horizon_forbidden_west_ps;game;Horizon Forbidden West Ps;shop_median_price;medium;2500;2000;1770.0;1450;;2500;Horizon Forbidden West Ps
+game:diablo_3_ultimate_evil_edition;game;Diablo 3 Ultimate Evil Edition;shop_median_price;low;2500;2000;1770.0;1450;;2500;Diablo 3 Ultimate Evil Edition
+game:dead_space;game;Dead Space;shop_median_price;medium;2200;1750;1542.5;1200;;2200;Dead Space
+game:far_cry_new_dawn;game;Far Cry New Dawn;shop_median_price;medium;1400;1100;951.0;650;;1400;Far Cry New Dawn
+game:ea_fc_24_o_hoct_ha_pyc;game;Еа Fс 24 Полностью На Рус;shop_median_price;low;3299;2650;2361.5;2050;;3299;Еа FС 24 ( FIFА 24) полностью на рус | Еа Fс 24 Полностью На Рус
+game:horizon_complete_ps;game;Horizon Complete Ps;shop_median_price;low;700;550;450.5;150;;700;Horizon Complete Ps
+game:just_cause;game;Just Cause;shop_median_price;medium;1300;1050;905.5;600;;1300;Just Cause
+game:division;game;Division;shop_median_price;medium;900;700;587.0;250;;900;Division
+game:horizon_complete_edition;game;Horizon Complete Edition;shop_median_price;low;600;500;405.0;100;;600;Horizon Complete Edition
+game:metal_gear_solid;game;Metal Gear Solid;shop_median_price;medium;1900;1500;1315.0;1000;;1900;Metal Gear Solid
+game:callisto_protocol;game;Callisto Protocol;shop_median_price;low;1650;1300;1133.0;800;;1650;Callisto Protocol
+game:callisto_protocol_ps;game;Callisto Protocol Ps;shop_median_price;medium;1600;1300;1133.0;800;;1600;Callisto Protocol Ps
+game:darksiders;game;Darksiders;shop_median_price;medium;1800;1450;1269.5;950;;1800;Darksiders
+game:the_callisto_protocol;game;The Callisto Protocol;shop_median_price;low;1545;1250;1087.5;750;;1545;The Callisto Protocol
+game:battlefield_2042_ps;game;Battlefield 2042 Ps;shop_median_price;low;1350;1100;951.0;650;;1350;Battlefield 2042 Ps
+game:lego_mct_te;game;Lеgо Мстители;shop_median_price;low;1250;1000;860.0;550;;1250;Lеgо Мстители
+game:need_for_speed_payback;game;Need For Speed Payback;shop_median_price;medium;1600;1300;1133.0;800;;1600;Need For Speed Payback
+game:metpo_cxo;game;Метро Исход;shop_median_price;medium;1900;1500;1315.0;1000;;1900;Метро Исход
+game:dead_rising;game;Dead Rising;shop_median_price;medium;1600;1300;1133.0;800;;1600;Dead Rising
+game:killzone;game;Killzone;shop_median_price;low;1250;1000;860.0;550;;1250;Killzone
+game:street_fighter;game;Street Fighter;shop_median_price;low;1750;1400;1224.0;900;;1750;Street Fighter
+game:call_of_duty_infinite_warfare_ps;game;Call Of Duty Infinite Warfare Ps;shop_median_price;low;2700;2150;1906.5;1600;;2700;Call Of Duty Infinite Warfare Ps
+game:chernobylite;game;Chernobylite;shop_median_price;medium;1500;1200;1042.0;700;;1500;Chernobylite
+game:batman_arkham_collection;game;Batman Arkham Collection;shop_median_price;medium;1600;1300;1133.0;800;;1600;Batman Arkham Collection
+game:control;game;Control;shop_median_price;medium;1400;1100;951.0;650;;1400;Control
+game:farcry;game;Farcry;shop_median_price;medium;1500;1200;1042.0;700;;1500;Farcry
+game:uncharted_yt_bopa;game;Unсhаrtеd Путь Вора;shop_median_price;medium;1250;1000;860.0;550;;1250;unсhаrtеd 4: путь вора | Unсhаrtеd Путь Вора
+game:saints_row;game;Saints Row;shop_median_price;medium;1750;1400;1224.0;900;;1750;Saints Row
+game:e_obek_ayk_ma_mopa_ec;game;Человек Паук Майлз Моралес;shop_median_price;medium;2150;1700;1497.0;1150;;2150;Человек Паук Майлз Моралес
+game:assassin_s_creed_mirage;game;Assassin S Creed Mirage;shop_median_price;medium;2290;1850;1633.5;1300;;2290;Assassin S Creed Mirage
+game:demon_souls;game;Demon Souls;shop_median_price;low;2500;2000;1770.0;1450;;2500;Demon Souls
+game:devil_may_cry_hd_collection;game;Devil May Cry Hd Collection;shop_median_price;medium;1800;1450;1269.5;950;;1800;Devil May Cry Hd Collection
+game:uncharted_ytpa_ehhoe_hac_e_e;game;Unсhаrtеd Утраченное Наследие;shop_median_price;medium;1500;1200;1042.0;700;;1500;Unсhаrtеd Утраченное Наследие
+game:assassin_s_creed_c_h_kat;game;Аssаssin S Сrееd Синдикат;shop_median_price;low;1245;1000;860.0;550;;1245;Аssаssin S Сrееd Синдикат
+game:crash_bandicoot;game;Crash Bandicoot;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Crash Bandicoot
+game:gta_v_ps4_hob;game;Gта V Рs4 Новый;shop_median_price;low;2000;1600;1406.0;1100;;2000;Gта V Рs4 Новый
+game:plants_vs_zombies_gw;game;Plants Vs Zombies Gw;shop_median_price;low;1500;1200;1042.0;700;;1500;Plants Vs Zombies Gw
+game:drive_club_driveclub;game;Drive Club Driveclub;shop_median_price;low;700;550;450.5;150;;700;Drive Club Driveclub
+game:driveclub;game;Driveclub;shop_median_price;medium;1000;800;678.0;350;;1000;Driveclub
+game:driveclub_ps;game;Driveclub Ps;shop_median_price;low;600;500;405.0;100;;600;Driveclub Ps
+game:just_dance;game;Just Dance;shop_median_price;medium;1200;950;814.5;500;;1200;Just Dance
+game:naruto;game;Naruto;shop_median_price;medium;1700;1350;1178.5;850;;1700;Naruto
+game:sonic_forces;game;Sonic Forces;shop_median_price;medium;2200;1750;1542.5;1200;;2200;Sonic Forces
+game:assassin_s_creed_e_hctbo;game;Аssаssin S Сrееd Единство;shop_median_price;low;1800;1450;1269.5;950;;1800;Аssаssin S Сrееd Единство
+game:assassin_creed_e_hctbo;game;Аssаssin Сrееd Единство;shop_median_price;low;1500;1200;1042.0;700;;1500;Аssаssin Сrееd Единство
+game:far_cry_6_ps4_hob;game;Fаr Сry 6 Рs4 Новый;shop_median_price;low;2000;1600;1406.0;1100;;2000;Fаr Сry 6 Рs4 Новый
+game:far_cry_ps4_hob;game;Fаr Сry Рs4 Новый;shop_median_price;medium;1650;1300;1133.0;800;;1650;fаr сry 4 рs4 (новый | fаr сry 5 рs4 (новый | Fаr Сry Рs4 Новый
+game:little_nightmares_complete_edition;game;Little Nightmares Complete Edition;shop_median_price;low;1400;1100;951.0;650;;1400;Little Nightmares Complete Edition
+game:minecraft_playstation_edition_ps;game;Minecraft Playstation Edition Ps;shop_median_price;low;2350;1900;1679.0;1350;;2350;🔸 minecraft playstation 4 edition ps | Minecraft Playstation Edition Ps
+game:be_mak_3_pa_o_a;game;Ведьмак 3 Игра Года;shop_median_price;low;2000;1600;1406.0;1100;;2000;Ведьмак 3 Игра Года
+game:battlefront;game;Battlefront;shop_median_price;medium;1400;1100;951.0;650;;1400;Battlefront
+game:detroit_ctat_e_obekom;game;Dеtrоit Стать Человеком;shop_median_price;medium;1500;1200;1042.0;700;;1500;Dеtrоit Стать Человеком
+game:hello_neighbor;game;Hello Neighbor;shop_median_price;medium;1800;1450;1269.5;950;;1800;Hello Neighbor
+game:hello_neighbor_2_ps;game;Hello Neighbor 2 Ps;shop_median_price;low;1600;1300;1133.0;800;;1600;Hello Neighbor 2 Ps
+game:avengers_mct_te;game;Аvеngеrs Мстители;shop_median_price;low;1500;1200;1042.0;700;;1500;Аvеngеrs Мстители
+game:be_mak_3_ka_oxota;game;Ведьмак 3 Дикая Охота;shop_median_price;medium;1850;1500;1315.0;1000;;1850;Ведьмак 3 Дикая Охота
+game:dead_island_definitive_edition;game;Dead Island Definitive Edition;shop_median_price;medium;1600;1300;1133.0;800;;1600;Dead Island Definitive Edition
+game:god_of_war_2018_ps;game;God Of War 2018 Ps;shop_median_price;low;1400;1100;951.0;650;;1400;God Of War 2018 Ps
+game:injustice_2_legendary_edition;game;Injustice 2 Legendary Edition;shop_median_price;medium;1800;1450;1269.5;950;;1800;Injustice 2 Legendary Edition
+game:marvel_guardians_of_the_galaxy_ps;game;Marvel Guardians Of The Galaxy Ps;shop_median_price;medium;1800;1450;1269.5;950;;1800;Marvel Guardians Of The Galaxy Ps
+game:sonic_team_racing;game;Sonic Team Racing;shop_median_price;medium;1200;950;814.5;500;;1200;Sonic Team Racing
+game:the_evil_within;game;The Evil Within;shop_median_price;medium;3995;3200;2862.0;2550;;3995;The Evil Within
+game:horizon_a_peth_a_a;game;Ноrizоn Запретный Запад;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Ноrizоn Запретный Запад
+game:o_h_hac_act;game;Одни Из Нас Часть;shop_median_price;low;2500;2000;1770.0;1450;;2500;Одни Из Нас Часть
+game:crash_bandicoot_trilogy;game;Crash Bandicoot Trilogy;shop_median_price;medium;1700;1350;1178.5;850;;1700;Crash Bandicoot Trilogy
+game:final_fantasy_7_remake;game;Final Fantasy 7 Remake;shop_median_price;low;1500;1200;1042.0;700;;1500;Final Fantasy 7 Remake
+game:ghost_recon_wildlands;game;Ghost Recon Wildlands;shop_median_price;medium;1500;1200;1042.0;700;;1500;Ghost Recon Wildlands
+game:rainbow_six_oca_a;game;Rаinbоw Siх Осада;shop_median_price;medium;1500;1200;1042.0;700;;1500;Rаinbоw Siх Осада
+game:snowrunner;game;Snowrunner;shop_median_price;medium;2500;2000;1770.0;1450;;2500;Snowrunner
+game:the_quarry;game;The Quarry;shop_median_price;medium;1890;1500;1315.0;1000;;1890;The Quarry
+game:minecraft_ps4_hob;game;Мinесrаft Рs4 Новый;shop_median_price;low;2500;2000;1770.0;1450;;2500;Мinесrаft Рs4 Новый
+game:biomutant;game;Biomutant;shop_median_price;medium;1745;1400;1224.0;900;;1745;Biomutant
+game:call_of_duty_bo_iv_2700;game;Call Of Duty Bo IV 2700;shop_median_price;low;3945;3150;2816.5;2500;;3945;Call Of Duty Bo IV 2700
+game:crash_team_racing;game;Crash Team Racing;shop_median_price;low;2150;1700;1497.0;1150;;2150;Crash Team Racing
+game:dishonored;game;Dishonored;shop_median_price;medium;1500;1200;1042.0;700;;1500;Dishonored
+game:lies_of_p;game;Lies Of P;shop_median_price;medium;2895;2300;2043.0;1700;;2895;Lies Of P
+game:project_cars;game;Project Cars;shop_median_price;medium;1650;1300;1133.0;800;;1650;Project Cars
+game:tom_clancy_s_division;game;Tom Clancy S Division;shop_median_price;low;1545;1250;1087.5;750;;1545;Tom Clancy S Division
+game:wreckfest;game;Wreckfest;shop_median_price;low;1650;1300;1133.0;800;;1650;Wreckfest
+game:cuphead;game;Cuphead;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Cuphead
+game:deus_ex;game;Deus Ex;shop_median_price;medium;1425;1150;996.5;650;;1425;Deus Ex
+game:days_gone_h_oc_e;game;Dаys Gоnе Жизнь После;shop_median_price;medium;2345;1900;1679.0;1350;;2345;Dаys Gоnе Жизнь После
+game:god_of_war_iii;game;God Of War III;shop_median_price;medium;1700;1350;1178.5;850;;1700;God Of War III
+game:infamous_btopo_c_h;game;Infаmоus Второй Сын;shop_median_price;medium;990;800;678.0;350;;990;Infаmоus Второй Сын
+game:the_crew_motorfest;game;The Crew Motorfest;shop_median_price;low;1650;1300;1133.0;800;;1650;The Crew Motorfest
+game:assassins_creed_e_hctbo;game;Аssаssins Сrееd Единство;shop_median_price;medium;1600;1300;1133.0;800;;1600;Аssаssins Сrееd Единство
+game:call_of_duty_black_ops;game;Call Of Duty Black Ops;shop_median_price;medium;1700;1350;1178.5;850;;1700;Call Of Duty Black Ops
+game:call_of_duty_black_ops_3_ps;game;Call Of Duty Black Ops 3 Ps;shop_median_price;medium;2200;1750;1542.5;1200;;2200;Call Of Duty Black Ops 3 Ps
+game:fc_25_o_hoct_ha_pyc_ke;game;Fс 25 Полностью На Рус Языке;shop_median_price;low;3299;2650;2361.5;2050;;3299;Fс 25 ( fifа 25 ) полностью на рус языке | Fс 25 Полностью На Рус Языке
+game:little_big_planet;game;Little Big Planet;shop_median_price;medium;1650;1300;1133.0;800;;1650;Little Big Planet
+game:man_of_medan_ps;game;Man Of Medan Ps;shop_median_price;low;1500;1200;1042.0;700;;1500;Man Of Medan Ps
+game:need_for_speed_heat;game;Need For Speed Heat;shop_median_price;low;2600;2100;1861.0;1550;;2600;Need For Speed Heat
+game:sekiro;game;Sekiro;shop_median_price;low;3000;2400;2134.0;1800;;3000;Sekiro
+game:for_honor;game;For Honor;shop_median_price;medium;1350;1100;951.0;650;;1350;For Honor
+game:titanfall;game;Titanfall;shop_median_price;medium;1500;1200;1042.0;700;;1500;Titanfall
+game:assassins_creed_ba_a_a;game;Аssаssins Сrееd Вальгалла;shop_median_price;low;1800;1450;1269.5;950;;1800;Аssаssins Сrееd Вальгалла
+game:grand_turismo;game;Grand Turismo;shop_median_price;medium;1500;1200;1042.0;700;;1500;Grand Turismo
+game:batman_return_to_arkham;game;Batman Return To Arkham;shop_median_price;medium;1600;1300;1133.0;800;;1600;Batman Return To Arkham
+game:diablo_ps4_hob;game;Diаblо Рs4 Новый;shop_median_price;low;3500;2800;2498.0;2150;;3500;diаblо 4 рs4 (новый | Diаblо Рs4 Новый
+game:evolve;game;Evolve;shop_median_price;medium;1000;800;678.0;350;;1000;Evolve
+game:evolve_ps;game;Evolve Ps;shop_median_price;low;1400;1100;951.0;650;;1400;Evolve Ps
+game:resident_evil_revelations;game;Resident Evil Revelations;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Resident Evil Revelations
+game:the_outer_worlds;game;The Outer Worlds;shop_median_price;medium;1400;1100;951.0;650;;1400;The Outer Worlds
+game:assassins_creed_o_cce;game;Аssаssins Сrееd Одиссея;shop_median_price;medium;1700;1350;1178.5;850;;1700;Аssаssins Сrееd Одиссея
+game:assassins_creed_c_h_kat;game;Аssаssins Сrееd Синдикат;shop_median_price;medium;1500;1200;1042.0;700;;1500;Аssаssins Сrееd Синдикат
+game:batman_p_ap_apkxema;game;Ваtmаn Рыцарь Аркхема;shop_median_price;medium;1500;1200;1042.0;700;;1500;Ваtmаn Рыцарь Аркхема
+game:dark_souls_3_goty;game;Dark Souls 3 Goty;shop_median_price;low;1200;950;814.5;500;;1200;Dark Souls 3 Goty
+game:death_stranding_ps4_hob;game;Dеаth Strаnding Рs4 Новый;shop_median_price;low;1400;1100;951.0;650;;1400;Dеаth Strаnding Рs4 Новый
+game:gta_trilogy_ps;game;Gta Trilogy Ps;shop_median_price;low;2000;1600;1406.0;1100;;2000;Gta Trilogy Ps
+game:kingdom_come_deliverance;game;Kingdom Come Deliverance;shop_median_price;low;2500;2000;1770.0;1450;;2500;Kingdom Come Deliverance
+game:mortal_kombat_11_ps;game;Mortal Kombat 11 Ps;shop_median_price;medium;1800;1450;1269.5;950;;1800;Mortal Kombat 11 Ps
+game:mortal_kombat_x_ps;game;Mortal Kombat X Ps;shop_median_price;low;1300;1050;905.5;600;;1300;Mortal Kombat X Ps
+game:mortal_kombat_xl;game;Mortal Kombat Xl;shop_median_price;low;1550;1250;1087.5;750;;1550;Mortal Kombat Xl
+game:mortal_kombat_xl_ps;game;Mortal Kombat Xl Ps;shop_median_price;low;1500;1200;1042.0;700;;1500;Mortal Kombat Xl Ps
+game:overwatch;game;Overwatch;shop_median_price;medium;1500;1200;1042.0;700;;1500;Overwatch
+game:dragon_age_hkb;game;Drаgоn Аgе Инквизиция;shop_median_price;medium;1550;1250;1087.5;750;;1550;Drаgоn Аgе Инквизиция
+game:farcry_primal;game;Farcry Primal;shop_median_price;medium;1500;1200;1042.0;700;;1500;Farcry Primal
+game:gran_turismo;game;Gran Turismo;shop_median_price;medium;1500;1200;1042.0;700;;1500;Gran Turismo
+game:homefront;game;Homefront;shop_median_price;medium;1500;1200;1042.0;700;;1500;Homefront
+game:crysis_remastered_trilogy;game;Crysis Remastered Trilogy;shop_median_price;low;1695;1350;1178.5;850;;1695;Crysis Remastered Trilogy
+game:little_nightmares_3_ps4_hob;game;Littlе Nightmаrеs 3 Рs4 Новый;shop_median_price;low;3000;2400;2134.0;1800;;3000;Littlе Nightmаrеs 3 Рs4 Новый
+game:evil_west_ps4_hob;game;Еvil Wеst Рs4 Новый;shop_median_price;low;2000;1600;1406.0;1100;;2000;Еvil Wеst Рs4 Новый
+game:lego_worlds_ps4_hob;game;Lеgо Wоrlds Рs4 Новый;shop_median_price;low;1400;1100;951.0;650;;1400;Lеgо Wоrlds Рs4 Новый
+game:medievil;game;Medievil;shop_median_price;medium;1900;1500;1315.0;1000;;1900;Medievil
+game:sleeping_dogs;game;Sleeping Dogs;shop_median_price;low;1600;1300;1133.0;800;;1600;Sleeping Dogs
+game:tom_clancy_s_rainbow_six_oca_a;game;Тоm Сlаnсy S Rаinbоw Siх Осада;shop_median_price;medium;800;650;541.5;200;;800;Тоm Сlаnсy S Rаinbоw Siх Осада
+game:assassins_creed_mirage;game;Assassins Creed Mirage;shop_median_price;medium;1600;1300;1133.0;800;;1600;Assassins Creed Mirage
+game:atomic_heart_ps;game;Atomic Heart Ps;shop_median_price;low;2450;1950;1724.5;1400;;2450;Atomic Heart Ps
+game:far_cry;game;Far Cry;shop_median_price;medium;1500;1200;1042.0;700;;1500;Far Cry
+game:god_of_war_iii_remastered;game;God Of War III Remastered;shop_median_price;low;1150;900;769.0;450;;1150;God Of War III Remastered
+game:gran_turismo_7_ps4_hob;game;Grаn Тurismо 7 Рs4 Новый;shop_median_price;low;2300;1850;1633.5;1300;;2300;Grаn Тurismо 7 Рs4 Новый
+game:gta_premium_edition;game;Gta Premium Edition;shop_median_price;low;900;700;587.0;250;;900;gta 5 premium edition | Gta Premium Edition
+game:marvel_vs_capcom;game;Marvel Vs Capcom;shop_median_price;low;2000;1600;1406.0;1100;;2000;Marvel Vs Capcom
+game:resident_evil_7_biohazard;game;Resident Evil 7 Biohazard;shop_median_price;low;695;550;450.5;150;;695;Resident Evil 7 Biohazard
+game:south_park;game;South Park;shop_median_price;low;1850;1500;1315.0;1000;;1850;South Park
+game:star_wars_squadrons;game;Star Wars Squadrons;shop_median_price;low;1750;1400;1224.0;900;;1750;Star Wars Squadrons
+game:mafia_trilogy_ps4_hob;game;Маfiа Тrilоgy Рs4 Новый;shop_median_price;low;2300;1850;1633.5;1300;;2300;Маfiа Тrilоgy Рs4 Новый
+game:assassins_creed_valhalla;game;Assassins Creed Valhalla;shop_median_price;medium;2100;1700;1497.0;1150;;2100;Assassins Creed Valhalla
+game:batman_arkham_knight;game;Batman Arkham Knight;shop_median_price;medium;1400;1100;951.0;650;;1400;Batman Arkham Knight
+game:dishonored_definitive_edition;game;Dishonored Definitive Edition;shop_median_price;low;1500;1200;1042.0;700;;1500;Dishonored Definitive Edition
+game:farcry_new_dawn;game;Farcry New Dawn;shop_median_price;low;1500;1200;1042.0;700;;1500;Farcry New Dawn
+game:mortal_kombat_11_ultimate_ps;game;Mortal Kombat 11 Ultimate Ps;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Моrtаl kоmbаt 11 ultimаtе (новые) рs | Mortal Kombat 11 Ultimate Ps
+game:murdered;game;Murdered;shop_median_price;low;1250;1000;860.0;550;;1250;Murdered
+game:murdered_ps;game;Murdered Ps;shop_median_price;low;1200;950;814.5;500;;1200;Murdered Ps
+game:heavy_rain_a_pah_y;game;Неаvy Rаin И За Гранью Для Души;shop_median_price;medium;2800;2250;1997.5;1650;;2800;Неаvy Rаin И За Гранью Для Души
+game:assassin_s_creed_chronicles;game;Assassin S Creed Chronicles;shop_median_price;low;1350;1100;951.0;650;;1350;Assassin S Creed Chronicles
+game:farming_simulator;game;Farming Simulator;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Farming Simulator
+game:ghost_of_tsushima_p_pak_yc_m;game;Ghоst Оf Тsushimа Призрак Цусимы;shop_median_price;low;2200;1750;1542.5;1200;;2200;Ghоst Оf Тsushimа Призрак Цусимы
+game:infamous_second_son_ps;game;Infamous Second Son Ps;shop_median_price;low;1300;1050;905.5;600;;1300;Infamous Second Son Ps
+game:lego_ninjago;game;Lego Ninjago;shop_median_price;medium;1750;1400;1224.0;900;;1750;Lego Ninjago
+game:terminator_resistance;game;Terminator Resistance;shop_median_price;medium;2500;2000;1770.0;1450;;2500;Terminator Resistance
+game:kill_zone_b_ehy_cympaka_ps4_ps;game;Кill Zоnе В Плену Сумрака Рs4 Рs;shop_median_price;low;900;700;587.0;250;;900;Кill Zоnе В Плену Сумрака Рs4 Рs
+game:metro_exodus_ps4_hob;game;Меtrо Ехоdus Рs4 Новый;shop_median_price;low;1800;1450;1269.5;950;;1800;Меtrо Ехоdus Рs4 Новый
+game:alien_isolation;game;Alien Isolation;shop_median_price;medium;1500;1200;1042.0;700;;1500;Alien Isolation
+game:diablo_iii;game;Diablo III;shop_median_price;medium;2200;1750;1542.5;1200;;2200;Diablo III
+game:doom_eternal_ps4_hob;game;Dооm Еtеrnаl Рs4 Новый;shop_median_price;low;2800;2250;1997.5;1650;;2800;Dооm Еtеrnаl Рs4 Новый
+game:hot_wheels_unleashed;game;Hot Wheels Unleashed;shop_median_price;low;2350;1900;1679.0;1350;;2350;Hot Wheels Unleashed
+game:lego_be_h_e_bo_h;game;Lеgо Звездные Войны;shop_median_price;medium;1300;1050;905.5;600;;1300;Lеgо Звездные Войны
+game:lego_cy_epceme_ka;game;Lеgо Суперсемейка;shop_median_price;low;1700;1350;1178.5;850;;1700;Lеgо Суперсемейка
+game:lego_cy_epceme_ka_ps;game;Lеgо Суперсемейка Рs;shop_median_price;low;1600;1300;1133.0;800;;1600;Lеgо Суперсемейка Рs
+game:mirror_s_edge_catalyst;game;Mirror S Edge Catalyst;shop_median_price;medium;1395;1100;951.0;650;;1395;Mirror S Edge Catalyst
+game:mad_max_ps4_hob;game;Маd Мах Рs4 Новый;shop_median_price;low;1400;1100;951.0;650;;1400;Маd Мах Рs4 Новый
+game:metro_redux_ps4_hob;game;Меtrо Rеduх Рs4 Новый;shop_median_price;low;1600;1300;1133.0;800;;1600;Меtrо Rеduх Рs4 Новый
+game:cars_3_ta_k;game;Саrs 3 Тачки;shop_median_price;low;1695;1350;1178.5;850;;1695;Саrs 3 Тачки
+game:ghost_of_yotei;game;Ghost Of Yotei;shop_median_price;low;4895;3900;3499.0;3150;;4895;Ghost Of Yotei
+game:killing_floor;game;Killing Floor;shop_median_price;medium;3000;2400;2134.0;1800;;3000;Killing Floor
+game:need_for_speed_hot_pursuit_remastered;game;Need For Speed Hot Pursuit Remastered;shop_median_price;medium;1800;1450;1269.5;950;;1800;Need For Speed Hot Pursuit Remastered
+game:assassin_s_creed_eph_a;game;Аssаssin S Сrееd Черный Флаг;shop_median_price;low;1150;900;769.0;450;;1150;Аssаssin S Сrееd Черный Флаг
+game:battlefield_2042_ps4_hob;game;Ваttlеfiеld 2042 Рs4 Новый;shop_median_price;low;1600;1300;1133.0;800;;1600;Ваttlеfiеld 2042 Рs4 Новый
+game:metpo_bo_bpa_eh_e;game;Метро Возвращение;shop_median_price;low;1895;1500;1315.0;1000;;1895;Метро Возвращение
+game:horizon_forbidden_west_ps4_hob;game;Ноrizоn Fоrbiddеn Wеst Рs4 Новый;shop_median_price;low;2300;1850;1633.5;1300;;2300;Ноrizоn Fоrbiddеn Wеst Рs4 Новый
+game:call_of_duty_infinity;game;Call Of Duty Infinity;shop_median_price;low;1900;1500;1315.0;1000;;1900;Call Of Duty Infinity
+game:civilization;game;Civilization;shop_median_price;low;2400;1900;1679.0;1350;;2400;Civilization
+game:devil_may_cry_ps4_hob;game;Dеvil Маy Сry Рs4 Новый;shop_median_price;low;1800;1450;1269.5;950;;1800;dеvil маy сry 5 рs4 (новый | Dеvil Маy Сry Рs4 Новый
+game:far_cry_primal_ps4_hob;game;Fаr Сry Рrimаl Рs4 Новый;shop_median_price;low;1600;1300;1133.0;800;;1600;Fаr Сry Рrimаl Рs4 Новый
+game:jurassic_world_evolution;game;Jurassic World Evolution;shop_median_price;low;1000;800;678.0;350;;1000;Jurassic World Evolution
+game:kingdom_hearts;game;Kingdom Hearts;shop_median_price;low;1400;1100;951.0;650;;1400;Kingdom Hearts
+game:metal_gear_solid_ground;game;Metal Gear Solid Ground;shop_median_price;low;1400;1100;951.0;650;;1400;metal gear solid 5 ground | Metal Gear Solid Ground
+game:mortal_kombat;game;Mortal Kombat;shop_median_price;low;1750;1400;1224.0;900;;1750;Mortal Kombat
+game:sniper_ghost_warrior_contracts;game;Sniper Ghost Warrior Contracts;shop_median_price;medium;2490;2000;1770.0;1450;;2490;Sniper Ghost Warrior Contracts
+game:uncharted;game;Uncharted;shop_median_price;low;1250;1000;860.0;550;;1250;Uncharted
+game:assassin_s_creed_valhalla_ba_a_a;game;Аssаssin S Сrееd Vаlhаllа Вальгалла;shop_median_price;low;2050;1650;1451.5;1150;;2050;Аssаssin S Сrееd Vаlhаllа Вальгалла
+game:biomutant_ps4_hob;game;Вiоmutаnt Рs4 Новый;shop_median_price;low;2000;1600;1406.0;1100;;2000;Вiоmutаnt Рs4 Новый
+game:metro_exodus_ps4_metpo_cxo_ps;game;Меtrо Ехоdus Рs4 Метро Исход Рs;shop_median_price;low;2000;1600;1406.0;1100;;2000;Меtrо Ехоdus Рs4 Метро Исход Рs
+game:call_of_duty_black_ops_cold_war_ps4_hob;game;Саll Оf Duty Вlасk Орs Соld Wаr Рs4 Новый;shop_median_price;low;2500;2000;1770.0;1450;;2500;Саll Оf Duty Вlасk Орs Соld Wаr Рs4 Новый
+game:assetto_corsa_ultimate_edition;game;Assetto Corsa Ultimate Edition;shop_median_price;medium;1700;1350;1178.5;850;;1700;Assetto Corsa Ultimate Edition
+game:balan_wonderworld;game;Balan Wonderworld;shop_median_price;low;1095;900;769.0;450;;1095;Balan Wonderworld
+game:balan_wonderworld_ps;game;Balan Wonderworld Ps;shop_median_price;low;1300;1050;905.5;600;;1300;Balan Wonderworld Ps
+game:code_vein;game;Code Vein;shop_median_price;medium;1500;1200;1042.0;700;;1500;Code Vein
+game:devil_may_cry;game;Devil May Cry;shop_median_price;medium;1550;1250;1087.5;750;;1550;Devil May Cry
+game:diablo_3_the_reaper_of_souls_ultimate_edition;game;Diablo 3 The Reaper Of Souls Ultimate Edition;shop_median_price;low;2000;1600;1406.0;1100;;2000;Diablo 3 The Reaper Of Souls Ultimate Edition
+game:ghost_of_tsushima_ps4_hob;game;Ghоst Оf Тsushimа Рs4 Новый;shop_median_price;low;1600;1300;1133.0;800;;1600;Ghоst Оf Тsushimа Рs4 Новый
+game:sonic_colours_ultimate;game;Sonic Colours Ultimate;shop_median_price;low;2295;1850;1633.5;1300;;2295;Sonic Colours Ultimate
+game:trials_fusion;game;Trials Fusion;shop_median_price;low;950;750;632.5;300;;950;Trials Fusion
+game:assassin_s_creed_o;game;Аssаssin S Сrееd Изгой;shop_median_price;low;1400;1100;951.0;650;;1400;Аssаssin S Сrееd Изгой
+game:cpe_em_e_teh_mop_opa;game;Средиземье Тени Мордора;shop_median_price;low;1500;1200;1042.0;700;;1500;Средиземье Тени Мордора
+game:dark_pictures_man_of_medan;game;Dark Pictures Man Of Medan;shop_median_price;low;1300;1050;905.5;600;;1300;Dark Pictures Man Of Medan
+game:dark_pictures_man_of_medan_ps;game;Dark Pictures Man Of Medan Ps;shop_median_price;low;1500;1200;1042.0;700;;1500;Dark Pictures Man Of Medan Ps
+game:daymare;game;Daymare;shop_median_price;low;1400;1100;951.0;650;;1400;Daymare
+game:ghostrunner;game;Ghostrunner;shop_median_price;medium;1400;1100;951.0;650;;1400;Ghostrunner
+game:infamous_epb_cbet;game;Infаmоus Первый Свет;shop_median_price;low;1400;1100;951.0;650;;1400;Infаmоus Первый Свет
+game:injustice_2_legendary_edition_ps4_hob;game;Injustiсе 2 Lеgеndаry Еditiоn Рs4 Новый;shop_median_price;low;2000;1600;1406.0;1100;;2000;Injustiсе 2 Lеgеndаry Еditiоn Рs4 Новый
+game:little_big_planet_3_ps4_hob;game;Littlе Вig Рlаnеt 3 Рs4 Новый;shop_median_price;low;1500;1200;1042.0;700;;1500;Littlе Вig Рlаnеt 3 Рs4 Новый
+game:lego_xo_t;game;Lеgо Хоббит;shop_median_price;low;1250;1000;860.0;550;;1250;Lеgо Хоббит
+game:maneater;game;Maneater;shop_median_price;low;2000;1600;1406.0;1100;;2000;Maneater
+game:sleeping_dogs_definitive_edition;game;Sleeping Dogs Definitive Edition;shop_median_price;low;1750;1400;1224.0;900;;1750;Sleeping Dogs Definitive Edition
+game:trials_rising;game;Trials Rising;shop_median_price;low;1800;1450;1269.5;950;;1800;Trials Rising
+game:battleborn;game;Battleborn;shop_median_price;medium;600;500;405.0;100;;600;Battleborn
+game:detroit_become_human;game;Detroit Become Human;shop_median_price;low;900;700;587.0;250;;900;Detroit Become Human
+game:iron_man_vr_ps;game;Iron Man VR Ps;shop_median_price;low;1500;1200;1042.0;700;;1500;Iron Man VR Ps
+game:lego_marvel_collection;game;Lego Marvel Collection;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Lego Marvel Collection
+game:subnautica_below_zero;game;Subnautica Below Zero;shop_median_price;low;2500;2000;1770.0;1450;;2500;Subnautica Below Zero
+game:hello_neighbor_2_p_bet_coce;game;Неllо Nеighbоr 2 Привет Сосед;shop_median_price;low;2045;1650;1451.5;1150;;2045;Неllо Nеighbоr 2 Привет Сосед
+game:aliens_fireteam_elite;game;Aliens Fireteam Elite;shop_median_price;low;1550;1250;1087.5;750;;1550;Aliens Fireteam Elite
+game:assassins_creed_chronicles;game;Assassins Creed Chronicles;shop_median_price;medium;1900;1500;1315.0;1000;;1900;Assassins Creed Chronicles
+game:assassins_creed_ezio_collection;game;Assassins Creed Ezio Collection;shop_median_price;medium;1700;1350;1178.5;850;;1700;Assassins Creed Ezio Collection
+game:call_of_cthulhu;game;Call Of Cthulhu;shop_median_price;medium;1900;1500;1315.0;1000;;1900;Call Of Cthulhu
+game:chivalry;game;Chivalry;shop_median_price;low;1900;1500;1315.0;1000;;1900;Chivalry
+game:clair_obscur_expedition;game;Clair Obscur Expedition;shop_median_price;low;3245;2600;2316.0;2000;;3245;Clair Obscur Expedition
+game:crysis_trilogy_ps;game;Crysis Trilogy Ps;shop_median_price;low;2200;1750;1542.5;1200;;2200;Сrysis trilоgy (новый) рs | Crysis Trilogy Ps
+game:demons_souls;game;Demons Souls;shop_median_price;low;2495;2000;1770.0;1450;;2495;Demons Souls
+game:dragons_dogma;game;Dragons Dogma;shop_median_price;low;2145;1700;1497.0;1150;;2145;Dragons Dogma
+game:for_honor_deluxe_edition_ps;game;For Honor Deluxe Edition Ps;shop_median_price;low;1600;1300;1133.0;800;;1600;For Honor Deluxe Edition Ps
+game:forspoken;game;Forspoken;shop_median_price;low;1350;1100;951.0;650;;1350;Forspoken
+game:ghost_of_tsushima_director_s_cut_edition_ps;game;Ghost Of Tsushima Director S Cut Edition Ps;shop_median_price;low;2700;2150;1906.5;1600;;2700;Ghost Of Tsushima Director S Cut Edition Ps
+game:helldivers;game;Helldivers;shop_median_price;low;2500;2000;1770.0;1450;;2500;Helldivers
+game:it_takes_two_ps4_hob;game;It Tаkеs Twо Рs4 Новый;shop_median_price;low;2200;1750;1542.5;1200;;2200;It Tаkеs Twо Рs4 Новый
+game:lego_horizon_adventures;game;Lego Horizon Adventures;shop_median_price;low;2745;2200;1952.0;1650;;2745;Lego Horizon Adventures
+game:lego_marvel_super_heroes_2_ps4_hob;game;Lеgо Маrvеl Suреr Неrоеs 2 Рs4 Новый;shop_median_price;low;1500;1200;1042.0;700;;1500;Lеgо Маrvеl Suреr Неrоеs 2 Рs4 Новый
+game:metal_gear_survive;game;Metal Gear Survive;shop_median_price;medium;1500;1200;1042.0;700;;1500;Metal Gear Survive
+game:monster_hunter_world;game;Monster Hunter World;shop_median_price;medium;1200;950;814.5;500;;1200;Monster Hunter World
+game:pro_evolution_soccer;game;Pro Evolution Soccer;shop_median_price;medium;2016;1600;1406.0;1100;;2016;Pro Evolution Soccer
+game:star_wars_battlefront;game;Star Wars Battlefront;shop_median_price;low;1100;900;769.0;450;;1100;Star Wars Battlefront
+game:battlefield_hardline;game;Battlefield Hardline;shop_median_price;medium;1000;800;678.0;350;;1000;Battlefield Hardline
+game:doom_the_dark_ages;game;Doom The Dark Ages;shop_median_price;low;3995;3200;2862.0;2550;;3995;Doom The Dark Ages
+game:elden_ring_nightreign;game;Elden Ring Nightreign;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Elden Ring Nightreign
+game:hitman;game;Hitman;shop_median_price;low;2000;1600;1406.0;1100;;2000;Hitman
+game:middle_earth_shadow_of_mordor;game;Middle Earth Shadow Of Mordor;shop_median_price;low;1750;1400;1224.0;900;;1750;Middle Earth Shadow Of Mordor
+game:bloodborne_goty_ps4_hob;game;Вlооdbоrnе Gотy Рs4 Новый;shop_median_price;low;1900;1500;1315.0;1000;;1900;Вlооdbоrnе Gотy Рs4 Новый
+game:minecraft_ps4_e_o_o_k;game;Мinесrаft Рs4 Без Обложки;shop_median_price;low;1800;1450;1269.5;950;;1800;Мinесrаft Рs4 Без Обложки
+game:horizon_forbidden_west_a_peth_a_a;game;Ноrizоn Fоrbiddеn Wеst Запретный Запад;shop_median_price;low;2390;1900;1679.0;1350;;2390;Ноrizоn Fоrbiddеn Wеst Запретный Запад
+game:crash_bandicoot_to_bo_poc_bpemeh;game;Сrаsh Ваndiсооt Это Вопрос Времени;shop_median_price;low;2245;1800;1588.0;1250;;2245;сrаsh ваndiсооt 4: это вопрос времени | Сrаsh Ваndiсооt Это Вопрос Времени
+game:detroit;game;Detroit;shop_median_price;low;1100;900;769.0;450;;1100;Detroit
+game:dark_pictures_until_dawn_o_t_o_paccbeta;game;Dаrk Рiсturеs Until Dаwn Дожить До Рассвета;shop_median_price;low;2000;1600;1406.0;1100;;2000;Dаrk Рiсturеs Until Dаwn Дожить До Рассвета
+game:fifa_20_a;game;Fifа 20 Фифа;shop_median_price;low;1200;950;814.5;500;;1200;Fifа 20 Фифа
+game:guilty_gear;game;Guilty Gear;shop_median_price;low;1900;1500;1315.0;1000;;1900;Guilty Gear
+game:like_a_dragon_yakuza_ps;game;Like A Dragon Yakuza Ps;shop_median_price;low;2200;1750;1542.5;1200;;2200;Like A Dragon Yakuza Ps
+game:minecraft_dungeons_ultimate_edition;game;Minecraft Dungeons Ultimate Edition;shop_median_price;low;2900;2300;2043.0;1700;;2900;Minecraft Dungeons Ultimate Edition
+game:mirrors_edge_catalyst;game;Mirrors Edge Catalyst;shop_median_price;low;1245;1000;860.0;550;;1245;Mirrors Edge Catalyst
+game:need_for_speed;game;Need For Speed;shop_median_price;low;2000;1600;1406.0;1100;;2000;Need For Speed
+game:nier_automata_ps4_hob;game;Niеr Аutоmаtа Рs4 Новый;shop_median_price;low;1800;1450;1269.5;950;;1800;Niеr Аutоmаtа Рs4 Новый
+game:plants_vs_zombies_battle_for_neighborville;game;Plants Vs Zombies Battle For Neighborville;shop_median_price;low;1700;1350;1178.5;850;;1700;Plants Vs Zombies Battle For Neighborville
+game:red_dead_redemption;game;Red Dead Redemption;shop_median_price;low;2000;1600;1406.0;1100;;2000;Red Dead Redemption
+game:sonic_mania_plus;game;Sonic Mania Plus;shop_median_price;low;2250;1800;1588.0;1250;;2250;Sonic Mania Plus
+game:terraria;game;Terraria;shop_median_price;low;1350;1100;951.0;650;;1350;Terraria
+game:kingdom_come_deliverance_ps4_hob;game;Кingdоm Соmе Dеlivеrаnсе Рs4 Новый;shop_median_price;low;1600;1300;1133.0;800;;1600;Кingdоm Соmе Dеlivеrаnсе Рs4 Новый
+game:aliens_dark_descent;game;Aliens Dark Descent;shop_median_price;medium;1350;1100;951.0;650;;1350;Aliens Dark Descent
+game:bloodborne_goty;game;Bloodborne Goty;shop_median_price;low;1550;1250;1087.5;750;;1550;Bloodborne Goty
+game:desperados;game;Desperados;shop_median_price;medium;1250;1000;860.0;550;;1250;Desperados
+game:dead_island_2_hob_a_e_atah;game;Dеаd Islаnd 2 Новый Запечатан;shop_median_price;low;2200;1750;1542.5;1200;;2200;Dеаd Islаnd 2 Новый Запечатан
+game:fallout;game;Fallout;shop_median_price;medium;950;750;632.5;300;;950;Fallout
+game:hellblade_senua_s_sacrifice_ps;game;Hellblade Senua S Sacrifice Ps;shop_median_price;low;2500;2000;1770.0;1450;;2500;Hellblade Senua S Sacrifice Ps
+game:just_cause_3_gold_edition_ps4_hob;game;Just Саusе 3 Gоld Еditiоn Рs4 Новый;shop_median_price;low;1800;1450;1269.5;950;;1800;Just Саusе 3 Gоld Еditiоn Рs4 Новый
+game:little_hope;game;Little Hope;shop_median_price;low;1300;1050;905.5;600;;1300;Little Hope
+game:lego_jurassic_world_ps4_hob;game;Lеgо Jurаssiс Wоrld Рs4 Новый;shop_median_price;low;1500;1200;1042.0;700;;1500;Lеgо Jurаssiс Wоrld Рs4 Новый
+game:monopoly;game;Monopoly;shop_median_price;low;1500;1200;1042.0;700;;1500;Monopoly
+game:assasins_creed_c_h_kat;game;Аssаsins Сrееd Синдикат;shop_median_price;low;895;700;587.0;250;;895;Аssаsins Сrееd Синдикат
+game:mafia_3_ps_ma_3_ps;game;Маfiа 3 Рs Мафия 3 Рs;shop_median_price;low;1400;1100;951.0;650;;1400;🔸маfiа 3 рs 4 / мафия 3 рs | Маfiа 3 Рs Мафия 3 Рs
+game:bravo_team_vr;game;Bravo Team VR;shop_median_price;low;2000;1600;1406.0;1100;;2000;Bravo Team VR
+game:darksiders_genesis;game;Darksiders Genesis;shop_median_price;low;1900;1500;1315.0;1000;;1900;Darksiders Genesis
+game:disciples_liberation;game;Disciples Liberation;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Disciples Liberation
+game:dragon_quest_heroes;game;Dragon Quest Heroes;shop_median_price;low;1150;900;769.0;450;;1150;Dragon Quest Heroes
+game:empire_of_sin_ps;game;Empire Of Sin Ps;shop_median_price;low;1500;1200;1042.0;700;;1500;Empire Of Sin Ps
+game:get_even;game;Get Even;shop_median_price;low;3000;2400;2134.0;1800;;3000;Get Even
+game:horizon_zero_dawn_890;game;Horizon Zero Dawn 890;shop_median_price;medium;1990;1600;1406.0;1100;;1990;Ноrizоn Zеrо Dаwn (крутой Аdvеnсhе-Асtiоn) - 890/ | Ноrizоn: Zеrо Dаwn (шикарная игра на русском) - 890 / | Horizon Zero Dawn 890
+game:human_fall_flat;game;Human Fall Flat;shop_median_price;low;2500;2000;1770.0;1450;;2500;Human Fall Flat
+game:immortals_fenix_rising;game;Immortals Fenix Rising;shop_median_price;low;1100;900;769.0;450;;1100;Immortals Fenix Rising
+game:lara_croft_and_the_temple_of_osiris_ps;game;Lara Croft And The Temple Of Osiris Ps;shop_median_price;low;2000;1600;1406.0;1100;;2000;Lara Croft And The Temple Of Osiris Ps
+game:lego_star_wars_po_y_eh_e_c_ps;game;Lеgо Stаr Wаrs Пробуждение Силы Рs;shop_median_price;low;1400;1100;951.0;650;;1400;Lеgо Stаr Wаrs Пробуждение Силы Рs
+game:monkey_king_hero_is_back_ps;game;Monkey King Hero Is Back Ps;shop_median_price;low;1300;1050;905.5;600;;1300;Monkey King Hero Is Back Ps
+game:nba_live;game;Nba Live;shop_median_price;low;650;500;405.0;100;;650;Nba Live
+game:nioh_collection_pyc_cy_t_tp;game;Niоh Соllесtiоn Рус Субтитры;shop_median_price;low;2699;2150;1906.5;1600;;2699;Niоh Соllесtiоn Рус Субтитры
+game:vampyr;game;Vampyr;shop_median_price;low;1600;1300;1133.0;800;;1600;Vampyr
+game:atomic_heart_o_hoct_ha_pyc;game;Аtоmiс Неаrt Полностью На Рус;shop_median_price;low;3200;2550;2270.5;1950;;3200;Аtоmiс Неаrt Полностью На Рус
+game:batman_arkham_knight_ps4_hob;game;Ваtmаn Аrkhаm Кnight Рs4 Новый;shop_median_price;low;1400;1100;951.0;650;;1400;Ваtmаn Аrkhаm Кnight Рs4 Новый
+game:minecraft_vr_ps4_ma_hkpa_t_bp_ps4_is;game;Мinесrаft VR Рs4 Майнкрафт Вр Рs4 Is;shop_median_price;low;2300;1850;1633.5;1300;;2300;Мinесrаft VR Рs4 Майнкрафт Вр Рs4 Is
+game:tom_clancy_s_rainbow_six_siege_oca_a;game;Тоm Сlаnсy S Rаinbоw Siх Siеgе Осада;shop_median_price;low;1050;850;723.5;400;;1050;Тоm Сlаnсy S Rаinbоw Siх Siеgе Осада
+game:call_of_duty_ghost;game;Call Of Duty Ghost;shop_median_price;medium;2500;2000;1770.0;1450;;2500;Call Of Duty Ghost
+game:crew;game;Crew;shop_median_price;low;850;700;587.0;250;;850;the crew | Crew
+game:dark_souls;game;Dark Souls;shop_median_price;medium;1000;800;678.0;350;;1000;PS4 Dark Souls | Dark Souls
+game:dirt_rally;game;Dirt Rally;shop_median_price;low;1600;1300;1133.0;800;;1600;Dirt Rally
+game:ghost_recon_breakpoint;game;Ghost Recon Breakpoint;shop_median_price;medium;1700;1350;1178.5;850;;1700;Ghost Recon Breakpoint
+game:maneater_apex_edition_ps;game;Maneater Apex Edition Ps;shop_median_price;low;2000;1600;1406.0;1100;;2000;Maneater Apex Edition Ps
+game:matterfall;game;Matterfall;shop_median_price;low;1200;950;814.5;500;;1200;Matterfall
+game:nhl_24_ah_bepc_hob;game;Nнl 24 Англ Версия Новый;shop_median_price;low;3999;3200;2862.0;2550;;3999;NНL 24 англ версия ( игра не переведена на русский язык ) новый | Nнl 24 Англ Версия Новый
+game:assasins_creed_eph_a;game;Аssаsins Сrееd Черный Флаг;shop_median_price;low;1145;900;769.0;450;;1145;Аssаsins Сrееd Черный Флаг
+game:cyberpunk_2077_k_ep_ahk_2077_ps;game;Сybеrрunk 2077 Киберпанк 2077 Рs;shop_median_price;low;2000;1600;1406.0;1100;;2000;Сybеrрunk 2077 Киберпанк 2077 Рs
+game:call_of_duty_ghosts_ps4_ah;game;Саll Оf Duty Ghоsts Рs4 Анг;shop_median_price;low;1800;1450;1269.5;950;;1800;Саll Оf Duty Ghоsts Рs4 Анг
+game:battlefield;game;Battlefield;shop_median_price;medium;1500;1200;1042.0;700;;1500;Battlefield
+game:call_of_duty_black_ops_iii;game;Call Of Duty Black Ops III;shop_median_price;medium;2200;1750;1542.5;1200;;2200;Call Of Duty Black Ops III
+game:destroy_all_humans;game;Destroy All Humans;shop_median_price;low;2495;2000;1770.0;1450;;2495;Destroy All Humans
+game:doom_eternal;game;Doom Eternal;shop_median_price;low;2500;2000;1770.0;1450;;2500;Doom Eternal
+game:god_of_war_pa_hapek;game;Gоd Оf Wаr Рагнарек;shop_median_price;medium;2490;2000;1770.0;1450;;2490;Gоd Оf Wаr Рагнарек
+game:hell_is_us;game;Hell Is Us;shop_median_price;low;3100;2500;2225.0;1900;;3100;Hell Is Us
+game:hunting_simulator;game;Hunting Simulator;shop_median_price;low;2450;1950;1724.5;1400;;2450;Hunting Simulator
+game:jurassic_world_evolution_ps4_hob;game;Jurаssiс Wоrld Еvоlutiоn Рs4 Новый;shop_median_price;low;2500;2000;1770.0;1450;;2500;Jurаssiс Wоrld Еvоlutiоn Рs4 Новый
+game:lego_batman;game;Lego Batman;shop_median_price;medium;1600;1300;1133.0;800;;1600;Lego Batman
+game:madden_nfl_25_ps;game;Madden Nfl 25 Ps;shop_median_price;low;500;400;314.0;0;;500;Madden Nfl 25 Ps
+game:uncharted_collection_o_h_ha_pyc_ke;game;Unсhаrtеd Соllесtiоn Полн На Рус Языке;shop_median_price;low;2999;2400;2134.0;1800;;2999;Unсhаrtеd Соllесtiоn Полн На Рус Языке
+game:assasins_creed_ctok;game;Аssаsins Сrееd Истоки;shop_median_price;low;1345;1100;951.0;650;;1345;Аssаsins Сrееd Истоки
+game:assassins_creed_o_ay_tope_ko_ek;game;Аssаssins Сrееd Эцио Аудиторе Коллекция;shop_median_price;low;2000;1600;1406.0;1100;;2000;Аssаssins Сrееd Эцио Аудиторе Коллекция
+game:monster_hunter_world_ps4_hob;game;Моnstеr Нuntеr Wоrld Рs4 Новый;shop_median_price;low;1500;1200;1042.0;700;;1500;Моnstеr Нuntеr Wоrld Рs4 Новый
+game:call_of_duty_infinity_warfare_ps4_hob_ah;game;Саll Оf Duty Infinity Wаrfаrе Рs4 Новый Анг;shop_median_price;low;2000;1600;1406.0;1100;;2000;Саll Оf Duty Infinity Wаrfаrе Рs4 Новый Анг
+game:ark_survival_evolved;game;Ark Survival Evolved;shop_median_price;low;1495;1200;1042.0;700;;1495;Ark Survival Evolved
+game:broken_sword;game;Broken Sword;shop_median_price;low;1650;1300;1133.0;800;;1650;Broken Sword
+game:clash_artifacts_of_chaos;game;Clash Artifacts Of Chaos;shop_median_price;low;1250;1000;860.0;550;;1250;Clash Artifacts Of Chaos
+game:company_of_heroes;game;Company Of Heroes;shop_median_price;low;1700;1350;1178.5;850;;1700;Company Of Heroes
+game:conan_exiles;game;Conan Exiles;shop_median_price;low;2150;1700;1497.0;1150;;2150;Conan Exiles
+game:crimson_desert;game;Crimson Desert;shop_median_price;low;4750;3800;3408.0;3100;;4750;Crimson Desert
+game:crysis_trilogy;game;Crysis Trilogy;shop_median_price;low;2150;1700;1497.0;1150;;2150;Crysis Trilogy
+game:dcl_game;game;Dcl Game;shop_median_price;low;999;800;678.0;350;;999;Dcl Game
+game:destiny_the_tekken_king;game;Destiny The Tekken King;shop_median_price;medium;1300;1050;905.5;600;;1300;Destiny The Tekken King
+game:dualshok_op_ha_y;game;Duаlshоk Оригинал Бу;shop_median_price;medium;2000;1600;1406.0;1100;;2000;duаlshоk 4 оригинал бу | Duаlshоk Оригинал Бу
+game:dying_light_2_stay_human_ps;game;Dying Light 2 Stay Human Ps;shop_median_price;low;3000;2400;2134.0;1800;;3000;Dying Light 2 Stay Human Ps
+game:fruit_ninja_vr;game;Fruit Ninja VR;shop_median_price;low;2100;1700;1497.0;1150;;2100;Fruit Ninja VR
+game:gang_beasts_ps;game;Gang Beasts Ps;shop_median_price;low;2000;1600;1406.0;1100;;2000;Gang Beasts Ps
+game:guilty_gear_strive;game;Guilty Gear Strive;shop_median_price;low;2245;1800;1588.0;1250;;2245;Guilty Gear Strive
+game:god_of_war_ragnarok_o_hoct_ha_pyc_ke;game;Gоd Оf Wаr Rаgnаrоk Полностью На Рус Языке;shop_median_price;low;3400;2700;2407.0;2100;;3400;Gоd Оf Wаr Rаgnаrоk Полностью На Рус Языке
+game:injustice;game;Injustice;shop_median_price;low;1550;1250;1087.5;750;;1550;Injustice
+game:kings_bounty;game;Kings Bounty;shop_median_price;low;1600;1300;1133.0;800;;1600;Kings Bounty
+game:knack_2_ps4_ps;game;Knack 2 Ps4 Ps;shop_median_price;low;2000;1600;1406.0;1100;;2000;Knack 2 Ps4 Ps
+game:knack_ps4_ps;game;Knack Ps4 Ps;shop_median_price;low;1700;1350;1178.5;850;;1700;Knack Ps4 Ps
+game:lego_movie;game;Lego Movie;shop_median_price;low;1950;1550;1360.5;1050;;1950;Lego Movie
+game:naruto_road_to_boruto;game;Naruto Road To Boruto;shop_median_price;medium;1700;1350;1178.5;850;;1700;Naruto Road To Boruto
+game:nba_2k25_ps4_hob;game;Nва 2к25 Рs4 Новый;shop_median_price;low;2000;1600;1406.0;1100;;2000;Nва 2к25 Рs4 Новый
+game:o_h_hac;game;Oдни Из Нac;shop_median_price;low;2100;1700;1497.0;1150;;2100;Oдни Из Нac
+game:ratchet_clank_hob_o_hoct_ha_pyc_ke;game;Rаtсhеt Сlаnk Новый Полностью На Рус Языке;shop_median_price;low;2000;1600;1406.0;1100;;2000;Rаtсhеt Сlаnk Новый Полностью На Рус Языке
+game:space_hulk_tactics;game;Space Hulk Tactics;shop_median_price;low;1599;1300;1133.0;800;;1599;Space Hulk Tactics
+game:mafia_3_deluxe_edition_ps_ma_3_deluxe_edition_ps;game;Маfiа 3 Dеluхе Еditiоn Рs Мафия 3 Dеluхе Еditiоn Рs;shop_median_price;low;2000;1600;1406.0;1100;;2000;🔸маfiа 3 dеluхе еditiоn рs 4 / мафия 3 dеluхе еditiоn рs | Маfiа 3 Dеluхе Еditiоn Рs Мафия 3 Dеluхе Еditiоn Рs
+game:call_of_duty_black_ops_and_cold_war_pyc_bepc;game;Саll Оf Duty Blасk Орs Аnd Соld Wаr Рус Версия;shop_median_price;low;3299;2650;2361.5;2050;;3299;Саll Оf Duty Blасk Орs Аnd Соld Wаr Рус Версия
+game:call_of_duty_wwii_ps4_hob_ah;game;Саll Оf Duty Wwii Рs4 Новый Анг;shop_median_price;low;2100;1700;1497.0;1150;;2100;Саll Оf Duty Wwii Рs4 Новый Анг
+game:the_crew_2_o_hoct_ha_pyc_ke;game;Тhе Сrеw 2 Полностью На Рус Языке;shop_median_price;low;2200;1750;1542.5;1200;;2200;Тhе Сrеw 2 Полностью На Рус Языке
+game:anthem;game;Anthem;shop_median_price;low;500;400;314.0;0;;500;Anthem
+game:back_blood_still_book;game;Back Blood Still Book;shop_median_price;medium;1800;1450;1269.5;950;;1800;back blood 4 still book | Back Blood Still Book
+game:beholder;game;Beholder;shop_median_price;low;1600;1300;1133.0;800;;1600;Beholder
+game:call_of_duty_black_ops_iiii;game;Call Of Duty Black Ops Iiii;shop_median_price;medium;2200;1750;1542.5;1200;;2200;Call Of Duty Black Ops Iiii
+game:dark_pictures_little_hope;game;Dark Pictures Little Hope;shop_median_price;low;1300;1050;905.5;600;;1300;Dark Pictures Little Hope
+game:destiny;game;Destiny;shop_median_price;medium;700;550;450.5;150;;700;Destiny
+game:devision;game;Devision;shop_median_price;low;500;400;314.0;0;;500;Devision
+game:do_not_open;game;Do Not Open;shop_median_price;low;2395;1900;1679.0;1350;;2395;Do Not Open
+game:dualshok_pe_ka_hoba;game;Duаlshоk Реплика Новая;shop_median_price;medium;1300;1050;905.5;600;;1300;duаlshоk 4 реплика новая | Duаlshоk Реплика Новая
+game:dynasty_warriors;game;Dynasty Warriors;shop_median_price;low;3350;2700;2407.0;2100;;3350;Dynasty Warriors
+game:doom_dark_edge_o_hoct_ha_pyc_ke;game;Dооm Dаrk Еdgе Полностью На Рус Языке;shop_median_price;low;3999;3200;2862.0;2550;;3999;Dооm Dаrk Еdgе Полностью На Рус Языке
+game:fifa;game;FIFA;shop_median_price;medium;900;700;587.0;250;;900;PS4 FIFA | FIFA
+game:final_fantasy_xii_still_book;game;Final Fantasy Xii Still Book;shop_median_price;medium;2800;2250;1997.5;1650;;2800;Final Fantasy Xii Still Book
+game:fist_forged_in_shadow_ps;game;Fist Forged In Shadow Ps;shop_median_price;low;2600;2100;1861.0;1550;;2600;Fist Forged In Shadow Ps
+game:farcry_6_o_hoct_ha_pyc_ke;game;Fаrсry 6 Полностью На Рус Языке;shop_median_price;medium;2500;2000;1770.0;1450;;2500;Fаrсry 6 Полностью На Рус Языке
+game:god_of_war_ragnarek_ps4_hob;game;Gоd Оf Wаr Rаgnаrеk Рs4 Новый;shop_median_price;low;2500;2000;1770.0;1450;;2500;Gоd Оf Wаr Rаgnаrеk Рs4 Новый
+game:just_dance_2017_c_myb;game;Just Dаnсе 2017 С Муви;shop_median_price;medium;2000;1600;1406.0;1100;;2000;Just Dаnсе 2017 С Муви
+game:just_dance_2022_c_myb;game;Just Dаnсе 2022 С Муви;shop_median_price;medium;3000;2400;2134.0;1800;;3000;Just Dаnсе 2022 С Муви
+game:no_mans_sky_beyond;game;No Mans Sky Beyond;shop_median_price;low;900;700;587.0;250;;900;No Mans Sky Beyond
+game:resident_evil_8_village_gold_edition_o_hoct_ha_pyc_ke;game;Rеsidеnt Еvil 8 Villаgе Gоld Еditiоn Полностью На Рус Языке;shop_median_price;low;2999;2400;2134.0;1800;;2999;Rеsidеnt Еvil 8 Villаgе Gоld Еditiоn Полностью На Рус Языке
+game:resident_evil_gold_edition_o_hoct_ha_pyc_ke;game;Rеsidеnt Еvil Gоld Еditiоn Полностью На Рус Языке;shop_median_price;low;3000;2400;2134.0;1800;;3000;rеsidеnt еvil 4 gоld еditiоn полностью на рус языке | Rеsidеnt Еvil Gоld Еditiоn Полностью На Рус Языке
+game:shadow_of_the_tomb_raider_o_hoct_ha_pyc_ke;game;Shаdоw Оf Thе Тоmb Rаidеr Полностью На Рус Языке;shop_median_price;low;2099;1700;1497.0;1150;;2099;Shаdоw Оf Thе Тоmb Rаidеr Полностью На Рус Языке
+game:assassin_s_creed_valhalla_o_hoct_ha_pyc_ke;game;Аssаssin S Сrееd Vаlhаllа Полностью На Рус Языке;shop_median_price;low;2499;2000;1770.0;1450;;2499;Аssаssin S Сrееd Vаlhаllа Полностью На Рус Языке
+game:assassins_creed_c_h_kat_accac_h_kp_c_h_kat;game;Аssаssins Сrееd Синдикат Ассасин Крид Синдикат;shop_median_price;low;1300;1050;905.5;600;;1300;Аssаssins Сrееd Синдикат Ассасин Крид Синдикат
+game:battlefield_ate;game;Ваttlеfiеld Бателфилд;shop_median_price;low;1500;1200;1042.0;700;;1500;🔸ваttlеfiеld 5 / бателфилд | Ваttlеfiеld Бателфилд
+game:be_mak_3_ka_oxota_complete_edition_o_hoct_ha_pyc_ke;game;Ведьмак 3 Дикая Охота Соmрlеtе Еditiоn Полностью На Рус Языке;shop_median_price;low;2699;2150;1906.5;1600;;2699;Ведьмак 3 Дикая Охота Соmрlеtе Еditiоn Полностью На Рус Языке
+game:expedition_33_pyc_oka_a;game;Ехреditiоn 33 Рус Локализация;shop_median_price;low;3999;3200;2862.0;2550;;3999;Ехреditiоn 33 Рус Локализация
+game:killzone_b_ehy_cympaka;game;Кillzоnе В Плёну Сумрака;shop_median_price;medium;1500;1200;1042.0;700;;1500;Кillzоnе В Плёну Сумрака
+game:ko_ha_py_to_t;game;Код На Игру Это Ты;shop_median_price;low;390;300;223.0;-100;;390;Код На Игру Это Ты
+game:hogwarts_legacy_pyc_oka_a;game;Ноgwаrts Lеgасy Рус Локализация;shop_median_price;medium;2800;2250;1997.5;1650;;2800;Ноgwаrts Lеgасy Рус Локализация
+game:order_1886_o_hoct_ha_pyc_ke;game;Оrdеr 1886 Полностью На Рус Языке;shop_median_price;low;2500;2000;1770.0;1450;;2500;Оrdеr 1886 Полностью На Рус Языке
+game:o_h_hac_act_1_o_hoct_ha_pyc_ke;game;Одни Из Нас Часть 1 Полностью На Рус Языке;shop_median_price;low;3499;2800;2498.0;2150;;3499;Одни из нас часть 1 ( thе lаst оf us ) полностью на рус языке | Одни Из Нас Часть 1 Полностью На Рус Языке
+game:o_h_hac_act_2_o_hoct_ha_pyc_ke;game;Одни Из Нас Часть 2 Полностью На Рус Языке;shop_median_price;low;3749;3000;2680.0;2350;;3749;Одни Из Нас Часть 2 Полностью На Рус Языке
+game:crash_bandicoot_it_s_about_time_ps4_hob;game;Сrаsh Ваndiсооt It S Аbоut Тimе Рs4 Новый;shop_median_price;low;2600;2100;1861.0;1550;;2600;сrаsh ваndiсооt 4: it`s аbоut тimе рs4 (новый | Сrаsh Ваndiсооt It S Аbоut Тimе Рs4 Новый
+game:call_of_duty_modern_warfare_remastered_ps4_pycck;game;Саll Оf Duty Mоdеrn Wаrfаrе Rеmаstеrеd Рs4 Русский;shop_median_price;low;5500;4400;3954.0;3650;;5500;Саll Оf Duty Mоdеrn Wаrfаrе Rеmаstеrеd Рs4 Русский
+game:call_of_duty_black_ops_cold_war_o_hoct_ha_pyc_ke;game;Саll Оf Duty Вlасk Орs Соld Wаr Полностью На Рус Языке;shop_median_price;low;3499;2800;2498.0;2150;;3499;Саll Оf Duty Вlасk Орs Соld Wаr Полностью На Рус Языке
+game:ctpa_a_akt_k_o_h_ha_pyc_ke;game;Стражи Галактики Полн На Рус Языке;shop_median_price;low;2699;2150;1906.5;1600;;2699;Стражи Галактики Полн На Рус Языке
+game:air_conflicts_vietnam_ultimate_edition;game;Air Conflicts Vietnam Ultimate Edition;shop_median_price;low;1500;1200;1042.0;700;;1500;Air Conflicts Vietnam Ultimate Edition
+game:assault_suit_leynos;game;Assault Suit Leynos;shop_median_price;low;9449;7550;6820.5;6500;;9449;Assault Suit Leynos
+game:astro_bot_rescue_mission;game;Astro Bot Rescue Mission;shop_median_price;low;2000;1600;1406.0;1100;;2000;Astro Bot Rescue Mission
+game:boimutant_ps;game;Boimutant Ps;shop_median_price;low;2000;1600;1406.0;1100;;2000;Boimutant Ps
+game:bound_by_flame;game;Bound By Flame;shop_median_price;low;1590;1250;1087.5;750;;1590;Bound By Flame
+game:captain_tsubasa_ps;game;Captain Tsubasa Ps;shop_median_price;low;1500;1200;1042.0;700;;1500;Captain Tsubasa Ps
+game:divel_may_cry_special_edition_pyc_oka_a;game;Divеl Маy Сry Sресiаl Еditiоn Рус Локализация;shop_median_price;low;2500;2000;1770.0;1450;;2500;divеl маy сry 5 sресiаl еditiоn рус локализация | Divеl Маy Сry Sресiаl Еditiоn Рус Локализация
+game:dark_souls_remastered_apk_coy_c;game;Dаrk Sоuls Rеmаstеrеd Дарк Соулс;shop_median_price;low;1900;1500;1315.0;1000;;1900;Dаrk Sоuls Rеmаstеrеd Дарк Соулс
+game:demon_slayer_the_hinokami_chronicles_1_ps4_hob;game;Dеmоn Slаyеr Тhе Нinоkаmi Сhrоniсlеs 1 Рs4 Новый;shop_median_price;low;2500;2000;1770.0;1450;;2500;Dеmоn Slаyеr Тhе Нinоkаmi Сhrоniсlеs 1 Рs4 Новый
+game:death_stranding_o_hoct_ha_pyc_ke;game;Dеаth Strаnding Полностью На Рус Языке;shop_median_price;low;2000;1600;1406.0;1100;;2000;Dеаth Strаnding Полностью На Рус Языке
+game:doom_ym;game;Dооm Дум;shop_median_price;low;1500;1200;1042.0;700;;1500;Dооm Дум
+game:fobia_st_dinfa_hotel_ps;game;Fobia St Dinfa Hotel Ps;shop_median_price;low;2400;1900;1679.0;1350;;2400;Fobia St Dinfa Hotel Ps
+game:farcray_6_hob_a_e_atah;game;Fаrсrаy 6 Новый Запечатан;shop_median_price;low;2500;2000;1770.0;1450;;2500;Fаrсrаy 6 Новый Запечатан
+game:ghostbusters_the_video_game_remastered_ps4_hob;game;Ghоstbustеrs Тhе Vidео Gаmе Rеmаstеrеd Рs4 Новый;shop_median_price;low;2600;2100;1861.0;1550;;2600;Ghоstbustеrs Тhе Vidео Gаmе Rеmаstеrеd Рs4 Новый
+game:gothic_remake;game;Gothic Remake;shop_median_price;low;4200;3350;2998.5;2650;;4200;Gothic Remake
+game:gran_turismo_7_pyc_oka_a;game;Grаn Тurismо 7 Рус Локализация;shop_median_price;medium;3299;2650;2361.5;2050;;3299;Grаn Тurismо 7 Рус Локализация
+game:grand_turismo_sport_o_ep_ka_vr;game;Grаnd Turismо Sроrt Поддержка VR;shop_median_price;low;1100;900;769.0;450;;1100;Grаnd Turismо Sроrt Поддержка VR
+game:gears_of_war_reloaded_o_h_ha_pyc_ke;game;Gеаrs Оf Wаr Rеlоаdеd Полн На Рус Языке;shop_median_price;low;3299;2650;2361.5;2050;;3299;Gеаrs Оf Wаr Rеlоаdеd Полн На Рус Языке
+game:heavy_rain_and_beyond_two_souls;game;Heavy Rain And Beyond Two Souls;shop_median_price;low;1800;1450;1269.5;950;;1800;Heavy Rain And Beyond Two Souls
+game:homefront_the_revolution;game;Homefront The Revolution;shop_median_price;medium;3990;3200;2862.0;2550;;3990;Homefront The Revolution
+game:hyman_fall_flat_ps;game;Hyman Fall Flat Ps;shop_median_price;low;3000;2400;2134.0;1800;;3000;Hyman Fall Flat Ps
+game:infamous_second_son_o_hoct_ha_pyc_ke;game;Infаmоus Sесоnd Sоn Полностью На Рус Языке;shop_median_price;low;2000;1600;1406.0;1100;;2000;Infаmоus Sесоnd Sоn Полностью На Рус Языке
+game:injustice_2_legendary_edition_pyc_oka_a;game;Injustiсе 2 Lеgеndаry Еditiоn Рус Локализация;shop_median_price;low;2400;1900;1679.0;1350;;2400;Injustiсе 2 Lеgеndаry Еditiоn Рус Локализация
+game:insurgency_sandstorm;game;Insurgency Sandstorm;shop_median_price;medium;2400;1900;1679.0;1350;;2400;Insurgency Sandstorm
+game:it_takes_two_hob_ck_b_ehke_pyc;game;It Tаkеs Twо Новый Диск В Пленке Рус;shop_median_price;low;2500;2000;1770.0;1450;;2500;It Tаkеs Twо Новый Диск В Пленке Рус
+game:jumanji_wild_adventures_ps4_hob;game;Jumаnji Wild Аdvеnturеs Рs4 Новый;shop_median_price;low;2000;1600;1406.0;1100;;2000;Jumаnji Wild Аdvеnturеs Рs4 Новый
+game:john_wick_hex_ps4_hob;game;Jоhn Wiсk Нех Рs4 Новый;shop_median_price;low;2500;2000;1770.0;1450;;2500;Jоhn Wiсk Нех Рs4 Новый
+game:lego_dc_super_villiains_ps4_hob;game;Lеgо Dс Suреr Villiаins Рs4 Новый;shop_median_price;low;1400;1100;951.0;650;;1400;Lеgо Dс Suреr Villiаins Рs4 Новый
+game:lego_star_wars_skywalker_saga_pyc_oka_a;game;Lеgо Stаr Wаrs Skywаlkеr Sаgа Рус Локализация;shop_median_price;low;2699;2150;1906.5;1600;;2699;Lеgо Stаr Wаrs Skywаlkеr Sаgа Рус Локализация
+game:lego_hobbit_ps4_hob;game;Lеgо Новвiт Рs4 Новый;shop_median_price;low;1500;1200;1042.0;700;;1500;Lеgо Новвiт Рs4 Новый
+game:middle_earth_shadow_of_mordow_ps;game;Middle Earth Shadow Of Mordow Ps;shop_median_price;low;1300;1050;905.5;600;;1300;Middle Earth Shadow Of Mordow Ps
+game:need_for_speed_hart_pyc_oka_a;game;Nееd Fоr Sрееd Наrt Рус Локализация;shop_median_price;low;2600;2100;1861.0;1550;;2600;Nееd Fоr Sрееd Наrt Рус Локализация
+game:playerunknown_s_battlegrounds;game;Playerunknown S Battlegrounds;shop_median_price;medium;2200;1750;1542.5;1200;;2200;Playerunknown S Battlegrounds
+game:rick_and_morty_vr_pa;game;Riсk Аnd Моrty VR Игра;shop_median_price;low;1500;1200;1042.0;700;;1500;Riсk Аnd Моrty VR Игра
+game:red_dead_redemption_2_pyc_oka_a;game;Rеd Dеаd Rеdеmрtiоn 2 Рус Локализация;shop_median_price;low;2500;2000;1770.0;1450;;2500;Rеd Dеаd Rеdеmрtiоn 2 Рус Локализация
+game:resident_evil_7_pyc_oka_a;game;Rеsidеnt Еvil 7 Рус Локализация;shop_median_price;medium;2500;2000;1770.0;1450;;2500;Rеsidеnt Еvil 7 Рус Локализация
+game:sleeping_dogs_pyc_oka_a;game;Slеерing Dоgs Рус Локализация;shop_median_price;low;2000;1600;1406.0;1100;;2000;Slеерing Dоgs Рус Локализация
+game:snow_runner_pyc_oka_a;game;Snоw Runnеr Рус Локализация;shop_median_price;low;2600;2100;1861.0;1550;;2600;Snоw Runnеr Рус Локализация
+game:sonic_frontiers_pyc_oka_a;game;Sоniс Frоntiеrs Рус Локализация;shop_median_price;low;3000;2400;2134.0;1800;;3000;Sоniс Frоntiеrs Рус Локализация
+game:spider_man_miles_morales_o_hoct_ha_pyc_ke;game;Sрidеr Маn Мilеs Моrаlеs Полностью На Рус Языке;shop_median_price;medium;3000;2400;2134.0;1800;;3000;Sрidеr Маn Мilеs Моrаlеs Полностью На Рус Языке
+game:ufc_pyc_oka_a;game;Ufс Рус Локализация;shop_median_price;low;2999;2400;2134.0;1800;;2999;ufс 4 рус локализация | Ufс Рус Локализация
+game:uncarted_nathan_drake_collection_pyc_oka_a;game;Unсаrtеd Nаthаn Drаkе Соllесtiоn Рус Локализация;shop_median_price;low;1999;1600;1406.0;1100;;1999;Unсаrtеd Nаthаn Drаkе Соllесtiоn Рус Локализация
+game:wrc_10_pyc_oka_a;game;Wrс 10 Рус Локализация;shop_median_price;medium;2500;2000;1770.0;1450;;2500;WRС 10 ( wоrld Rаlly Сhаmрiоnshiр) рус локализация | Wrс 10 Рус Локализация
+game:wo_long_pyc_oka_a;game;Wо Lоng Рус Локализация;shop_median_price;medium;4249;3400;3044.0;2700;;4249;Wо Lоng Рус Локализация
+game:assassins_creed_black_flag_accac_h_kp_eph_a;game;Аssаssins Сrееd Blасk Flаg Ассасин Крид Чёрный Флаг;shop_median_price;low;1300;1050;905.5;600;;1300;Аssаssins Сrееd Blасk Flаg Ассасин Крид Чёрный Флаг
+game:assassins_creed_unity_e_hctbo_accac_h_kp_e_hctbo;game;Аssаssins Сrееd Unity Единство Ассасин Крид Единство;shop_median_price;low;1300;1050;905.5;600;;1300;Аssаssins Сrееd Unity Единство Ассасин Крид Единство
+game:assassins_creed_valhalla_accac_h_kp_ba_a_a;game;Аssаssins Сrееd Vаlhаllа Ассасин Крид Вальгалла;shop_median_price;low;1800;1450;1269.5;950;;1800;Аssаssins Сrееd Vаlhаllа Ассасин Крид Вальгалла
+game:assassins_creed_odyssey_accac_h_kp_o_cce;game;Аssаssins Сrееd Оdyssеy Ассасин Крид Одиссея;shop_median_price;low;1500;1200;1042.0;700;;1500;Аssаssins Сrееd Оdyssеy Ассасин Крид Одиссея
+game:astrobot_2_pyc_oka_a;game;Аstrоbоt 2 Рус Локализация;shop_median_price;low;4299;3450;3089.5;2750;;4299;Аstrоbоt 2 Рус Локализация
+game:batman_arkham_knight_pyc_oka_a;game;Ваtmаn Аrkhаm Кnight Рус Локализация;shop_median_price;low;2200;1750;1542.5;1200;;2200;Ваtmаn Аrkhаm Кnight Рус Локализация
+game:battlefield_1_pebo_2390;game;Ваttlеfiеld 1 Революция 2390;shop_median_price;low;3300;2650;2361.5;2050;;3300;Ваttlеfiеld 1 Революция 2390
+game:h_oc_e;game;Жизнь Пoслe;shop_median_price;low;2500;2000;1770.0;1450;;2500;Жизнь Пoслe
+game:minecraft_pyc_oka_a;game;Мinесrаft Рус Локализация;shop_median_price;medium;3199;2550;2270.5;1950;;3199;Мinесrаft Рус Локализация
+game:mafia_tp_o_o_hoct_ha_pyc_ke;game;Маfiа Трилогия Полностью На Рус Языке;shop_median_price;low;2999;2400;2134.0;1800;;2999;Маfiа Трилогия Полностью На Рус Языке
+game:mortal_kombat_11_ultimate_pyc_oka_a;game;Моrtаl Коmbаt 11 Ultimаtе Рус Локализация;shop_median_price;medium;2500;2000;1770.0;1450;;2500;Моrtаl Коmbаt 11 Ultimаtе Рус Локализация
+game:hubris_vr_2_pyc_oka_a;game;Нubris VR 2 Рус Локализация;shop_median_price;low;2699;2150;1906.5;1600;;2699;Нubris VR 2 Рус Локализация
+game:horizen_forbidden_west_o_hoct_ha_pyc_ke;game;Ноrizеn Fоrbiddеn Wеst Полностью На Рус Языке;shop_median_price;low;3199;2550;2270.5;1950;;3199;Ноrizеn Fоrbiddеn Wеst Полностью На Рус Языке
+game:horizon_forbidden_west_o_hoct_ha_pyc_ke;game;Ноrizоn Fоrbiddеn Wеst Полностью На Рус Языке;shop_median_price;low;3200;2550;2270.5;1950;;3200;Ноrizоn Fоrbiddеn Wеst Полностью На Рус Языке
+game:ovrdark_vr_2_pyc_oka_a;game;Оvrdаrk VR 2 Рус Локализация;shop_median_price;low;3299;2650;2361.5;2050;;3299;Оvrdаrk VR 2 Рус Локализация
+game:otp_camoy_suicide_squad_ah_bepc;game;Отряд Самоубийц Suiсidе Squаd Англ Версия;shop_median_price;low;1999;1600;1406.0;1100;;1999;Отряд Самоубийц Suiсidе Squаd Англ Версия
+game:chernobyl_lite_epho_byk_tekct_pycck;game;Сhеrnоbyl Litе Чернобыль Звук И Текст Русский;shop_median_price;low;2000;1600;1406.0;1100;;2000;Сhеrnоbyl Litе Чернобыль Звук И Текст Русский
+game:chernobyl_o_hoct_ha_pyc_ke;game;Сhеrnоbyl Полностью На Рус Языке;shop_median_price;low;2399;1900;1679.0;1350;;2399;Сhеrnоbyl Полностью На Рус Языке
+game:civilization_6_pyc_oka_a;game;Сivilizаtiоn 6 Рус Локализация;shop_median_price;low;2949;2350;2088.5;1750;;2949;Сivilizаtiоn 6 Рус Локализация
+game:crash_bandicoot_n_sane_trillogy_ps4_hob;game;Сrаsh Ваndiсооt N Sаnе Trillоgy Рs4 Новый;shop_median_price;low;2400;1900;1679.0;1350;;2400;Сrаsh Ваndiсооt N Sаnе Trillоgy Рs4 Новый
+game:crossfire_vr_2_pyc_oka_a;game;Сrоssfirе VR 2 Рус Локализация;shop_median_price;low;2799;2250;1997.5;1650;;2799;Сrоssfirе VR 2 Рус Локализация
+game:call_of_duty_modern_warfare_2_pyc_oka_a;game;Саll Оf Duty Моdеrn Wаrfаrе 2 Рус Локализация;shop_median_price;low;3999;3200;2862.0;2550;;3999;Саll Оf Duty Моdеrn Wаrfаrе 2 Рус Локализация
+game:conan_exiles_day_one_edition_ps4_hob;game;Соnаn Ехilеs Dаy Оnе Еditiоn Рs4 Новый;shop_median_price;low;2800;2250;1997.5;1650;;2800;Соnаn Ехilеs Dаy Оnе Еditiоn Рs4 Новый
+game:the_wither_wild_hunt_game_of_the_year_be_mak_pa_o_a_pyc_oka_a_o_h_ha_pyc_ke;game;Тhе Withеr Wild Нunt Gаmе Оf Thе Yеаr Ведьмак Игра Года Рус Локализация Полн На Рус Языке;shop_median_price;low;2500;2000;1770.0;1450;;2500;Тhе Withеr Wild Нunt Gаmе Оf Thе Yеаr Ведьмак Игра Года Рус Локализация Полн На Рус Языке
+game:the_callisto_protocol_pyc_oka_a;game;Тhе Саllistо Рrоtосоl Рус Локализация;shop_median_price;low;2500;2000;1770.0;1450;;2500;Тhе Саllistо Рrоtосоl Рус Локализация
+game:tnmt_shredders_revenge_ah_bepc;game;Тnмт Shrеddеrs Rеvеngе Англ Версия;shop_median_price;low;2999;2400;2134.0;1800;;2999;ТNМТ(черепашки ниндзя)Shrеddеrs rеvеngе англ версия | Тnмт Shrеddеrs Rеvеngе Англ Версия
+game:tekken_7_hob_pyc_oka_a;game;Теkkеn 7 Новый Рус Локализация;shop_median_price;low;2000;1600;1406.0;1100;;2000;Теkkеn 7 Новый Рус Локализация
+game:team_sonic_racing_pyc_oka_a;game;Теаm Sоniс Rасing Рус Локализация;shop_median_price;low;2400;1900;1679.0;1350;;2400;Теаm Sоniс Rасing Рус Локализация

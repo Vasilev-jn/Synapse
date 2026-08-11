@@ -1,0 +1,225 @@
+[
+  {
+    "external_id": "sample-console-ps4-slim-001",
+    "title": "PlayStation 4 Slim 500GB",
+    "price": 17000,
+    "currency": "RUB",
+    "address": "Москва",
+    "delivery": {
+      "status": "available",
+      "min_price_rub": 231,
+      "text": "доставка от 231 ₽"
+    },
+    "description": "Консоль в хорошем состоянии, полный комплект: приставка, один геймпад, HDMI и кабель питания.",
+    "items": [
+      {
+        "name": "PlayStation 4 Slim 500GB",
+        "canonical_name": "PlayStation 4 Slim 500GB",
+        "item_type": "console",
+        "platform": "PS4",
+        "quantity": 1,
+        "estimated_sale_price_rub": 15000
+      }
+    ],
+    "evaluation": {
+      "decision": "skip",
+      "recognized_items_count": 1,
+      "unknown_items_count": 0,
+      "risks": ["listing_price_above_baseline"]
+    },
+    "profit": {
+      "buy_total_rub": 17231,
+      "expected_sale_total_rub": 15000,
+      "expected_profit_rub": -2231
+    },
+    "source_shape": "browser_extracted_listing"
+  },
+  {
+    "external_id": "sample-console-kit-ps5-digital-002",
+    "title": "PlayStation 5 Slim Digital комплект",
+    "price": 38000,
+    "currency": "RUB",
+    "address": "Воронеж",
+    "delivery": {
+      "status": "available_price_unknown",
+      "min_price_rub": null,
+      "text": "доставка есть, цена не найдена"
+    },
+    "description": "Консоль в идеальном состоянии. В комплекте два геймпада DualSense, зарядная станция, все провода.",
+    "items": [
+      {
+        "name": "PlayStation 5 Slim Digital",
+        "canonical_name": "PlayStation 5 Slim Digital",
+        "item_type": "console",
+        "platform": "PS5",
+        "quantity": 1,
+        "estimated_sale_price_rub": 40000
+      },
+      {
+        "name": "DualSense",
+        "canonical_name": "DualSense",
+        "item_type": "accessory",
+        "platform": "PS5",
+        "quantity": 2,
+        "estimated_sale_price_rub": 4000
+      },
+      {
+        "name": "Зарядная станция DualSense",
+        "canonical_name": "DualSense Charging Station",
+        "item_type": "accessory",
+        "platform": "PS5",
+        "quantity": 1,
+        "estimated_sale_price_rub": 1000
+      }
+    ],
+    "evaluation": {
+      "decision": "good",
+      "recognized_items_count": 3,
+      "unknown_items_count": 0,
+      "risks": ["delivery_price_unknown"]
+    },
+    "profit": {
+      "buy_total_rub": 38000,
+      "expected_sale_total_rub": 49000,
+      "expected_profit_rub": 11000
+    },
+    "source_shape": "browser_extracted_listing"
+  },
+  {
+    "external_id": "sample-game-physical-003",
+    "title": "Spider-Man PS4 диск",
+    "price": 1100,
+    "currency": "RUB",
+    "address": "Москва",
+    "delivery": {
+      "status": "available",
+      "min_price_rub": 101,
+      "text": "доставка от 101 ₽"
+    },
+    "description": "Физический диск для PlayStation 4, русские субтитры и интерфейс, состояние хорошее.",
+    "items": [
+      {
+        "name": "Spider-Man",
+        "canonical_name": "Marvel's Spider-Man",
+        "item_type": "game",
+        "platform": "PS4",
+        "quantity": 1,
+        "estimated_sale_price_rub": 1200
+      }
+    ],
+    "evaluation": {
+      "decision": "check",
+      "recognized_items_count": 1,
+      "unknown_items_count": 0,
+      "risks": ["small_margin"]
+    },
+    "profit": {
+      "buy_total_rub": 1201,
+      "expected_sale_total_rub": 1200,
+      "expected_profit_rub": -1
+    },
+    "source_shape": "browser_extracted_listing"
+  },
+  {
+    "external_id": "sample-accessory-dualshock-004",
+    "title": "Геймпад DualShock 4",
+    "price": 1200,
+    "currency": "RUB",
+    "address": "Казань",
+    "delivery": {
+      "status": "not_found",
+      "min_price_rub": null,
+      "text": "доставка не найдена"
+    },
+    "description": "Оригинальный DualShock 4, стики без дрифта, кнопки работают.",
+    "items": [
+      {
+        "name": "DualShock 4",
+        "canonical_name": "DualShock 4",
+        "item_type": "accessory",
+        "platform": "PS4",
+        "quantity": 1,
+        "estimated_sale_price_rub": 1300
+      }
+    ],
+    "evaluation": {
+      "decision": "check",
+      "recognized_items_count": 1,
+      "unknown_items_count": 0,
+      "risks": ["condition_requires_manual_check"]
+    },
+    "profit": {
+      "buy_total_rub": 1200,
+      "expected_sale_total_rub": 1300,
+      "expected_profit_rub": 100
+    },
+    "source_shape": "browser_extracted_listing"
+  },
+  {
+    "external_id": "sample-large-lot-005",
+    "title": "Комплект PS4 Pro с играми и аксессуарами",
+    "price": 28000,
+    "currency": "RUB",
+    "address": "Екатеринбург",
+    "delivery": {
+      "status": "available",
+      "min_price_rub": 189,
+      "text": "доставка от 189 ₽"
+    },
+    "description": "Большой комплект: PlayStation 4 Pro 1TB, два DualShock 4, зарядная станция, HDMI, кабель питания, диски GTA V, God of War, The Last of Us Remastered.",
+    "items": [
+      {
+        "name": "PlayStation 4 Pro 1TB",
+        "canonical_name": "PlayStation 4 Pro 1TB",
+        "item_type": "console",
+        "platform": "PS4",
+        "quantity": 1,
+        "estimated_sale_price_rub": 20000
+      },
+      {
+        "name": "DualShock 4",
+        "canonical_name": "DualShock 4",
+        "item_type": "accessory",
+        "platform": "PS4",
+        "quantity": 2,
+        "estimated_sale_price_rub": 1300
+      },
+      {
+        "name": "GTA V",
+        "canonical_name": "Grand Theft Auto V",
+        "item_type": "game",
+        "platform": "PS4",
+        "quantity": 1,
+        "estimated_sale_price_rub": 1200
+      },
+      {
+        "name": "God of War",
+        "canonical_name": "God of War",
+        "item_type": "game",
+        "platform": "PS4",
+        "quantity": 1,
+        "estimated_sale_price_rub": 1000
+      },
+      {
+        "name": "The Last of Us Remastered",
+        "canonical_name": "The Last of Us Remastered",
+        "item_type": "game",
+        "platform": "PS4",
+        "quantity": 1,
+        "estimated_sale_price_rub": 1100
+      }
+    ],
+    "evaluation": {
+      "decision": "check",
+      "recognized_items_count": 5,
+      "unknown_items_count": 0,
+      "risks": ["large_lot_requires_manual_photo_check"]
+    },
+    "profit": {
+      "buy_total_rub": 28189,
+      "expected_sale_total_rub": 25900,
+      "expected_profit_rub": -2289
+    },
+    "source_shape": "browser_extracted_listing"
+  }
+]

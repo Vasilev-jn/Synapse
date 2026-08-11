@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Категории{% endblock %}
+{% block content %}
+<h1>Категории</h1>
+{% for error in errors %}<div class="error">{{ error }}</div>{% endfor %}
+<section class="panel">
+  <h2>Добавить подкатегорию</h2>
+  <form method="post" action="/categories/add" class="filters">
+    <select name="parent_id">{% for c in categories %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}</select>
+    <input name="name" placeholder="Название" required>
+    <button>Добавить</button>
+  </form>
+</section>
+<section class="panel">
+  <h2>Дерево</h2>
+  {% macro node(c) %}
+    <li>{{ c.name }} {% if c.is_system %}<span class="pill">системная</span>{% else %}
+      <form method="post" action="/categories/{{ c.id }}/delete" class="inline" onsubmit="return confirm('Удалить категорию?')"><button>Удалить</button></form>{% endif %}
+      {% if c.children %}<ul>{% for child in c.children %}{{ node(child) }}{% endfor %}</ul>{% endif %}
+    </li>
+  {% endmacro %}
+  <ul class="tree">{% for root in roots %}{{ node(root) }}{% endfor %}</ul>
+</section>
+{% endblock %}

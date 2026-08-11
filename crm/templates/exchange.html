@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ page_title }}</h1>
+    <p class="page-subtitle">Файл импорта попадает только во внешнюю аналитику и не создаёт товары в “Купил” или “Продано”.</p>
+  </div>
+</div>
+
+{% if imported %}
+<div class="notice">{{ imported }}</div>
+{% endif %}
+{% if sent %}
+<div class="notice">{{ sent }}</div>
+{% endif %}
+{% if error %}
+<div class="error">{{ error }}</div>
+{% endif %}
+
+<section class="exchange-grid">
+  <div class="panel exchange-panel">
+    <div class="stats-panel-head">
+      <h2>P2P-экспорт</h2>
+      <span>queue/current_export.json</span>
+    </div>
+    <p>Формирует чистый JSON только из несинхронизированных строк. Дальше файл забирает croc-воркер.</p>
+    <form method="post" action="/exchange/export">
+      <button class="primary">Поставить в очередь</button>
+    </form>
+  </div>
+
+  <div class="panel exchange-panel">
+    <div class="stats-panel-head">
+      <h2>Автоприём</h2>
+      <span>croc</span>
+    </div>
+    <p>Приёмный воркер слушает личный код `sync_to_MY_ID` и складывает входящие JSON в аналитику.</p>
+  </div>
+
+  <div class="panel exchange-panel">
+    <div class="stats-panel-head">
+      <h2>Импорт</h2>
+      <span>только внешняя аналитика</span>
+    </div>
+    <form class="import-form" method="post" action="/exchange/import" enctype="multipart/form-data">
+      <label>
+        Файл выгрузки CRM
+        <input id="inputFile" type="file" name="file" accept=".json,application/json" required>
+      </label>
+      <button class="primary">Загрузить</button>
+    </form>
+  </div>
+</section>
+
+<section class="metric-grid bought-metrics">
+  <div class="metric"><span>Внешних продаж</span><strong>{{ analysis_summary.sold_count }}</strong></div>
+  <div class="metric"><span>Источников</span><strong>{{ analysis_summary.source_count }}</strong></div>
+  <div class="metric"><span>Выручка по импортам</span><strong>{{ money(analysis_summary.revenue) }}</strong></div>
+  <div class="metric"><span>Профит по импортам</span><strong>{{ money(analysis_summary.profit) }}</strong></div>
+</section>
+
+<section class="panel table-scroll">
+  <div class="stats-panel-head">
+    <h2>Что чаще продаётся по импортам</h2>
+    <span>Для подсказок “что лучше продаётся и за сколько”</span>
+  </div>
+  <table class="stats-table external-sales-table">
+    <thead>
+    <tr><th>Товар</th><th>Категория</th><th>Продаж</th><th>Средняя цена</th><th>Средний профит</th><th>Источник</th></tr>
+    </thead>
+    <tbody>
+    {% for row in analysis_summary.top_titles %}
+    <tr>
+      <td><strong>{{ row.title }}</strong></td>
+      <td>{{ row.category }}</td>
+      <td>{{ row.count }}</td>
+      <td>{{ money(row.average_price) }}</td>
+      <td>{{ money(row.average_profit) }}</td>
+      <td>{{ row.sources_label }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6" class="empty-state">Импортированных продаж пока нет.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section class="panel table-scroll">
+  <div class="stats-panel-head">
+    <h2>История импортов</h2>
+    <span>Дубликаты одного и того же файла не добавляются повторно</span>
+  </div>
+  <table class="stats-table imports-table">
+    <thead>
+    <tr><th>Дата импорта</th><th>Источник</th><th>Файл</th><th>Товаров</th><th>Продаж</th><th>Новых</th><th>Обновлено</th></tr>
+    </thead>
+    <tbody>
+    {% for row in imports %}
+    <tr>
+      <td>{{ datetime_label(row.imported_at) }}</td>
+      <td>{{ row.source_name or row.source_key }}</td>
+      <td>{{ row.filename or "—" }}</td>
+      <td>{{ row.item_count }}</td>
+      <td>{{ row.sold_count }}</td>
+      <td>{{ row.created_count }}</td>
+      <td>{{ row.updated_count }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="7" class="empty-state">Импортов пока нет.</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endblock %}

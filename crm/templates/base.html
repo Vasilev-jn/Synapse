@@ -1,0 +1,60 @@
+﻿<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Купил{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/app.css') }}?v=wallpaper-44">
+  <link rel="stylesheet" href="{{ url_for('static', path='/liquid.css') }}?v=liquid-glass-24">
+</head>
+<body class="crm-liquid">
+  <div class="bg-orb orb-a" aria-hidden="true"></div>
+  <div class="bg-orb orb-b" aria-hidden="true"></div>
+  <div class="bg-orb orb-c" aria-hidden="true"></div>
+  <header class="topbar liquid-topbar">
+    {% set current_path = request.url.path %}
+    <a class="topbar-brand synapse-brand" href="/bought" aria-label="Synapse CRM">
+      <img src="{{ url_for('static', path='/synapse-logo.png') }}" alt="Synapse">
+    </a>
+    <nav class="topbar-nav" aria-label="Основные разделы">
+      <a class="topbar-tab {% if current_path.startswith('/bought') or current_path == '/' %}active{% endif %}" href="/bought">Купил</a>
+      <a class="topbar-tab {% if current_path.startswith('/sold') %}active{% endif %}" href="/sold">Продано</a>
+      <a class="topbar-tab {% if current_path.startswith('/stats') %}active{% endif %}" href="/stats">Статистика</a>
+      <a class="topbar-tab {% if current_path.startswith('/history') %}active{% endif %}" href="/history">История</a>
+      <a class="topbar-tab {% if current_path.startswith('/market') %}active{% endif %}" href="/market">Маркет</a>
+      <a class="topbar-tab {% if current_path.startswith('/catalog') %}active{% endif %}" href="/catalog">Каталог</a>
+      <a class="topbar-tab {% if current_path.startswith('/categories') %}active{% endif %}" href="/categories">Категории</a>
+    </nav>
+    <div class="topbar-tools">
+      <label class="setting-toggle topbar-setting">
+        <input type="checkbox" data-delete-warning-toggle>
+        <span>Спрашивать перед удалением</span>
+      </label>
+      <form method="post" action="/exchange/export">
+        <button class="button small" type="submit">Экспорт</button>
+      </form>
+      <form class="topbar-import-form" method="post" action="/exchange/import" enctype="multipart/form-data">
+        <label class="button small import-button" for="inputFile">Импорт</label>
+        <input id="inputFile" type="file" name="file" accept=".json,application/json" required data-auto-submit-file>
+      </form>
+    </div>
+  </header>
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+  <div class="confirm-toast" data-delete-confirm hidden>
+    <div class="confirm-title">Удалить товар?</div>
+    <div class="confirm-text">ID: <strong data-delete-confirm-id></strong></div>
+    <label class="confirm-check">
+      <input type="checkbox" data-delete-warning-disable>
+      <span>Больше не спрашивать</span>
+    </label>
+    <div class="confirm-actions">
+      <button type="button" data-delete-cancel>Отмена</button>
+      <button type="button" data-delete-submit>Удалить</button>
+    </div>
+  </div>
+  <script src="{{ url_for('static', path='/app.js') }}?v=sales-line-chart-1"></script>
+</body>
+</html>
+

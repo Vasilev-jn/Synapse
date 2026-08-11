@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ page_title }}</h1>
+  </div>
+</div>
+
+{% if imported %}
+<div class="notice">{{ imported }}</div>
+{% endif %}
+{% if sent %}
+<div class="notice">{{ sent }}</div>
+{% endif %}
+{% if deleted %}
+<div class="notice">{{ deleted }}</div>
+{% endif %}
+{% if error %}
+<div class="error">{{ error }}</div>
+{% endif %}
+
+<section class="history-layout">
+  <div class="panel history-panel">
+    <div class="stats-panel-head">
+      <h2>История изменений</h2>
+      <span>Карточки, закупки и продажи</span>
+    </div>
+    <div class="history-list">
+      {% for event in events %}
+      <article class="history-event {{ event.tone }}">
+        <div class="history-time">{{ datetime_label(event.at) }}</div>
+        <div class="history-dot" title="{{ event.kind }}">{{ event.icon }}</div>
+        <div class="history-card">
+          <div class="history-head">
+            <strong>{{ event.title }}</strong>
+            <span>{{ event.kind }}</span>
+          </div>
+          <div class="history-item">
+            <a href="/items/{{ event.item_id }}/edit">{{ event.code }}</a>
+            <span>{{ event.name }}</span>
+          </div>
+          {% if event.text %}
+          <p>{{ event.text }}</p>
+          {% endif %}
+        </div>
+      </article>
+      {% else %}
+      <div class="empty-state">Событий пока нет.</div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <aside class="history-side">
+    <section class="panel bot-api-panel">
+    {% set api_summary = market_api_summary | default({"batches_count": 0, "raw_count": 0, "unique_count": 0, "duplicate_count": 0, "last_import_at": none, "recent": [], "recent_listings": []}) %}
+    <div class="stats-panel-head">
+      <h2>Бот API</h2>
+      <span>POST /api/market/imports/avito</span>
+    </div>
+    <div data-market-api-summary data-endpoint="/api/market/imports/avito/summary">
+      <div class="api-transfer-summary">
+        <div class="api-transfer-main">
+          <span>Передано объявлений</span>
+          <strong data-api-raw-count>{{ api_summary.raw_count }}</strong>
+          <small data-api-meta>Дублей: <b data-api-duplicate-inline>{{ api_summary.duplicate_count }}</b></small>
+        </div>
+      </div>
+      <div class="api-transfer-list" data-api-recent-list>
+        {% for row in api_summary.recent_listings %}
+        <article class="api-transfer-row">
+          <div>
+            <strong>{{ row.title }}</strong>
+            <span class="muted-line">отправлено {{ row.sent_at_label }}</span>
+          </div>
+        </article>
+        {% else %}
+        <div class="empty-state compact-empty">Передач от бота пока нет.</div>
+        {% endfor %}
+      </div>
+    </div>
+    </section>
+
+    <section class="panel import-history-panel">
+    <div class="stats-panel-head">
+      <h2>История импортов</h2>
+      <span>{{ analysis_summary.sold_count }} внешних продаж</span>
+    </div>
+    <div class="import-history-list">
+      {% for row in imports %}
+      <article class="import-card">
+        <div>
+          <strong>{{ row.source_name or row.source_key }}</strong>
+          <span class="muted-line">{{ datetime_label(row.imported_at) }}</span>
+          <span class="muted-line">{{ row.filename or "—" }}</span>
+        </div>
+        <div class="import-facts">
+          <span>{{ row.item_count }} тов.</span>
+          <span>{{ row.sold_count }} прод.</span>
+          <span>{{ row.created_count }} нов.</span>
+        </div>
+        <form method="post" action="/exchange/imports/{{ row.id }}/delete" onsubmit="return confirm('Удалить этот импорт из аналитики?')">
+          <button class="button small danger-button">Удалить</button>
+        </form>
+      </article>
+      {% else %}
+      <div class="empty-state">Импортов пока нет.</div>
+      {% endfor %}
+    </div>
+    </section>
+  </aside>
+</section>
+{% endblock %}

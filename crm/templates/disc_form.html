@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+{% block title %}Добавить{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Добавить</h1>
+    <div class="page-subtitle">Диск, приставка или аксессуар</div>
+  </div>
+  <a class="button" href="/bought">Назад</a>
+</div>
+
+{% for error in errors %}
+<div class="error">{{ error }}</div>
+{% endfor %}
+
+{% set loc = values.get("localization", "full_ru") %}
+{% set selected_category_id = values.get("category_id", game_category.id|string) %}
+<form method="post" action="/bought/new-disc" class="panel wizard" data-disc-wizard autocomplete="off">
+  <div class="wizard-progress">
+    <span class="wizard-dot active">1</span>
+    <span class="wizard-dot">2</span>
+    <span class="wizard-dot">3</span>
+    <span class="wizard-dot">4</span>
+    <span class="wizard-dot">5</span>
+    <span class="wizard-dot">6</span>
+  </div>
+
+  <section class="wizard-step">
+    <h2>Укажите название</h2>
+    <label>
+      Название товара
+      <input id="catalog_name" name="disc_title" value="{{ values.get('disc_title', values.get('catalog_name', '')) }}" placeholder="Например, Call of Duty, PlayStation 4 или DualShock 4" autocomplete="new-password" required autofocus data-suggest-input="game-title">
+    </label>
+    <div class="chip-row suggestions" data-suggestions="game-title">
+      {% for suggestion in suggestions %}
+      <button type="button" class="chip" data-fill="#catalog_name" data-value="{{ suggestion.label }}" data-suggestion="{{ suggestion.search }}" data-category="{{ suggestion.category|default('game') }}" hidden>{{ suggestion.label }}</button>
+      {% endfor %}
+    </div>
+    <div class="wizard-actions end">
+      <button type="button" class="primary" data-next>Продолжить</button>
+    </div>
+  </section>
+
+  <section class="wizard-step" hidden>
+    <h2>Выберите категорию</h2>
+    <div class="choice-list">
+      <label class="choice-card">
+        <input type="radio" name="category_id" value="{{ game_category.id }}" data-item-category="game" {% if selected_category_id == game_category.id|string %}checked{% endif %}>
+        <span>Игры для приставок</span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="category_id" value="{{ console_category.id }}" data-item-category="console" {% if selected_category_id == console_category.id|string %}checked{% endif %}>
+        <span>Приставки</span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="category_id" value="{{ accessory_category.id }}" data-item-category="accessory" {% if selected_category_id == accessory_category.id|string %}checked{% endif %}>
+        <span>Аксессуары</span>
+      </label>
+    </div>
+    <div class="wizard-actions">
+      <button type="button" data-back>Назад</button>
+      <button type="button" class="primary" data-next>Продолжить</button>
+    </div>
+  </section>
+
+  <section class="wizard-step" data-category-scope="game console" hidden>
+    <h2>Характеристики</h2>
+    <div data-category-panel="game">
+      <div class="fixed-grid">
+        <div><span>Формат</span><strong>Физический</strong></div>
+        <div><span>Тип</span><strong>Диск</strong></div>
+      </div>
+      <div class="form-grid">
+        <label>
+          Тип издания
+          <input id="disc_edition" name="disc_edition" value="{{ values.get('disc_edition', values.get('edition', '')) }}" placeholder="Например, Deluxe Edition или обычное издание" autocomplete="new-password" data-suggest-input="edition">
+        </label>
+        <div class="wide chip-row suggestions" data-suggestions="edition" data-show-default="true" data-title-source="#catalog_name">
+          {% for suggestion in edition_suggestions %}
+          <button type="button" class="chip" data-fill="#disc_edition" data-value="{{ suggestion.label }}" data-suggestion="{{ suggestion.search }}" data-game-search="{{ suggestion.game_search }}" {% if suggestion.is_default %}data-default-suggestion="true"{% endif %} hidden>{{ suggestion.label }}</button>
+          {% endfor %}
+        </div>
+        <label>
+          Платформа
+          <select name="platform">
+            {% set selected_platform = values.get("platform", "PlayStation 4") %}
+            {% for p in platforms %}
+            <option value="{{ p }}" {% if selected_platform==p %}selected{% endif %}>{{ p }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div data-category-panel="console" hidden>
+      <div class="form-grid">
+        <label>
+          Версия
+          <select name="console_version">
+            <option value="">Выбрать</option>
+            {% set selected_version = values.get("console_version", values.get("model", "")) %}
+            {% for model in console_models %}
+            <option value="{{ model }}" {% if selected_version==model %}selected{% endif %}>{{ model }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>
+          Объём памяти
+          <select name="storage_size">
+            <option value="">Выбрать</option>
+            {% set selected_storage = values.get("storage_size", "") %}
+            {% for size in storage_sizes %}
+            <option value="{{ size }}" {% if selected_storage==size %}selected{% endif %}>{{ size }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="wizard-actions">
+      <button type="button" data-back>Назад</button>
+      <button type="button" class="primary" data-next>Продолжить</button>
+    </div>
+  </section>
+
+  <section class="wizard-step" data-category-scope="game" hidden>
+    <h2>Локализация</h2>
+    <div class="choice-list">
+      <label class="choice-card">
+        <input type="radio" name="localization" value="full_ru" {% if loc=="full_ru" %}checked{% endif %}>
+        <span>Русская озвучка, субтитры и интерфейс</span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="localization" value="ru_subs_ui" {% if loc=="ru_subs_ui" %}checked{% endif %}>
+        <span>Русские субтитры и интерфейс</span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="localization" value="ru_ui" {% if loc=="ru_ui" %}checked{% endif %}>
+        <span>Русский интерфейс</span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="localization" value="original" {% if loc=="original" %}checked{% endif %}>
+        <span>На языке оригинала</span>
+      </label>
+    </div>
+    <div class="wizard-actions">
+      <button type="button" data-back>Назад</button>
+      <button type="button" class="primary" data-next>Продолжить</button>
+    </div>
+  </section>
+
+  <section class="wizard-step" hidden>
+    <h2>Состояние</h2>
+    <div data-category-panel="game">
+      <div class="form-grid">
+        <label>
+          Поверхность диска
+          <select name="disc_surface">
+            <option value="">Выбрать</option>
+            {% set selected_surface = values.get("disc_surface", "") %}
+            {% for surface in disc_surfaces %}
+            <option value="{{ surface }}" {% if selected_surface==surface %}selected{% endif %}>{{ surface }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>
+          Проверка запуска
+          <select name="test_result">
+            <option value="">Выбрать</option>
+            {% set selected_test = values.get("test_result", "") %}
+            {% for result in test_results %}
+            <option value="{{ result }}" {% if selected_test==result %}selected{% endif %}>{{ result }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>
+          Комплект
+          <select name="completeness">
+            {% set selected_completeness = values.get("completeness", "Диск в коробке") %}
+            {% for item in game_completeness %}
+            <option value="{{ item }}" {% if selected_completeness==item %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div data-category-panel="console" hidden>
+      <div class="form-grid">
+        <label>
+          Состояние
+          <select name="console_condition">
+            {% set selected_console_condition = values.get("console_condition", "Работает") %}
+            {% for result in test_results %}
+            <option value="{{ result }}" {% if selected_console_condition==result %}selected{% endif %}>{{ result }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>
+          Джойстиков в комплекте
+          <input name="controllers_count" type="number" min="0" step="1" value="{{ values.get('controllers_count', '1') }}">
+        </label>
+        <label>
+          Полный комплект
+          <select name="console_complete" data-console-complete>
+            {% set selected_complete = values.get("console_complete", "yes") %}
+            <option value="yes" {% if selected_complete=="yes" %}selected{% endif %}>Да</option>
+            <option value="no" {% if selected_complete=="no" %}selected{% endif %}>Нет</option>
+          </select>
+        </label>
+        <div class="wide checkbox-group" data-missing-parts>
+          <span>Чего не хватает</span>
+          <label><input type="checkbox" name="missing_parts" value="HDMI-кабель"> HDMI-кабель</label>
+          <label><input type="checkbox" name="missing_parts" value="Кабель питания"> Кабель питания</label>
+          <label><input type="checkbox" name="missing_parts" value="Джойстик"> Джойстик</label>
+        </div>
+      </div>
+    </div>
+
+    <div data-category-panel="accessory" hidden>
+      <div class="form-grid">
+        <label>
+          Тип аксессуара
+          <select name="accessory_type" data-accessory-type>
+            {% set selected_accessory = values.get("accessory_type", "") %}
+            <option value="">Определить по названию</option>
+            {% for type in accessory_types %}
+            <option value="{{ type }}" {% if selected_accessory==type %}selected{% endif %}>{{ type }}</option>
+            {% endfor %}
+          </select>
+        </label>
+        <label>
+          Видимые следы использования
+          <select name="visible_wear">
+            {% set selected_wear = values.get("visible_wear", "no") %}
+            <option value="no" {% if selected_wear=="no" %}selected{% endif %}>Нет</option>
+            <option value="yes" {% if selected_wear=="yes" %}selected{% endif %}>Да</option>
+          </select>
+        </label>
+        <label data-gamepad-originality hidden>
+          Оригинальность
+          <select name="originality">
+            {% set selected_originality = values.get("originality", "Неизвестно") %}
+            {% for value in originality_values %}
+            <option value="{{ value }}" {% if selected_originality==value %}selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="wizard-actions">
+      <button type="button" data-back>Назад</button>
+      <button type="button" class="primary" data-next>Продолжить</button>
+    </div>
+  </section>
+
+  <section class="wizard-step" hidden>
+    <h2>Цена и учёт</h2>
+    <div class="form-grid">
+      <label>
+        Дата покупки
+        <input type="date" name="purchased_at" value="{{ values.get('purchased_at', today) }}">
+      </label>
+      <label>
+        Источник
+        <select name="source">
+          {% set selected_source = values.get("source", "Авито") %}
+          {% for source in sources %}
+          <option value="{{ source }}" {% if selected_source==source %}selected{% endif %}>{{ source }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Цена покупки, ₽
+        <input type="number" name="calculated_cost" value="{{ values.get('calculated_cost', '') }}" placeholder="Например, 1200" min="0" step="1">
+      </label>
+      <label>
+        Ожидаемая цена продажи, ₽
+        <input type="number" name="expected_sale_price" value="{{ values.get('expected_sale_price', '') }}" placeholder="Например, 1800" min="0" step="1">
+      </label>
+      <label class="wide">
+        Ссылка на объявление
+        <input name="source_url" value="{{ values.get('source_url', '') }}" placeholder="https://www.avito.ru/...">
+      </label>
+      <label class="wide">
+        Комментарий
+        <textarea name="comment" placeholder="Например, что проверить перед продажей">{{ values.get('comment', '') }}</textarea>
+      </label>
+    </div>
+    <div class="wizard-actions">
+      <button type="button" data-back>Назад</button>
+      <button type="submit" class="primary">Добавить</button>
+    </div>
+  </section>
+</form>
+{% endblock %}

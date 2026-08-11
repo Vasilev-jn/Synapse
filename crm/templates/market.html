@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Рыночные данные{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Рыночные данные</h1>
+    <p class="page-subtitle">Объявления бота для автоцен: сопоставляй с эталоном каталога или исключай мусор.</p>
+  </div>
+</div>
+<form class="filters market-filters" method="get">
+  <select name="matched"><option value="">Все</option><option value="yes" {% if matched=="yes" %}selected{% endif %}>Сопоставлено</option><option value="no" {% if matched=="no" %}selected{% endif %}>Не сопоставлено</option></select>
+  <button>Фильтр</button>
+</form>
+<section class="panel table-scroll market-table-panel">
+  <table class="market-table">
+    <tr><th>ID</th><th>Название</th><th>Цена</th><th>Формат</th><th>Тип</th><th>Платформа</th><th>Продавец</th><th>Ссылка</th><th>Сопоставление</th><th>Действия</th></tr>
+    {% for listing in listings %}
+    {% set match = listing.matches[-1] if listing.matches else None %}
+    <tr>
+      <td>{{ listing.external_id }}</td><td>{{ listing.title }}</td><td>{{ money(listing.price) }}</td><td>{{ listing.format }}</td><td>{{ listing.type }}</td><td>{{ listing.platform or "—" }}</td><td>{{ listing.seller_type }}{% if listing.is_shop %} / магазин{% endif %}</td>
+      <td>{% if listing.url %}<a href="{{ listing.url }}" target="_blank">Открыть</a>{% endif %}</td>
+      <td>{{ match.status if match else "—" }}{% if match and match.catalog_entry %}: {{ match.catalog_entry.name }}{% endif %}</td>
+      <td class="market-actions-cell">
+        <div class="market-actions">
+          <form method="post" action="/market/{{ listing.id }}/match" class="market-match-form">
+            <select name="catalog_entry_id"><option value="">Не выбрано</option>{% for e in catalog_entries %}<option value="{{ e.id }}" {% if match and match.catalog_entry_id==e.id %}selected{% endif %}>{{ e.name }}</option>{% endfor %}</select>
+            <select name="status">
+              <option {% if not match or match.status=="Подтверждено" %}selected{% endif %}>Подтверждено</option>
+              <option {% if match and match.status=="Неоднозначно" %}selected{% endif %}>Неоднозначно</option>
+            </select>
+            <div class="market-action-buttons">
+              <button type="submit">Сохранить</button>
+            </div>
+          </form>
+          <form method="post" action="/market/{{ listing.id }}/exclude" class="market-exclude-form">
+            <button type="submit">Исключить</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    {% else %}<tr><td colspan="10">Рыночные объявления ещё не импортированы</td></tr>{% endfor %}
+  </table>
+</section>
+{% endblock %}

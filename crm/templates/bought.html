@@ -1,0 +1,194 @@
+﻿{% extends "base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% macro filter_select(name, label, options, filters) %}
+<select name="{{ name }}" aria-label="{{ label }}">
+  <option value="">{{ label }}</option>
+  {% for option in options %}
+  <option value="{{ option }}" {% if filters[name] == option %}selected{% endif %}>{{ option }}</option>
+  {% endfor %}
+</select>
+{% endmacro %}
+{% macro render_inventory_table(items, empty_text, is_sold_page) %}
+<section class="panel table-scroll" data-inventory-results>
+  <h2>{{ "Таблица проданных" if is_sold_page else "Таблица купленных" }}</h2>
+  <table class="bought-table fixed-inventory-table">
+    <colgroup>
+      <col class="col-id">
+      <col class="col-title">
+      <col class="col-category">
+      <col class="col-details">
+      <col class="col-condition">
+      <col class="col-completeness">
+      <col class="col-cost">
+      <col class="col-actions">
+    </colgroup>
+    <thead>
+    <tr>
+      <th>ID</th>
+      <th>Название</th>
+      <th>Категория</th>
+      <th>Характеристики</th>
+      <th>Состояние</th>
+      <th>Комплект</th>
+      <th>Купил</th>
+      <th>Действия</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in items %}
+    {% set listing_price = item_listing_price(item) %}
+    <tr {% if item.game_detail and not is_sold_page %}data-ad-list-row data-ad-id="{{ item.id }}" data-ad-title="{{ item_display_name(item) }}" data-ad-price="{{ money(listing_price) if listing_price is not none else 'без цены' }}"{% endif %}>
+      <td>
+        <div class="inventory-id-cell">
+          {% if item.game_detail and not is_sold_page %}
+          <label class="ad-select-control" title="Добавить в список объявления">
+            <input type="checkbox" data-ad-list-checkbox>
+            <span class="ad-select-box" aria-hidden="true"></span>
+          </label>
+          {% endif %}
+          <span class="plain-id age-id {{ item_age_class(item) }}" title="{{ item_age_title(item) }}">{{ item_short_code(item) }}</span>
+        </div>
+      </td>
+      <td>
+        <strong>{{ item_display_name(item) }}</strong>
+        {% if item.game_detail and item.game_detail.completeness_comment %}
+        <span class="muted-line">{{ item.game_detail.completeness_comment }}</span>
+        {% elif item.console_detail and item.console_detail.storage_size %}
+        <span class="muted-line">{{ item.console_detail.storage_size }}</span>
+        {% elif item.accessory_detail and item.accessory_detail.accessory_type %}
+        <span class="muted-line">{{ item.accessory_detail.accessory_type }}</span>
+        {% endif %}
+      </td>
+      <td>{{ item.category.name }}</td>
+      <td>
+        {% if item.game_detail %}
+        <span class="muted-line">Платформа: {{ item.game_detail.platform or "—" }}</span>
+        <span class="muted-line">Интерфейс: {{ item.game_detail.interface_language or "—" }}</span>
+        <span class="muted-line">Субтитры: {{ item.game_detail.subtitles_language or "—" }}</span>
+        <span class="muted-line">Озвучка: {{ item.game_detail.voice_language or "—" }}</span>
+        {% elif item.console_detail %}
+        <span class="muted-line">Версия: {{ item.console_detail.model or "—" }}</span>
+        <span class="muted-line">Память: {{ item.console_detail.storage_size or "—" }}</span>
+        <span class="muted-line">Джойстиков: {{ item.console_detail.controllers_count if item.console_detail.controllers_count is not none else "—" }}</span>
+        {% elif item.accessory_detail %}
+        <span class="muted-line">Тип: {{ item.accessory_detail.accessory_type or "—" }}</span>
+        <span class="muted-line">Оригинальность: {{ item.accessory_detail.originality or "—" }}</span>
+        {% else %}
+        —
+        {% endif %}
+      </td>
+      <td>
+        {% if item.game_detail %}
+        <span class="muted-line">{{ item.game_detail.disc_surface or "—" }}</span>
+        <span class="muted-line">{{ item.game_detail.test_result or "—" }}</span>
+        {% elif item.console_detail %}
+        <span class="muted-line">{{ item.console_detail.condition or "—" }}</span>
+        {% elif item.accessory_detail %}
+        <span class="muted-line">{{ item.accessory_detail.condition or "—" }}</span>
+        {% else %}
+        —
+        {% endif %}
+      </td>
+      <td>
+        {% if item.game_detail %}
+        {{ item.game_detail.completeness or "—" }}
+        {% elif item.console_detail %}
+        <span class="muted-line">{{ item.console_detail.completeness or "—" }}</span>
+        {% if item.console_detail.comment %}
+        <span class="muted-line">{{ item.console_detail.comment }}</span>
+        {% endif %}
+        {% elif item.accessory_detail and item.accessory_detail.comment %}
+        {{ item.accessory_detail.comment }}
+        {% else %}
+        —
+        {% endif %}
+      </td>
+      <td>{{ cost_label(item.calculated_cost) }}</td>
+      <td class="actions-cell">
+        <div class="row-actions">
+          <a class="button icon-button" href="/items/{{ item.id }}/edit" title="Редактировать" aria-label="Редактировать">⚙</a>
+          {% if item.status == "Есть" %}
+          <a class="button icon-button primary" href="/items/{{ item.id }}/sell" title="Продать" aria-label="Продать">✓</a>
+          {% else %}
+          <form method="post" action="/items/{{ item.id }}/available" onsubmit="return confirm('Вернуть товар в наличие?')">
+            <button class="icon-button" title="Вернуть" aria-label="Вернуть">↩</button>
+          </form>
+          {% endif %}
+          <form method="post" action="/items/{{ item.id }}/delete" data-delete-form data-delete-id="{{ item_short_code(item) }}">
+            <button class="icon-button" title="Удалить" aria-label="Удалить">×</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    {% else %}
+    <tr>
+      <td colspan="8" class="empty-state">{{ empty_text }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</section>
+{% endmacro %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ page_title }}</h1>
+  </div>
+  {% if show_add_button %}
+  <div class="page-actions">
+    <button class="button" type="button" data-ad-list-toggle>Сформировать список</button>
+    <button class="button small" type="button" data-ad-list-cancel hidden>Отмена</button>
+    <a class="button primary" href="/bought/new-disc">Добавить</a>
+  </div>
+  {% endif %}
+</div>
+
+{% if created_id %}
+<div class="toast" role="status" aria-live="polite">
+  Добавлен товар. ID: <strong>{{ created_id }}</strong>
+</div>
+{% endif %}
+
+<section class="metric-grid bought-metrics">
+  {% if is_sold_page %}
+  <div class="metric"><span>Выручка</span><strong>{{ money(stats.sold_revenue) }}</strong></div>
+  <div class="metric"><span>Прибыль</span><strong>{{ money(stats.sold_profit) }}</strong></div>
+  <div class="metric"><span>Продано, шт</span><strong>{{ stats.sold }}</strong></div>
+  <div class="metric metric-breakdown">
+    <span>Результат продаж</span>
+    <div class="metric-triplet">
+      <strong class="metric-good" title="В плюс">{{ stats.sold_positive }}</strong>
+      <strong class="metric-neutral" title="Почти в ноль">{{ stats.sold_near_zero }}</strong>
+      <strong class="metric-bad" title="В минус">{{ stats.sold_negative }}</strong>
+    </div>
+  </div>
+  {% else %}
+  <div class="metric"><span>Всего товаров</span><strong>{{ stats.total }}</strong></div>
+  <div class="metric"><span>В наличии</span><strong>{{ stats.available }}</strong></div>
+  <div class="metric"><span>Продано</span><strong>{{ stats.sold }}</strong></div>
+  <div class="metric"><span>Остаток по себестоимости</span><strong>{{ money(stats.stock_cost) }}</strong></div>
+  {% endif %}
+</section>
+
+<form class="filters inventory-filters" method="get" action="{{ request.url.path }}" data-auto-filter>
+  <div class="filter-search">
+    <input name="q" value="{{ filters.q }}" placeholder="Поиск по названию, коду или модели" autocomplete="off" data-suggest-input="inventory-search">
+    <div class="chip-row suggestions" data-suggestions="inventory-search">
+      {% for suggestion in search_suggestions %}
+      <button type="button" class="chip" data-filter-chip data-filter-target="q" data-value="{{ suggestion.label }}" data-suggestion="{{ suggestion.search }}" hidden>{{ suggestion.label }}</button>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="column-filter-grid">
+    {{ filter_select("category_filter", "Все категории", filter_options.category_filter, filters) }}
+    {{ filter_select("condition_filter", "Все состояния", filter_options.condition_filter, filters) }}
+    {{ filter_select("completeness_filter", "Все комплекты", filter_options.completeness_filter, filters) }}
+    <div class="cost-range-filter" aria-label="Фильтр по цене покупки">
+      <input name="cost_min" value="{{ filters.cost_min }}" inputmode="decimal" placeholder="Купил от">
+      <input name="cost_max" value="{{ filters.cost_max }}" inputmode="decimal" placeholder="Купил до">
+    </div>
+  </div>
+</form>
+
+{{ render_inventory_table(items, empty_text, is_sold_page) }}
+{% endblock %}

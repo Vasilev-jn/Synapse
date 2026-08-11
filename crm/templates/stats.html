@@ -1,0 +1,322 @@
+{% extends "base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>{{ page_title }}</h1>
+  </div>
+</div>
+
+<section class="metric-grid bought-metrics">
+  <div class="metric"><span>Выручка</span><strong>{{ money(stats.sold_revenue) }}</strong></div>
+  <div class="metric"><span>Прибыль</span><strong>{{ money(stats.sold_profit) }}</strong></div>
+  <div class="metric"><span>Средняя продажа</span><strong>{{ money(stats.sold_average_price) }}</strong></div>
+  <div class="metric"><span>Маржа</span><strong>{{ "%.1f"|format(stats.sold_margin_percent) }}%</strong></div>
+</section>
+
+<section class="stats-dashboard">
+  <div class="analytics-sales-layout stats-wide">
+  <div class="panel stats-panel sales-panel">
+    <div class="stats-panel-head">
+      <h2>Продажи</h2>
+      <div class="sales-chart-head-tools">
+        <div class="sales-chart-periods" role="group" aria-label="Период графика продаж">
+          <button class="button small sales-chart-period active" type="button" data-sales-chart-period="month">Месяц</button>
+          <button class="button small sales-chart-period" type="button" data-sales-chart-period="weeks">Недели</button>
+          <button class="button small sales-chart-period" type="button" data-sales-chart-period="year">Год</button>
+        </div>
+        <span data-sales-chart-range>{{ stats.sales_chart.range_label }}</span>
+      </div>
+    </div>
+    <div class="sales-line-chart" data-sales-chart data-endpoint="/api/stats/sales-chart" data-period="{{ stats.sales_chart.period }}">
+      <svg class="sales-line-svg" viewBox="0 0 1000 300" preserveAspectRatio="none" role="img" aria-label="График продаж"></svg>
+      <div class="sales-line-axis"></div>
+    </div>
+  </div>
+
+  <aside class="panel stats-panel external-analytics-panel">
+    <div class="stats-panel-head">
+      <h2>Внешняя аналитика</h2>
+      <span>не влияет на твои продажи</span>
+    </div>
+    <section class="external-analytics-stack">
+      <div class="metric"><span>Внешних продаж</span><strong>{{ analysis_summary.sold_count }}</strong></div>
+      <div class="metric"><span>Источников</span><strong>{{ analysis_summary.source_count }}</strong></div>
+      <div class="metric"><span>Выручка</span><strong>{{ money(analysis_summary.revenue) }}</strong></div>
+      <div class="metric"><span>Профит</span><strong>{{ money(analysis_summary.profit) }}</strong></div>
+    </section>
+  </aside>
+  </div>
+
+  <div class="panel stats-panel result-panel">
+    <div class="stats-panel-head">
+      <h2>Результат продаж</h2>
+      <span>Порог нуля ±100 ₽</span>
+    </div>
+    <div class="result-card-body">
+      <div class="donut-wrap">
+        <div class="donut" style="background: {{ stats.result_donut_style }}"></div>
+        <div class="donut-center">{{ stats.sold }}</div>
+      </div>
+      <div class="stats-legend">
+        {% for segment in stats.result_segments %}
+        <div><span class="legend-dot {{ segment.class }}"></span>{{ segment.label }}<strong>{{ segment.count }}</strong></div>
+        {% endfor %}
+        {% if stats.sold_unknown_profit %}
+        <div><span class="legend-dot"></span>Без себестоимости<strong>{{ stats.sold_unknown_profit }}</strong></div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="panel stats-panel business-panel">
+    <div class="stats-panel-head">
+      <h2>Бизнес-коэффициенты</h2>
+      <span>Цвет показывает качество показателя</span>
+    </div>
+    <div class="business-metrics">
+      {% for metric in stats.business_metrics %}
+      <div class="business-metric {{ metric.class }}">
+        <span>{{ metric.label }}</span>
+        <strong>{{ metric.value }}</strong>
+        <small>{{ metric.caption }}</small>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="panel stats-panel stats-wide">
+    <div class="stats-panel-head">
+      <h2>Ценовые источники</h2>
+      <span>Zip теперь только fallback, автоцена пока не переключена</span>
+    </div>
+    <section class="price-source-summary">
+      <div class="price-source-strip">
+        <div><span>Всего</span><strong>{{ price_observations.total }}</strong></div>
+        <div><span>Для автоцены</span><strong>{{ price_observations.usable_count }}</strong></div>
+        <div><span>Только аналитика</span><strong>{{ price_observations.analytics_only_count }}</strong></div>
+      </div>
+      <div class="price-source-breakdown">
+        <span class="price-source-caption">По источникам</span>
+        <div class="metric-source-list" style="--price-source-total: {{ price_observations.total or 1 }}">
+          {% for row in price_observations.by_type %}
+          <div class="metric-source-row" style="--source-count: {{ row.count }}">
+            <span>{{ row.label }}</span>
+            <strong>{{ row.count }}</strong>
+            <i></i>
+          </div>
+          {% else %}
+          <span>Пока нет данных</span>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+    <table class="stats-table price-observations-table">
+      <thead>
+      <tr><th>Тип</th><th>Товар</th><th>Цена</th><th>С доставкой</th><th>Дата</th><th>Автоцена</th></tr>
+      </thead>
+      <tbody>
+      {% for row in price_observations.recent %}
+      <tr>
+        <td>{{ price_observation_label(row.observation_type) }}</td>
+        <td>
+          {% if row.reference_url %}
+          <a href="{{ row.reference_url }}" target="_blank" rel="noopener">{{ row.item_title }}</a>
+          {% else %}
+          {{ row.item_title }}
+          {% endif %}
+          {% if row.platform_or_model %}<span class="muted-line">{{ row.platform_or_model }}</span>{% endif %}
+        </td>
+        <td>{{ money(row.price) }}</td>
+        <td>{{ money(row.price_with_delivery) if row.price_with_delivery is not none else "—" }}</td>
+        <td>{{ datetime_label(row.observed_at) }}</td>
+        <td>
+          {% if row.usable_for_auto_price %}
+          да
+          {% else %}
+          нет
+          <span class="muted-line">{{ "%.0f"|format(row.confidence * 100) }}% уверенность</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="empty-state">Ценовых наблюдений пока нет.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel stats-panel stats-wide">
+    <div class="stats-panel-head">
+      <h2>Примерный профит остатка</h2>
+      <span>Оценка по crm_profit_knowledge.zip, без записи цен в товары</span>
+    </div>
+    <section class="metric-grid valuation-metrics">
+      <div class="metric"><span>Чистыми после продажи</span><strong>{{ money(stats.rough_stock.estimated_net_revenue) }}</strong></div>
+      <div class="metric"><span>Примерная прибыль</span><strong class="{{ 'metric-good' if stats.rough_stock.estimated_profit > 100 else ('metric-bad' if stats.rough_stock.estimated_profit < -100 else 'metric-neutral') }}">{{ money(stats.rough_stock.estimated_profit) }}</strong></div>
+      <div class="metric"><span>Покрыто базой</span><strong>{{ stats.rough_stock.matched_count }} / {{ stats.rough_stock.total_count }}</strong></div>
+      <div class="metric metric-breakdown">
+        <span>Оценка по позициям</span>
+        <div class="metric-triplet">
+          <strong class="metric-good" title="В плюс">{{ stats.rough_stock.positive_count }}</strong>
+          <strong class="metric-neutral" title="Почти в ноль">{{ stats.rough_stock.near_zero_count }}</strong>
+          <strong class="metric-bad" title="В минус">{{ stats.rough_stock.negative_count }}</strong>
+        </div>
+      </div>
+    </section>
+    <div class="valuation-note">
+      ROI по оценённым товарам: <strong>{{ "%.1f"|format(stats.rough_stock.roi_percent) }}%</strong>.
+      Без оценки: <strong>{{ stats.rough_stock.unknown_count }}</strong>.
+    </div>
+  </div>
+
+  <div class="panel stats-panel stats-wide">
+    <div class="stats-panel-head">
+      <h2>Фактический профит по проданному</h2>
+      <span>Только реальные продажи из CRM</span>
+    </div>
+    <table class="stats-table profit-table">
+      <thead>
+      <tr><th>ID</th><th>Товар</th><th>Купил</th><th>Продал</th><th>Профит</th><th>Дата продажи</th></tr>
+      </thead>
+      <tbody>
+      {% for row in stats.sold_profit_rows %}
+      <tr>
+        <td><a class="plain-id age-id {{ item_age_class(row.item) }} stat-id-link" href="/items/{{ row.item.id }}/edit" title="{{ item_age_title(row.item) }}">{{ item_short_code(row.item) }}</a></td>
+        <td>{{ item_display_name(row.item) }}</td>
+        <td>{{ money(row.cost) }}</td>
+        <td>{{ money(row.sale_price) }}</td>
+        <td><strong class="{{ row.profit_class }}">{{ money(row.profit) }}</strong></td>
+        <td>{{ datetime_label(row.sold_at) }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="empty-state">Продаж пока нет.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel stats-panel stats-wide">
+    <div class="stats-panel-head">
+      <h2>Категории</h2>
+      <span>Структура базы</span>
+    </div>
+    <table class="stats-table">
+      <thead>
+      <tr><th>Категория</th><th>Всего</th><th>Есть</th><th>Продано</th><th>Доля</th></tr>
+      </thead>
+      <tbody>
+      {% for row in stats.category_rows %}
+      <tr>
+        <td>{{ row.name }}</td>
+        <td>{{ row.total }}</td>
+        <td>{{ row.available }}</td>
+        <td>{{ row.sold }}</td>
+        <td>
+          <div class="share-bar"><span style="width: {{ row.share }}%"></span></div>
+          <span class="muted-line">{{ row.share }}%</span>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5" class="empty-state">Данных пока нет.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div class="panel stats-panel stats-wide">
+    <div class="stats-panel-head">
+      <h2>Капитал по категориям</h2>
+      <span>Деньги в остатке, оценка базы и средний возраст товара</span>
+    </div>
+    <table class="stats-table capital-table">
+      <thead>
+      <tr><th>Категория</th><th>Есть</th><th>Продано</th><th>Вложено</th><th>Чистыми по базе</th><th>Потенциал</th><th>ROI оценки</th><th>Средний возраст</th></tr>
+      </thead>
+      <tbody>
+      {% for row in stats.capital_category_rows %}
+      <tr>
+        <td>
+          <strong>{{ row.name }}</strong>
+          <span class="muted-line">{{ row.coverage_label }} оценено базой</span>
+        </td>
+        <td>{{ row.available }}</td>
+        <td>{{ row.sold }}</td>
+        <td>
+          {{ money(row.stock_cost) }}
+          <div class="share-bar compact"><span style="width: {{ row.stock_share }}%"></span></div>
+        </td>
+        <td>{{ money(row.estimated_net) }}</td>
+        <td><strong class="{{ row.profit_class }}">{{ money(row.potential_profit) }}</strong></td>
+        <td><strong class="{{ row.roi_class }}">{{ row.roi_label }}</strong></td>
+        <td>{{ row.average_age_label }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="empty-state">Остатка пока нет.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel stats-panel stats-wide">
+    <div class="stats-panel-head">
+      <h2>Минимальная цена / автоцена</h2>
+      <span>Минималка = себестоимость плюс нижний порог прибыли; автоцена = база, но не ниже минималки</span>
+    </div>
+    <table class="stats-table pricing-table">
+      <thead>
+      <tr><th>ID</th><th>Товар</th><th>Купил</th><th>Минимум</th><th>Автоцена</th><th>Чистыми</th><th>Профит</th><th>Совет</th></tr>
+      </thead>
+      <tbody>
+      {% for row in stats.pricing_rows %}
+      <tr>
+        <td><a class="plain-id age-id {{ item_age_class(row.item) }} stat-id-link" href="/items/{{ row.item.id }}/edit" title="{{ item_age_title(row.item) }}">{{ item_short_code(row.item) }}</a></td>
+        <td>
+          <strong>{{ row.name }}</strong>
+          <span class="muted-line">{{ row.age_label }}</span>
+        </td>
+        <td>{{ cost_label(row.cost) }}</td>
+        <td>{{ money(row.minimum_price) }}</td>
+        <td><strong>{{ money(row.auto_price) }}</strong></td>
+        <td>{{ money(row.expected_net) }}</td>
+        <td><strong class="{{ row.profit_class }}">{{ money(row.profit) }}</strong></td>
+        <td>
+          <span class="advice-pill">{{ row.advice }}</span>
+          <span class="muted-line">{{ row.source }}</span>
+        </td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="empty-state">Остатка пока нет.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="panel stats-panel stats-wide">
+    <div class="stats-panel-head">
+      <h2>Что продавать первым</h2>
+      <span>Приоритет учитывает возраст, замороженные деньги, историю продаж и примерный профит</span>
+    </div>
+    <table class="stats-table priority-table">
+      <thead>
+      <tr><th>ID</th><th>Товар</th><th>Приоритет</th><th>Лежит</th><th>Вложено</th><th>Автоцена</th><th>Профит</th><th>Почему</th></tr>
+      </thead>
+      <tbody>
+      {% for row in stats.sell_priority_rows %}
+      <tr>
+        <td><a class="plain-id age-id {{ item_age_class(row.item) }} stat-id-link" href="/items/{{ row.item.id }}/edit" title="{{ item_age_title(row.item) }}">{{ item_short_code(row.item) }}</a></td>
+        <td>{{ row.name }}</td>
+        <td><span class="priority-badge {{ row.priority_class }}">{{ row.score }} · {{ row.priority_label }}</span></td>
+        <td>{{ row.age_label }}</td>
+        <td>{{ cost_label(row.cost) }}</td>
+        <td>{{ money(row.auto_price) }}</td>
+        <td><strong class="{{ row.profit_class }}">{{ money(row.profit) }}</strong></td>
+        <td>{{ row.reason }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="8" class="empty-state">Остатка пока нет.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

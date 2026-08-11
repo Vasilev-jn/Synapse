@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+
+# Local secrets/config
+.env
+.env.*
+!.env.example
+monitor_local_settings.json
+
+# Runtime logs
+*.log
+*.out.log
+*.err.log
+
+# Runtime/generated data
+json_responses/
+queue/
+reports/
+crm/data/
+crm/queue/
+crm/runtime/
+crm/CRM_TRANSFER_README.md
+
+# Historical marketplace exports and private monitor state
+data/parsed/*
+!data/parsed/
+!data/parsed/game_title_alias_db_matches.json
+!data/parsed/game_title_canonical_draft.json
+!data/parsed/game_title_canonical_review.json
+!data/parsed/game_title_canonical_usable.json
+!data/parsed/game_title_canonical_usable_with_curated.json
+!data/parsed/game_title_curated_priority.json
+data/vidachi/
+
+# Databases/dumps/archives
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.zip
+
+# OS/editor
+.DS_Store
+Thumbs.db
+
+# Local design scratch/reference file
+привет

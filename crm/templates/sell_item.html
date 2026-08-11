@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Продать товар{% endblock %}
+{% block content %}
+<h1>Продать {{ item.code }} — {{ item_display_name(item) }}</h1>
+{% for error in errors %}<div class="error">{{ error }}</div>{% endfor %}
+<form method="post" class="panel form-grid">
+  <label>Цена продажи <input name="sale_price" type="number" step="0.01" required></label>
+  <label>Дата продажи <input name="sold_at" type="date"></label>
+  <label class="wide">Комментарий <textarea name="comment">{{ item.comment or "" }}</textarea></label>
+  <button class="button primary">Сохранить продажу</button>
+</form>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %}Редактировать диск{% endblock %}
+{% block content %}
+<div class="page-head">
+  <div>
+    <h1>Редактировать {{ item_short_code(item) }}</h1>
+  </div>
+  <a class="button" href="/bought">Назад</a>
+</div>
+
+{% for error in errors %}
+<div class="error">{{ error }}</div>
+{% endfor %}
+
+{% set detail = item.game_detail %}
+{% set loc = disc_localization_value(item) %}
+{% set edition = detail.completeness_comment if detail and detail.completeness_comment else "" %}
+<form method="post" class="panel disc-editor" autocomplete="off">
+  <section class="editor-section">
+    <h2>Название</h2>
+    <label>
+      Название игры
+      <input id="catalog_name" name="disc_title" value="{{ item_display_name(item) }}" placeholder="Например, Call of Duty: Modern Warfare 2" autocomplete="new-password" required data-suggest-input="game-title">
+    </label>
+    <div class="chip-row suggestions" data-suggestions="game-title">
+      {% for suggestion in suggestions %}
+      <button type="button" class="chip" data-fill="#catalog_name" data-value="{{ suggestion.label }}" data-suggestion="{{ suggestion.search }}" hidden>{{ suggestion.label }}</button>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="editor-section">
+    <h2>Характеристики</h2>
+    <div class="fixed-grid">
+      <div><span>Формат</span><strong>Физический</strong></div>
+      <div><span>Тип</span><strong>Диск</strong></div>
+    </div>
+    <div class="form-grid">
+      <label>
+        Тип издания
+        <input id="disc_edition" name="disc_edition" value="{{ edition }}" placeholder="Например, Deluxe Edition или обычное издание" autocomplete="new-password" data-suggest-input="edition">
+      </label>
+      <div class="wide chip-row suggestions" data-suggestions="edition" data-show-default="true" data-title-source="#catalog_name">
+        {% for suggestion in edition_suggestions %}
+        <button type="button" class="chip" data-fill="#disc_edition" data-value="{{ suggestion.label }}" data-suggestion="{{ suggestion.search }}" data-game-search="{{ suggestion.game_search }}" {% if suggestion.is_default %}data-default-suggestion="true"{% endif %} hidden>{{ suggestion.label }}</button>
+        {% endfor %}
+      </div>
+      <label>
+        Платформа
+        <select name="platform">
+          {% for p in platforms %}
+          <option value="{{ p }}" {% if detail and detail.platform==p %}selected{% endif %}>{{ p }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <section class="editor-section">
+    <h2>Локализация</h2>
+    <div class="choice-list">
+      <label class="choice-card">
+        <input type="radio" name="localization" value="full_ru" {% if loc=="full_ru" %}checked{% endif %}>
+        <span>Русская озвучка, субтитры и интерфейс</span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="localization" value="ru_subs_ui" {% if loc=="ru_subs_ui" %}checked{% endif %}>
+        <span>Русские субтитры и интерфейс</span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="localization" value="ru_ui" {% if loc=="ru_ui" %}checked{% endif %}>
+        <span>Русский интерфейс</span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="localization" value="original" {% if loc=="original" %}checked{% endif %}>
+        <span>На языке оригинала</span>
+      </label>
+    </div>
+  </section>
+
+  <section class="editor-section">
+    <h2>Состояние</h2>
+    <div class="form-grid">
+      <label>
+        Поверхность диска
+        <select name="disc_surface">
+          <option value="">Выбрать</option>
+          {% for surface in disc_surfaces %}
+          <option value="{{ surface }}" {% if detail and detail.disc_surface==surface %}selected{% endif %}>{{ surface }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Проверка запуска
+        <select name="test_result">
+          <option value="">Выбрать</option>
+          {% for result in test_results %}
+          <option value="{{ result }}" {% if detail and detail.test_result==result %}selected{% endif %}>{{ result }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Комплект
+        <select name="completeness">
+          {% for value in game_completeness %}
+          <option value="{{ value }}" {% if detail and detail.completeness==value %}selected{% endif %}>{{ value }}</option>
+          {% endfor %}
+        </select>
+      </label>
+    </div>
+  </section>
+
+  <section class="editor-section">
+    <h2>Цена и учёт</h2>
+    <div class="form-grid">
+      <label>
+        Дата покупки
+        <input type="date" name="purchased_at" value="{{ item.purchased_at.date().isoformat() if item.purchased_at else '' }}">
+      </label>
+      <label>
+        Источник
+        <select name="source">
+          {% for source in sources %}
+          <option value="{{ source }}" {% if item.source==source %}selected{% endif %}>{{ source }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>
+        Цена покупки, ₽
+        <input type="number" name="calculated_cost" value="{{ item.calculated_cost if item.calculated_cost is not none else '' }}" placeholder="Например, 1200" min="0" step="1">
+      </label>
+      <label>
+        Ожидаемая цена продажи, ₽
+        <input type="number" name="expected_sale_price" value="{{ item.expected_sale_price if item.expected_sale_price is not none else '' }}" placeholder="Например, 1800" min="0" step="1">
+      </label>
+      <label class="wide">
+        Ссылка на объявление
+        <input name="source_url" value="{{ item.source_url or '' }}" placeholder="https://www.avito.ru/...">
+      </label>
+      <label class="wide">
+        Комментарий
+        <textarea name="comment" placeholder="Например, что проверить перед продажей">{{ item.comment or "" }}</textarea>
+      </label>
+    </div>
+  </section>
+
+  <div class="editor-actions">
+    <button class="button primary">Сохранить</button>
+  </div>
+</form>
+{% endblock %}
