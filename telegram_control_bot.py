@@ -243,6 +243,12 @@ def start_monitor(target_url: str | None) -> str:
         args.extend(["--target-url", target_url])
     MONITOR_OUT_LOG.parent.mkdir(parents=True, exist_ok=True)
     write_panel_monitor_status(status="starting", target_url=target_url)
+    session_header = f"=== monitor session started {datetime.now().isoformat(timespec='seconds')} ===\n"
+    try:
+        MONITOR_OUT_LOG.write_text(session_header, encoding="utf-8")
+        MONITOR_ERR_LOG.write_text(session_header, encoding="utf-8")
+    except OSError:
+        pass
     out = MONITOR_OUT_LOG.open("a", encoding="utf-8")
     err = MONITOR_ERR_LOG.open("a", encoding="utf-8")
     process = subprocess.Popen(
@@ -283,9 +289,13 @@ def tail_file(path: Path, limit: int = 2500) -> str:
     if not path.exists():
         return "файл не найден"
     try:
-        text = path.read_text(encoding="utf-8", errors="replace")
+        raw = path.read_bytes()
     except OSError as error:
         return f"ошибка чтения: {error}"
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        text = raw.decode("cp1251", errors="replace")
     return text[-limit:] or "пусто"
 
 
@@ -382,8 +392,28 @@ def telegram_link_text(url: str) -> str:
     return f'<a href="{safe_url}">{safe_url}</a>'
 
 
+def file_mtime_text(path: Path) -> str:
+    if not path.exists():
+        return "нет файла"
+    try:
+        return datetime.fromtimestamp(path.stat().st_mtime).strftime("%d.%m.%Y %H:%M:%S")
+    except OSError:
+        return "не удалось прочитать время"
+
+
 def logs_text() -> str:
+    monitor = monitor_pids()
+    status_data = load_monitor_status()
+    status = str(status_data.get("status") or "unknown") if status_data else "нет status-файла"
+    monitor_line = f"✅ монитор запущен, PID {', '.join(map(str, monitor))}" if monitor else "⏹ монитор не запущен"
+    stale_note = "" if monitor else "\n⚠️ Ниже может быть старый лог прошлого запуска."
     return (
+        f"<b>Логи монитора</b>\n"
+        f"{monitor_line}\n"
+        f"Статус: {escape(human_monitor_status(status))}\n"
+        f"stdout обновлён: {escape(file_mtime_text(MONITOR_OUT_LOG))}\n"
+        f"stderr обновлён: {escape(file_mtime_text(MONITOR_ERR_LOG))}"
+        f"{stale_note}\n\n"
         "<b>monitor stdout</b>\n"
         f"<code>{escape(tail_file(MONITOR_OUT_LOG, 2200))}</code>\n\n"
         "<b>monitor stderr</b>\n"
