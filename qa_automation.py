@@ -63,6 +63,10 @@ ROTATION_WAIT_SECONDS = 10
 MAX_BLOCK_RETRIES = 2
 
 
+def monitor_stop_requested() -> bool:
+    return CONTROL_STOP_FILE.exists()
+
+
 def load_rotation_urls() -> list[str]:
     """Читает ссылки ротации из env или локального не-git файла."""
     raw = os.environ.get("AVITO_PROXY_ROTATION_URLS", "")
@@ -1011,6 +1015,9 @@ def process_catalog(
             rotate_proxy_ip()
 
         print(f"[CATALOG] Найдено карточек: {len(catalog_items)}")
+        if monitor_stop_requested():
+            log_event("monitor_stop_requested_inside_catalog", stage="after_catalog_load")
+            return []
         log_event(
             "catalog_loaded",
             source_url=catalog_page.url,
@@ -1085,6 +1092,14 @@ def process_catalog(
 
         collected: list[dict[str, Any]] = []
         for position, catalog_item in enumerate(catalog_items, start=1):
+            if monitor_stop_requested():
+                log_event(
+                    "monitor_stop_requested_inside_catalog",
+                    stage="before_item",
+                    position=position,
+                    collected_count=len(collected),
+                )
+                break
             url = str(catalog_item.get("url", ""))
             item_id = item_id_from_url(url, position)
             bot_listing_id = seen_key_for_url(url)
@@ -1092,6 +1107,14 @@ def process_catalog(
 
             print(f"[ITEM {position}/{len(catalog_items)}] {url}")
             for attempt in range(MAX_BLOCK_RETRIES + 1):
+                if monitor_stop_requested():
+                    log_event(
+                        "monitor_stop_requested_inside_item",
+                        url=url,
+                        item_id=item_id,
+                        attempt=attempt + 1,
+                    )
+                    break
                 # Каждая карточка открывается новой вкладкой того же профиля.
                 item_page = context.new_page()
                 try:

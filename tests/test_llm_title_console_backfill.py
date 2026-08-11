@@ -69,3 +69,51 @@ def test_title_console_backfill_adds_ps4_500gb_cuh_when_llm_failed() -> None:
     assert items[0]["canonical_name"] == "PlayStation 4 Fat 500GB"
     assert items[0]["catalog_entry_id"] == 59
     assert items[0]["item_type"] == "console"
+
+
+def test_title_console_backfill_does_not_add_console_for_ps4_disc_listing() -> None:
+    record = NewListingRecord(
+        saved_at="2026-08-11T12:08:00",
+        fingerprint="x",
+        title="Диск на ps4 far cry 4",
+        price=1500,
+        address="Братск",
+        description="Обмен на Far Cry 3. Диск приобретён в июле 2026 года.",
+        url="https://www.avito.ru/item",
+        raw_card_texts=[],
+        raw_detail_texts=[],
+    )
+    llm_items = [
+        {"name": "Far Cry 4", "canonical_name": "Far Cry 4", "item_type": "game", "platform": "PS4", "quantity": 1}
+    ]
+
+    items = ensure_title_console_items(record, llm_items, original_description=record.description)
+
+    assert len(items) == 1
+    assert items[0]["canonical_name"] == "Far Cry 4"
+    assert all(item.get("item_type") != "console" for item in items)
+    assert not getattr(record, "llm_title_console_backfilled", False)
+
+
+def test_title_console_backfill_does_not_add_console_for_ps5_game_listing() -> None:
+    record = NewListingRecord(
+        saved_at="2026-08-11T12:07:00",
+        fingerprint="x",
+        title="Diablo 4 ps5",
+        price=2850,
+        address="Казань",
+        description="Диск в хорошем состоянии",
+        url="https://www.avito.ru/item",
+        raw_card_texts=[],
+        raw_detail_texts=[],
+    )
+    llm_items = [
+        {"name": "Diablo 4", "canonical_name": "Diablo 4", "item_type": "game", "platform": "PS5", "quantity": 1}
+    ]
+
+    items = ensure_title_console_items(record, llm_items, original_description=record.description)
+
+    assert len(items) == 1
+    assert items[0]["canonical_name"] == "Diablo 4"
+    assert all(item.get("item_type") != "console" for item in items)
+    assert not getattr(record, "llm_title_console_backfilled", False)

@@ -420,6 +420,9 @@ def console_item_from_listing_title(
     full_text = normalize_console_text(f"{title} {description}")
     price = getattr(record, "price", None)
 
+    if not title_has_console_product_evidence(title_text, full_text):
+        return None
+
     target: tuple[int, str, str] | None = None
     if re.search(r"\b(ps5|playstation\s*5)\b", title_text):
         slim = "slim" in full_text
@@ -479,6 +482,71 @@ def console_item_from_listing_title(
 
 def normalize_console_text(value: str) -> str:
     return re.sub(r"\s+", " ", value.lower().replace("ё", "е").replace("\xa0", " ")).strip()
+
+
+def title_has_console_product_evidence(title_text: str, full_text: str) -> bool:
+    """Return True only when PS4/PS5 in title appears to name a console.
+
+    Plain "ps4/ps5" near a game title usually means platform, e.g.
+    "disc for ps4 far cry 4". Those listings must not get a synthetic console
+    item, otherwise CRM calculates absurd profit from a game-only card.
+    """
+
+    title_text = normalize_console_text(title_text)
+    full_text = normalize_console_text(full_text)
+    if not re.search(r"\b(ps4|ps5|playstation\s*[45]|sony\s*playstation\s*[45])\b", title_text):
+        return False
+
+    strong_console_markers = (
+        "console",
+        "consol",
+        "пристав",
+        "консол",
+        "slim",
+        "pro",
+        "fat",
+        "phat",
+        "digital",
+        "digital edition",
+        "cuh",
+        "825gb",
+        "500gb",
+        "1000gb",
+        "1tb",
+        "500 gb",
+        "1000 gb",
+        "1 tb",
+        "500 гб",
+        "1000 гб",
+        "1 тб",
+        "дисковод",
+        "без дисковода",
+        "с дисководом",
+    )
+    if any(marker in full_text for marker in strong_console_markers):
+        return True
+
+    game_or_disc_markers = (
+        "disc",
+        "disk",
+        "game",
+        "игра",
+        "игры",
+        "диск",
+        "диски",
+        "edition",
+        "far cry",
+        "diablo",
+        "gran turismo",
+        "baldur",
+        "gta",
+        "fifa",
+        "nba",
+    )
+    if any(marker in full_text for marker in game_or_disc_markers):
+        return False
+
+    return bool(re.search(r"\bsony\s*playstation\s*[45]\b|\bplaystation\s*[45]\b", title_text))
 
 
 def item_matches_console(item: dict[str, object], console: dict[str, object]) -> bool:
