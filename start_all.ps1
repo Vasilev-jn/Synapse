@@ -93,8 +93,16 @@ function Start-CrmIfNeeded {
         -RedirectStandardError (Join-Path $CrmRoot "crm_runtime.err.log") `
         -WindowStyle Hidden
 
-    Start-Sleep -Seconds 5
-    if (-not (Test-PortListening -Port 8001)) {
+    $crmStarted = $false
+    for ($attempt = 1; $attempt -le 30; $attempt++) {
+        if (Test-PortListening -Port 8001) {
+            $crmStarted = $true
+            break
+        }
+        Start-Sleep -Seconds 1
+    }
+
+    if (-not $crmStarted) {
         Write-Host "CRM: did not start, check $(Join-Path $CrmRoot "crm_runtime.err.log")" -ForegroundColor Red
         throw "CRM did not start"
     }

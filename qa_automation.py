@@ -985,6 +985,7 @@ def process_catalog(
     bootstrap_all: bool = False,
     cycle_number: int | None = None,
     cycle_started_at: str | None = None,
+    analysis_enabled: bool = True,
 ) -> list[dict[str, Any]]:
     """Открывает новую выдачу и последовательно обходит её карточки."""
     own_catalog_page = catalog_page is None
@@ -1208,12 +1209,14 @@ def process_catalog(
                             details,
                             source_path=output_path,
                             send_telegram=True,
+                            analysis_enabled=analysis_enabled,
                         )
                         print(
                             "[PIPELINE] "
                             f"crm={pipeline_result.get('crm_import_result', {}).get('ok')} "
                             f"profit={pipeline_result.get('crm_evaluation_result', {}).get('ok')} "
-                            f"items={pipeline_result.get('llm_items_count')}"
+                            f"items={pipeline_result.get('llm_items_count')} "
+                            f"analysis={pipeline_result.get('analysis_enabled')}"
                         )
                     except Exception as pipeline_error:
                         print(f"[PIPELINE] Ошибка интеграции: {pipeline_error}")
@@ -1272,14 +1275,19 @@ def process_catalog(
             catalog_page.close()
 
 
-def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = None) -> None:
+def run_qa(
+    target_url: str | None = None,
+    *,
+    max_runtime_seconds: int | None = None,
+    analysis_enabled: bool = True,
+) -> None:
     global TARGET_URL
     if target_url:
         TARGET_URL = target_url
     if CONTROL_STOP_FILE.exists():
         CONTROL_STOP_FILE.unlink()
     ws_endpoint = find_cdp_endpoint()
-    write_monitor_status(status="connecting_adspower", cdp_endpoint=ws_endpoint)
+    write_monitor_status(status="connecting_adspower", cdp_endpoint=ws_endpoint, analysis_enabled=analysis_enabled)
     print(f"[ADSPOWER] Подключаемся к CDP: {ws_endpoint}", flush=True)
     seen_urls = seed_seen_urls_from_saved_items(load_seen_urls())
     failed_urls = load_failed_urls()
@@ -1298,7 +1306,8 @@ def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = N
         if not browser.contexts:
             raise RuntimeError("AdsPower не предоставил контекст браузера")
 
-        write_monitor_status(status="running", cdp_endpoint=ws_endpoint)
+        write_monitor_status(status="running", cdp_endpoint=ws_endpoint, analysis_enabled=analysis_enabled)
+        print(f"[MONITOR] analysis_enabled={analysis_enabled}")
         print("[ADSPOWER] Playwright подключён к открытому профилю")
         print(
             "[MONITOR] Постоянный режим: пауза 50 секунд "
@@ -1324,6 +1333,7 @@ def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = N
                     cycle_number=cycle_number,
                     seen_count=len(seen_urls),
                     failed_count=len(failed_urls),
+                    analysis_enabled=analysis_enabled,
                 )
                 finish_status = "stopped"
                 finish_reason = "stop_flag_requested"
@@ -1353,6 +1363,7 @@ def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = N
                     bootstrap_all,
                     cycle_number=cycle_number,
                     cycle_started_at=cycle_started_at,
+                    analysis_enabled=analysis_enabled,
                 )
                 print(f"[MONITOR] За цикл сохранено новых карточек: {len(collected)}")
                 if bootstrap_all:
@@ -1365,6 +1376,7 @@ def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = N
                     seen_count=len(seen_urls),
                     failed_count=len(failed_urls),
                     next_run_after_seconds=pause_seconds,
+                    analysis_enabled=analysis_enabled,
                 )
                 write_monitor_status(
                     status="ok",
@@ -1375,6 +1387,7 @@ def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = N
                     seen_count=len(seen_urls),
                     failed_count=len(failed_urls),
                     next_run_after_seconds=pause_seconds,
+                    analysis_enabled=analysis_enabled,
                 )
             except Exception as error:
                 print(f"[MONITOR] Ошибка цикла: {error}")
@@ -1386,6 +1399,7 @@ def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = N
                     seen_count=len(seen_urls),
                     failed_count=len(failed_urls),
                     next_run_after_seconds=pause_seconds,
+                    analysis_enabled=analysis_enabled,
                 )
                 write_monitor_status(
                     status="error",
@@ -1417,6 +1431,7 @@ def run_qa(target_url: str | None = None, *, max_runtime_seconds: int | None = N
             cycle_number=cycle_number,
             seen_count=len(seen_urls),
             failed_count=len(failed_urls),
+            analysis_enabled=analysis_enabled,
         )
         if finish_status == "stopped":
             print("[MONITOR] Остановлен по команде, завершаю работу")
@@ -1434,13 +1449,23 @@ if __name__ == "__main__":
         default=None,
         help="Override monitor runtime limit",
     )
+    parser.add_argument(
+        "--no-analysis",
+        action="store_true",
+        help="Collect listings without LLM/CRM profit analysis",
+    )
     args = parser.parse_args()
     try:
-        run_qa(args.target_url, max_runtime_seconds=args.max_runtime_seconds)
+        run_qa(
+            args.target_url,
+            max_runtime_seconds=args.max_runtime_seconds,
+            analysis_enabled=not args.no_analysis,
+        )
     except Exception as error:
         write_monitor_status(
             status="failed",
             reason=str(error),
             last_error=str(error),
+            analysis_enabled=not args.no_analysis,
         )
         raise

@@ -617,7 +617,7 @@ def test_avito_listing_evaluator_uses_crm_observations(tmp_path) -> None:
         app.dependency_overrides.clear()
 
 
-def test_avito_listing_evaluator_marks_fallback_as_low_confidence_and_blocks_good(tmp_path) -> None:
+def test_avito_listing_evaluator_leaves_unknown_item_unpriced_and_blocks_good(tmp_path) -> None:
     from app.main import app, get_db, settings
 
     database_url = f"sqlite:///{(tmp_path / 'evaluate-fallback.sqlite').as_posix()}"
@@ -649,11 +649,11 @@ def test_avito_listing_evaluator_marks_fallback_as_low_confidence_and_blocks_goo
         )
         assert response.status_code == 200
         data = response.json()
-        assert data["decision"] == "check"
-        assert data["fallback_only"] is True
-        assert data["items"][0]["source"] == "fallback"
-        assert "fallback / низкая уверенность" in data["summary"]
-        assert "fallback / низкая уверенность" in data["items"][0]["reason"]
+        assert data["decision"] == "skip"
+        assert data["total"]["expected_profit"] is None
+        assert data["items"][0]["source"] is None
+        assert data["items"][0]["expected_sell_price"] is None
+        assert "цена не найдена" in data["items"][0]["reason"]
     finally:
         settings.market_import_token = old_token
         app.dependency_overrides.clear()
@@ -989,6 +989,252 @@ def test_avito_listing_evaluator_does_not_price_unknown_game_list(tmp_path) -> N
     finally:
         settings.market_import_token = old_token
         app.dependency_overrides.clear()
+
+
+def test_avito_listing_evaluator_does_not_match_generic_ps4_discs_to_named_game(db_session) -> None:
+    from app.avito_evaluator import evaluate_avito_listing_payload
+
+    db_session.add(
+        PriceObservation(
+            source="adb_bot",
+            source_uid="market:horizon-generic-guard",
+            observation_type="avito_market",
+            item_title="Horizon Zero Dawn PS4 диск",
+            price=550,
+            currency="RUB",
+            observed_at=utcnow(),
+            confidence=0.75,
+            usable_for_auto_price=True,
+            raw_json={
+                "canonical_name": "Horizon Zero Dawn",
+                "item_type": "game",
+                "platform": "PS4",
+                "format": "physical",
+                "price_scope": "per_item",
+                "price_source_type": "description_item_price",
+                "price_confidence": "high",
+            },
+        )
+    )
+    db_session.commit()
+
+    data = evaluate_avito_listing_payload(
+        db_session,
+        listing={
+            "title": "Диски для ps4",
+            "description": "Продам диски в хорошем состоянии для пс4",
+            "price": 1200,
+            "raw_json": {
+                "raw_detail_texts": [
+                    "Состояние: Б/у",
+                    "Формат: Физический",
+                    "Тип: Диск",
+                    "Платформа: PlayStation 4",
+                ]
+            },
+        },
+        extracted_items=[
+            {
+                "name": "Unknown PS4 games",
+                "item_type": "game",
+                "platform": "PS4",
+            }
+        ],
+    )
+
+    assert data["items"] == []
+    assert "no_extracted_items" in data["risks"]
+    assert data["total"]["expected_profit"] is None
+
+
+def test_avito_listing_evaluator_does_not_match_metroid_to_horizon(db_session, tmp_path, monkeypatch) -> None:
+    from app import avito_evaluator
+
+    monkeypatch.setattr(avito_evaluator, "ALIAS_REVIEW_QUEUE_PATH", tmp_path / "alias_review_queue.jsonl")
+
+    db_session.add(
+        PriceObservation(
+            source="adb_bot",
+            source_uid="market:horizon-vs-metroid-guard",
+            observation_type="avito_market",
+            item_title="Horizon Zero Dawn PS4 диск",
+            price=600,
+            currency="RUB",
+            observed_at=utcnow(),
+            confidence=0.75,
+            usable_for_auto_price=True,
+            raw_json={"canonical_name": "Horizon Zero Dawn", "item_type": "game", "platform": "PS4"},
+        )
+    )
+    db_session.commit()
+
+    data = avito_evaluator.evaluate_avito_listing_payload(
+        db_session,
+        listing={
+            "title": "Metroid Prime 4: Beyond Nintendo Switch 2 Новый",
+            "description": "Игра Metroid Prime 4: Beyond для Nintendo Switch 2, физический картридж.",
+            "price": 4290,
+        },
+        extracted_items=[{"name": "Metroid Prime 4: Beyond", "item_type": "game", "platform": "Nintendo Switch"}],
+    )
+
+    item = data["items"][0]
+    assert item["name"] == "Metroid Prime 4: Beyond"
+    assert item["matched_catalog_name"] is None
+    assert item["expected_sell_price"] is None
+    assert data["total"]["expected_profit"] is None
+
+
+def test_avito_listing_evaluator_title_fallback_handles_fc25_store_text(db_session) -> None:
+    from app.avito_evaluator import evaluate_avito_listing_payload
+
+    db_session.add(
+        PriceObservation(
+            source="adb_bot",
+            source_uid="market:fc25",
+            observation_type="avito_market",
+            item_title="FC 25 PS4",
+            price=3000,
+            currency="RUB",
+            observed_at=utcnow(),
+            confidence=0.75,
+            usable_for_auto_price=True,
+            raw_json={
+                "canonical_name": "FC 25",
+                "item_type": "game",
+                "platform": "PS4",
+                "format": "physical",
+                "price_scope": "per_item",
+                "price_source_type": "description_item_price",
+                "price_confidence": "high",
+            },
+        )
+    )
+    db_session.commit()
+
+    data = evaluate_avito_listing_payload(
+        db_session,
+        listing={
+            "title": "Игра PS4 FC 25 (RUS)",
+            "description": "Лицензионный диск FC 25 на Sony PlayStation 4. Подписывайтесь, чтобы следить за выгодными предложениями.",
+            "price": 3000,
+        },
+        extracted_items=[],
+    )
+
+    assert "subscription" not in data["risks"]
+    assert data["items"][0]["name"] == "Игра PS4 FC 25 (RUS)"
+    assert data["items"][0]["matched_catalog_name"] == "FC 25"
+
+
+def test_avito_listing_evaluator_price_line_fallback_extracts_resident_evil_list(db_session, tmp_path, monkeypatch) -> None:
+    from app import avito_evaluator
+
+    monkeypatch.setattr(avito_evaluator, "ALIAS_REVIEW_QUEUE_PATH", tmp_path / "alias_review_queue.jsonl")
+
+    data = avito_evaluator.evaluate_avito_listing_payload(
+        db_session,
+        listing={
+            "title": "Sony playstation 5 игры",
+            "description": (
+                "* Resident Evil 2 — 2 490 ₽ "
+                "* Одни из нас: Часть II — Обновленная версия — 2 490 ₽ "
+                "* Demon's Souls — 2 490 ₽ "
+                "* Resident Evil Village — 2 490 ₽ "
+                "* Resident Evil Requiem lenticular — 4 990 ₽ "
+                "* Resident Evil 7 biohazard Gold Edition — 2 490 ₽"
+            ),
+            "price": 1000,
+        },
+        extracted_items=[],
+    )
+
+    names = [item["name"] for item in data["items"]]
+    assert "Resident Evil 2" in names
+    assert "Demon's Souls" in names
+    assert "Resident Evil 7 biohazard Gold Edition" in names
+    assert "Sony playstation 5 игры" not in names
+
+
+def test_avito_listing_evaluator_price_line_fallback_ignores_sold_items_and_generic_title(db_session, tmp_path, monkeypatch) -> None:
+    from app import avito_evaluator
+
+    monkeypatch.setattr(avito_evaluator, "ALIAS_REVIEW_QUEUE_PATH", tmp_path / "alias_review_queue.jsonl")
+
+    data = avito_evaluator.evaluate_avito_listing_payload(
+        db_session,
+        listing={
+            "title": "Игры обмен /продажа",
+            "description": "rayman- 1700 god of war-1000 фнаф-1500 rdr2-продан the witcher-продан black flag-1200 village-1000",
+            "price": 1000,
+        },
+        extracted_items=[],
+    )
+
+    names = [item["name"].lower() for item in data["items"]]
+    assert not any("игры обмен" in name for name in names)
+    assert not any("rdr2" in name for name in names)
+    assert not any("witcher" in name for name in names)
+    assert any("rayman" in name for name in names)
+    assert any("god of war" in name for name in names)
+
+
+def test_avito_listing_evaluator_ignores_llm_items_marked_sold_in_listing_text(db_session) -> None:
+    from app.avito_evaluator import evaluate_avito_listing_payload
+
+    data = evaluate_avito_listing_payload(
+        db_session,
+        listing={
+            "title": "Игры обмен /продажа",
+            "description": "rayman-1700 god of war-1000 rdr2-продан the witcher-продан black flag-1200 village-1000",
+            "price": 1000,
+        },
+        extracted_items=[
+            {"name": "Rayman", "item_type": "game", "platform": "PS4"},
+            {"name": "The Witcher 3: Wild Hunt", "item_type": "game", "platform": "PS4"},
+            {"name": "Black Flag", "item_type": "game", "platform": "PS4"},
+        ],
+    )
+
+    names = [item["name"].lower() for item in data["items"]]
+    assert any("rayman" in name for name in names)
+    assert any("black flag" in name for name in names)
+    assert not any("witcher" in name for name in names)
+
+
+def test_avito_listing_evaluator_does_not_match_resident_evil_subtitle_to_other_entry(db_session) -> None:
+    from app.avito_evaluator import evaluate_avito_listing_payload
+
+    db_session.add(
+        PriceObservation(
+            source="adb_bot",
+            source_uid="market:resident-evil-4-guard",
+            observation_type="avito_market",
+            item_title="Resident Evil 4 Remake PS5",
+            price=3600,
+            currency="RUB",
+            observed_at=utcnow(),
+            confidence=0.75,
+            usable_for_auto_price=True,
+            raw_json={"canonical_name": "Resident Evil 4", "item_type": "game", "platform": "PS5"},
+        )
+    )
+    db_session.commit()
+
+    data = evaluate_avito_listing_payload(
+        db_session,
+        listing={
+            "title": "Resident Evil Village PS5",
+            "description": "Физический диск Resident Evil Village для PS5",
+            "price": 2490,
+        },
+        extracted_items=[{"name": "Resident Evil Village", "item_type": "game", "platform": "PS5"}],
+    )
+
+    item = data["items"][0]
+    assert item["matched_catalog_name"] is None
+    assert item["expected_sell_price"] is None
+    assert data["total"]["expected_profit"] is None
 
 
 def test_avito_lot_cost_observations_are_buy_cost_not_market_price(tmp_path) -> None:

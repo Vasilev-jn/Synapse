@@ -45,6 +45,8 @@ Start the local stack:
 powershell -NoProfile -ExecutionPolicy Bypass -File .\start_all.ps1
 ```
 
+The script starts PostgreSQL/CRM if needed and starts the Telegram control panel. It does not open or configure your browser profile for you: open the prepared profile manually, then use Telegram buttons to set a marketplace link and start/stop monitoring.
+
 CRM opens at:
 
 ```text
@@ -69,6 +71,34 @@ The monitor expects:
 - optional local proxy rotation URLs.
 
 Real rotation URLs should be stored only in `monitor_local_settings.json` or environment variables. The repository contains only `monitor_local_settings.example.json`.
+
+### Analysis toggle
+
+The Telegram panel supports two monitoring modes:
+
+- **with analysis** — listings are saved, imported into CRM, sent through the LLM/item extraction pipeline, evaluated, and followed by a profit summary;
+- **without analysis** — listings are still collected, saved/imported, and sent to Telegram, but paid LLM/evaluation calls are skipped.
+
+The same mode is available from the command line:
+
+```powershell
+python .\qa_automation.py
+python .\qa_automation.py --no-analysis
+```
+
+Use the no-analysis mode when you only want to watch fresh listings without spending money on model calls.
+
+## What is intentionally local
+
+The repository should not contain:
+
+- real Telegram bot tokens or chat IDs;
+- private proxy credentials or rotation links;
+- production `.env` files;
+- PostgreSQL dumps, SQLite databases, or full listing history;
+- runtime logs, queues, screenshots, and temporary extracted payloads.
+
+For a public/demo checkout, use the example configuration files and `examples/extracted_listings.sample.json`.
 
 ## Tests
 

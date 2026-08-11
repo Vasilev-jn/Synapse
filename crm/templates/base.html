@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Купил{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', path='/app.css') }}?v=wallpaper-44">
-  <link rel="stylesheet" href="{{ url_for('static', path='/liquid.css') }}?v=liquid-glass-24">
+  <link rel="stylesheet" href="{{ url_for('static', path='/liquid.css') }}?v=liquid-glass-26">
 </head>
 <body class="crm-liquid">
   <div class="bg-orb orb-a" aria-hidden="true"></div>
@@ -14,7 +14,7 @@
   <header class="topbar liquid-topbar">
     {% set current_path = request.url.path %}
     <a class="topbar-brand synapse-brand" href="/bought" aria-label="Synapse CRM">
-      <img src="{{ url_for('static', path='/synapse-logo.png') }}" alt="Synapse">
+      <img src="{{ url_for('static', path='/synapse-logo.png') }}?v=synapse-logo-3" alt="Synapse">
     </a>
     <nav class="topbar-nav" aria-label="Основные разделы">
       <a class="topbar-tab {% if current_path.startswith('/bought') or current_path == '/' %}active{% endif %}" href="/bought">Купил</a>

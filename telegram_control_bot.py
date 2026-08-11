@@ -42,21 +42,36 @@ KEYBOARD = {
     "keyboard": [
         [{"text": "📌 Установить ссылку"}, {"text": "▶️ Начать поиск"}],
         [{"text": "⏹ Закончить поиск"}, {"text": "📊 Статус"}],
-        [{"text": "🔁 Сменить IP"}, {"text": "📄 Логи"}],
-        [{"text": "🟢 CRM"}, {"text": "❓ Помощь"}],
+        [{"text": "🧠 Анализ"}, {"text": "🔁 Сменить IP"}],
+        [{"text": "📄 Логи"}, {"text": "🟢 CRM"}, {"text": "❓ Помощь"}],
     ],
     "resize_keyboard": True,
 }
 
 
+def default_state() -> dict[str, Any]:
+    return {
+        "offset": 0,
+        "pending_link_chats": [],
+        "target_url": None,
+        "analysis_enabled": True,
+    }
+
+
 def load_state() -> dict[str, Any]:
     if not STATE_FILE.exists():
-        return {"offset": 0, "pending_link_chats": [], "target_url": None}
+        return default_state()
     try:
         data = json.loads(STATE_FILE.read_text(encoding="utf-8"))
     except (OSError, json.JSONDecodeError):
-        return {"offset": 0, "pending_link_chats": [], "target_url": None}
-    return data if isinstance(data, dict) else {"offset": 0, "pending_link_chats": [], "target_url": None}
+        return default_state()
+    if not isinstance(data, dict):
+        return default_state()
+    data.setdefault("offset", 0)
+    data.setdefault("pending_link_chats", [])
+    data.setdefault("target_url", None)
+    data.setdefault("analysis_enabled", True)
+    return data
 
 
 def save_state(state: dict[str, Any]) -> None:
@@ -111,16 +126,20 @@ def answer_callback(callback_id: str, text: str = "") -> None:
     telegram_request("answerCallbackQuery", {"callback_query_id": callback_id, "text": text[:200]})
 
 
-def send_start_confirmation(chat_id: str, target_url: str | None) -> None:
+def send_start_confirmation(chat_id: str, target_url: str | None, *, analysis_enabled: bool = True) -> None:
     if not target_url:
         send_message(chat_id, "Ссылка ещё не установлена. Нажми «📌 Установить ссылку» и пришли URL Авито.", reply_markup=KEYBOARD)
         return
+    mode_text = "с анализом LLM/профита" if analysis_enabled else "без анализа, только сбор объявлений"
     send_message(
         chat_id,
-        f"Запустить поиск по последней ссылке?\n\n<code>{escape(target_url)}</code>",
+        f"Запустить поиск по последней ссылке?\n\n"
+        f"Режим сейчас: <b>{escape(mode_text)}</b>\n\n"
+        f"<code>{escape(target_url)}</code>",
         reply_markup={
             "inline_keyboard": [
-                [{"text": "✅ Да, начать", "callback_data": "start_monitor"}],
+                [{"text": "▶️ С анализом", "callback_data": "start_monitor_analysis"}],
+                [{"text": "⚡ Без анализа", "callback_data": "start_monitor_no_analysis"}],
                 [{"text": "↩️ Отмена", "callback_data": "cancel"}],
             ]
         },
@@ -267,7 +286,7 @@ def start_crm() -> str:
     return "CRM запущена." if crm_is_healthy() else "CRM стартовала, но health-check пока не отвечает. Смотри crm_telegram.err.log."
 
 
-def start_monitor(target_url: str | None) -> str:
+def start_monitor(target_url: str | None, *, analysis_enabled: bool = True) -> str:
     pids = monitor_pids()
     status_value = monitor_status_value()
     if pids and (STOP_FLAG.exists() or status_value in TERMINAL_MONITOR_STATUSES):
@@ -283,8 +302,10 @@ def start_monitor(target_url: str | None) -> str:
     args = [sys.executable, "-u", "qa_automation.py"]
     if target_url:
         args.extend(["--target-url", target_url])
+    if not analysis_enabled:
+        args.append("--no-analysis")
     MONITOR_OUT_LOG.parent.mkdir(parents=True, exist_ok=True)
-    write_panel_monitor_status(status="starting", target_url=target_url)
+    write_panel_monitor_status(status="starting", target_url=target_url, analysis_enabled=analysis_enabled)
     session_header = f"=== monitor session started {datetime.now().isoformat(timespec='seconds')} ===\n"
     try:
         MONITOR_OUT_LOG.write_text(session_header, encoding="utf-8")
@@ -300,7 +321,8 @@ def start_monitor(target_url: str | None) -> str:
         stderr=err,
         creationflags=0x08000000,
     )
-    return wait_monitor_startup(process)
+    mode_text = "с анализом" if analysis_enabled else "без анализа"
+    return f"{wait_monitor_startup(process)}\nРежим: {mode_text}."
 
 
 def stop_monitor() -> str:
@@ -379,10 +401,13 @@ def status_text(state: dict[str, Any]) -> str:
     link_text = telegram_link_text(link) if link else "не установлена"
     monitor_text = f"✅ запущен, PID {', '.join(map(str, monitor))}" if monitor else "⏹ не запущен"
     crm_text = "✅ работает" if crm_ok else "❌ не отвечает"
+    analysis_enabled = bool((status_data or {}).get("analysis_enabled", state.get("analysis_enabled", True)))
+    analysis_text = "✅ включён" if analysis_enabled else "⚡ выключен, только сбор"
     return (
         f"<b>Статус</b>\n"
         f"CRM: {crm_text}\n"
-        f"Монитор: {monitor_text}\n\n"
+        f"Монитор: {monitor_text}\n"
+        f"Анализ: {analysis_text}\n\n"
         f"<b>Поиск</b>\n"
         f"Ссылка:\n{link_text}\n\n"
         f"<b>Последний цикл</b>\n"
@@ -498,7 +523,10 @@ def handle_text(chat_id: str, user_id: str, text: str, state: dict[str, Any]) ->
             chat_id,
             f"Ссылка установлена:\n<code>{escape(url)}</code>",
             reply_markup={
-                "inline_keyboard": [[{"text": "▶️ Начать поиск", "callback_data": "start_monitor"}]]
+                "inline_keyboard": [
+                    [{"text": "▶️ С анализом", "callback_data": "start_monitor_analysis"}],
+                    [{"text": "⚡ Без анализа", "callback_data": "start_monitor_no_analysis"}],
+                ]
             },
         )
         send_message(chat_id, "Клавиатура управления на месте.", reply_markup=KEYBOARD)
@@ -508,7 +536,7 @@ def handle_text(chat_id: str, user_id: str, text: str, state: dict[str, Any]) ->
         state["target_url"] = url
         save_state(state)
         send_message(chat_id, f"Ссылка сохранена:\n<code>{escape(url)}</code>", reply_markup=KEYBOARD)
-        send_start_confirmation(chat_id, url)
+        send_start_confirmation(chat_id, url, analysis_enabled=bool(state.get("analysis_enabled", True)))
         return
 
     normalized = command_text(text)
@@ -531,7 +559,13 @@ def handle_text(chat_id: str, user_id: str, text: str, state: dict[str, Any]) ->
         or normalized in {"поиск", "start search", "start"}
         or normalized.startswith("начать поиск")
     ):
-        send_start_confirmation(chat_id, state.get("target_url"))
+        send_start_confirmation(chat_id, state.get("target_url"), analysis_enabled=bool(state.get("analysis_enabled", True)))
+    elif "анализ" in normalized:
+        enabled = not bool(state.get("analysis_enabled", True))
+        state["analysis_enabled"] = enabled
+        save_state(state)
+        mode = "включён: будут LLM и расчёт профита" if enabled else "выключен: только сбор объявлений без платного анализа"
+        send_message(chat_id, f"🧠 Анализ {mode}.", reply_markup=KEYBOARD)
     elif "статус" in normalized:
         send_message(chat_id, status_text(state), reply_markup=KEYBOARD)
     elif "сменить" in normalized or "ip" in normalized or "айпи" in normalized:
@@ -558,7 +592,21 @@ def handle_callback(callback: dict[str, Any], state: dict[str, Any]) -> None:
         return
     if data == "start_monitor":
         answer_callback(callback_id, "Запускаю")
-        send_message(chat_id, start_monitor(state.get("target_url")), reply_markup=KEYBOARD)
+        send_message(
+            chat_id,
+            start_monitor(state.get("target_url"), analysis_enabled=bool(state.get("analysis_enabled", True))),
+            reply_markup=KEYBOARD,
+        )
+    elif data == "start_monitor_analysis":
+        state["analysis_enabled"] = True
+        save_state(state)
+        answer_callback(callback_id, "Запускаю с анализом")
+        send_message(chat_id, start_monitor(state.get("target_url"), analysis_enabled=True), reply_markup=KEYBOARD)
+    elif data == "start_monitor_no_analysis":
+        state["analysis_enabled"] = False
+        save_state(state)
+        answer_callback(callback_id, "Запускаю без анализа")
+        send_message(chat_id, start_monitor(state.get("target_url"), analysis_enabled=False), reply_markup=KEYBOARD)
     elif data == "cancel":
         answer_callback(callback_id, "Отмена")
         send_message(chat_id, "Отменил.", reply_markup=KEYBOARD)

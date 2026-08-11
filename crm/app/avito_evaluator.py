@@ -3,8 +3,10 @@
 from __future__ import annotations
 
 import re
+import json
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from typing import Any
 
 from sqlalchemy import select
@@ -27,6 +29,9 @@ from app.suggestion_sources import normalize_lookup_text, profit_knowledge
 
 
 NET_AFTER_SALE_RATE = 0.87
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+ALIAS_REVIEW_QUEUE_PATH = PROJECT_ROOT / "json_responses" / "alias_review_queue.jsonl"
+ALIAS_REVIEW_KEYS_CACHE: dict[str, set[tuple[str, str, str]]] = {}
 SOURCE_WEIGHTS = {
     OBS_OWN_SALE: 1.0,
     OBS_PARTNER_SALE: 0.85,
@@ -72,6 +77,9 @@ GENERIC_MATCH_TOKENS = {
     "лотом",
     "комплект",
     "набор",
+    "обмен",
+    "продажа",
+    "продам",
     "новый",
     "новая",
 }
@@ -127,10 +135,15 @@ def evaluate_avito_listing_payload(
         delivery_price = 0.0
 
     source_items = extracted_items_for_evaluation(listing, extracted_items)
+    source_items = filter_non_product_items(source_items, listing=listing)
+    if not source_items:
+        source_items = filter_non_product_items(price_line_items_from_listing(listing), listing=listing)
     if not source_items:
         risks.append("no_extracted_items")
 
     normalized_items = normalize_extracted_items(source_items, listing=listing)
+    if source_items and not normalized_items and "no_extracted_items" not in risks:
+        risks.append("no_extracted_items")
     account_bonus = console_account_subscription_bonus(
         listing=listing,
         raw_json=raw_json,
@@ -190,6 +203,7 @@ def evaluate_avito_listing_payload(
             risks.append(f"no_price_for:{item['name']}")
             if item.get("unsafe_match_reason"):
                 risks.append(str(item["unsafe_match_reason"]))
+            append_alias_review_for_unpriced_item(item=item, listing=listing)
             response_items.append(
                 {
                     "input_name": item["name"],
@@ -279,8 +293,17 @@ def evaluate_avito_listing_payload(
             }
         )
 
-    expected_profit_total = round_money(expected_net_total - buy_total)
-    profit_percent = round(expected_profit_total / buy_total * 100, 1) if buy_total > 0 else None
+    has_priced_result = matched_count > 0
+    if has_priced_result:
+        expected_profit_total = round_money(expected_net_total - buy_total)
+        profit_percent = round(expected_profit_total / buy_total * 100, 1) if buy_total > 0 else None
+        total_expected_sell = round_money(expected_sell_total)
+        total_expected_net = round_money(expected_net_total)
+    else:
+        expected_profit_total = None
+        profit_percent = None
+        total_expected_sell = None
+        total_expected_net = None
     fallback_only = bool(matched_sources) and all(source == OBS_FALLBACK for source in matched_sources)
     decision = listing_decision(
         matched_count=matched_count,
@@ -296,7 +319,7 @@ def evaluate_avito_listing_payload(
     human_reason = (
         f"Цена объявления {money_text(listing_price)}"
         f", доставка {money_text(delivery_price)}. "
-        f"По распознанным товарам ожидаемая чистая выручка {money_text(expected_net_total)}, "
+        f"По распознанным товарам ожидаемая чистая выручка {money_text(total_expected_net)}, "
         f"примерный профит {money_text(expected_profit_total)}."
     )
     if fallback_only:
@@ -311,8 +334,8 @@ def evaluate_avito_listing_payload(
             "listing_price": round_money(listing_price),
             "delivery_price": round_money(delivery_price),
             "buy_total": round_money(buy_total),
-            "expected_sell_total": round_money(expected_sell_total),
-            "expected_net_total": round_money(expected_net_total),
+            "expected_sell_total": total_expected_sell,
+            "expected_net_total": total_expected_net,
             "expected_profit": expected_profit_total,
             "profit_percent": profit_percent,
         },
@@ -687,6 +710,8 @@ def generic_unknown_item_name(item: dict[str, Any]) -> bool:
     )
     if not text:
         return True
+    if lookup_text_is_generic_only(text):
+        return True
     generic_terms = (
         "unknown",
         "undefined",
@@ -831,6 +856,300 @@ def extracted_items_for_evaluation(listing: dict[str, Any], extracted_items: lis
     return []
 
 
+def price_line_items_from_listing(listing: dict[str, Any]) -> list[dict[str, Any]]:
+    text = listing_text_for_price_lines(listing)
+    rows = extract_price_line_rows(text)
+    if rows:
+        platform = infer_platform_from_listing_text(text)
+        return [
+            price_line_row_to_item(row, platform=platform)
+            for row in rows
+            if not price_line_name_is_not_product(row["name"])
+        ]
+    single = fallback_single_title_item(listing, text)
+    return [single] if single else []
+
+
+def filter_non_product_items(items: list[dict[str, Any]], *, listing: dict[str, Any]) -> list[dict[str, Any]]:
+    return [item for item in items if not extracted_item_is_non_product(item, listing=listing)]
+
+
+def extracted_item_is_non_product(item: dict[str, Any], *, listing: dict[str, Any]) -> bool:
+    name = str(item.get("name") or item.get("canonical_name") or "").strip()
+    if not name:
+        return True
+    if item_marked_unavailable_in_listing(name, listing_text_for_price_lines(listing)):
+        return True
+    if price_line_name_is_not_product(name) and not extracted_item_has_trusted_identity(item):
+        return True
+    listing_title = normalize_lookup_text(str(listing.get("title") or ""))
+    normalized_name = normalize_lookup_text(name)
+    if normalized_name == listing_title and title_is_generic_listing_heading(listing_title):
+        return True
+    return False
+
+
+def item_marked_unavailable_in_listing(name: str, listing_text: str) -> bool:
+    item_tokens = distinctive_tokens(name)
+    if not item_tokens:
+        return False
+    for sold_name in unavailable_product_names_from_listing(listing_text):
+        sold_tokens = distinctive_tokens(sold_name)
+        if sold_tokens and (sold_tokens <= item_tokens or item_tokens <= sold_tokens or sold_tokens & item_tokens):
+            return True
+    return False
+
+
+def unavailable_product_names_from_listing(text: str) -> list[str]:
+    names: list[str] = []
+    pattern = (
+        r"(?P<name>[0-9A-Za-zА-Яа-яЁё'’:\s]{2,80}?)"
+        r"\s*[-–—:]?\s*(?:продан|продано|sold|бронь|забронировано)\b"
+    )
+    for match in re.finditer(pattern, str(text or ""), flags=re.IGNORECASE):
+        name = clean_price_line_name(match.group("name"))
+        if name:
+            names.append(name)
+    return names
+
+
+def extracted_item_has_trusted_identity(item: dict[str, Any]) -> bool:
+    if item.get("catalog_item_id") or item.get("catalog_entry_id"):
+        return True
+    canonical = str(item.get("canonical_name") or "").strip()
+    return bool(canonical and not lookup_text_is_generic_only(canonical))
+
+
+def title_is_generic_listing_heading(normalized_title: str) -> bool:
+    if lookup_text_is_generic_only(normalized_title):
+        return True
+    heading_markers = (
+        "игры обмен",
+        "обмен продажа",
+        "игры продажа",
+        "диски для",
+        "игры для",
+        "sony playstation игры",
+    )
+    return any(marker in normalized_title for marker in heading_markers)
+
+
+def listing_text_for_price_lines(listing: dict[str, Any]) -> str:
+    raw_json = listing_raw_json(listing)
+    link_payload = raw_json.get("link_monitor_payload") if isinstance(raw_json.get("link_monitor_payload"), dict) else {}
+    parts: list[str] = [
+        str(listing.get("title") or ""),
+        str(listing.get("description") or ""),
+        str(raw_json.get("description") or ""),
+        str(link_payload.get("description") or ""),
+        str(link_payload.get("original_description") or ""),
+    ]
+    for key in ("raw_card_texts", "raw_detail_texts"):
+        value = raw_json.get(key)
+        if isinstance(value, list):
+            parts.extend(str(row or "") for row in value)
+    return "\n".join(part for part in parts if part)
+
+
+def extract_price_line_rows(text: str) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    seen: set[tuple[str, int]] = set()
+    chunks = re.split(r"[\r\n;•*]+", str(text or ""))
+    for chunk in chunks:
+        line = clean_price_line(chunk)
+        if not line:
+            continue
+        line = remove_unavailable_price_segments(line)
+        if not line:
+            continue
+        parsed_rows = parse_compact_price_line_segments(line)
+        if not parsed_rows:
+            parsed = parse_price_line(line)
+            parsed_rows = [{"name": parsed[0], "price_rub": parsed[1], "source_line": line}] if parsed else []
+        for row in parsed_rows:
+            key = (normalize_lookup_text(row["name"]), int(row["price_rub"]))
+            if key in seen:
+                continue
+            seen.add(key)
+            rows.append(row)
+    return rows
+
+
+def remove_unavailable_price_segments(line: str) -> str:
+    pattern = (
+        r"(?:[0-9A-Za-zА-Яа-яЁё'’]+(?:\s+[0-9A-Za-zА-Яа-яЁё'’]+){0,5})"
+        r"\s*[-–—:]?\s*(?:продан|продано|sold|бронь|забронировано)\b"
+    )
+    return clean_price_line(re.sub(pattern, " ", line, flags=re.IGNORECASE))
+
+
+def parse_compact_price_line_segments(line: str) -> list[dict[str, Any]]:
+    matches = list(re.finditer(r"(?P<price>\d[\d\s]{2,5})(?P<currency>\s*(?:₽|руб\.?|р\.?|rub))?", line, flags=re.IGNORECASE))
+    if not matches:
+        return []
+    rows: list[dict[str, Any]] = []
+    cursor = 0
+    for match in matches:
+        raw_name = line[cursor : match.start()]
+        cursor = match.end()
+        if not match.group("currency") and not re.search(r"[-–—:_]\s*$", raw_name):
+            continue
+        name = clean_price_line_name(raw_name)
+        price = safe_int(re.sub(r"\D+", "", match.group("price")))
+        if not name or price is None or price < 100 or price > 300_000:
+            continue
+        if price_line_name_is_not_product(name) or price_line_is_unavailable(name):
+            continue
+        rows.append({"name": name, "price_rub": price, "source_line": f"{name} — {price} ₽"})
+    return rows
+
+
+def parse_price_line(line: str) -> tuple[str, int] | None:
+    patterns = (
+        r"^(?P<name>.+?)[\s_\-–—:]+(?P<price>\d[\d\s]{2,5})\s*(?:₽|руб\.?|р\.?|rub)?\.?$",
+        r"^(?P<name>.+?)\s+(?P<price>\d{3,5})\s*(?:₽|руб\.?|р\.?|rub)\.?\s*$",
+    )
+    for pattern in patterns:
+        match = re.match(pattern, line, flags=re.IGNORECASE)
+        if not match:
+            continue
+        name = clean_price_line_name(match.group("name"))
+        price = safe_int(re.sub(r"\D+", "", match.group("price")))
+        if not name or price is None or price < 100 or price > 300_000:
+            continue
+        if price_line_name_is_not_product(name):
+            continue
+        return name, price
+    return None
+
+
+def price_line_row_to_item(row: dict[str, Any], *, platform: str | None) -> dict[str, Any]:
+    price = row["price_rub"]
+    return {
+        "name": row["name"],
+        "canonical_name": None,
+        "catalog_item_id": None,
+        "catalog_match_confidence": "none",
+        "item_type": "game",
+        "platform": platform,
+        "quantity": 1,
+        "condition": "unknown",
+        "is_physical": True,
+        "price_rub": price,
+        "price": price,
+        "price_source_type": "description_item_price",
+        "price_scope": "per_item",
+        "price_confidence": "high",
+        "use_for_market_pricing": True,
+        "lot_unit_buy_price_rub": None,
+        "use_for_lot_cost_estimate": False,
+        "price_source_text": row["source_line"],
+        "notes": "crm_price_line_fallback",
+    }
+
+
+def fallback_single_title_item(listing: dict[str, Any], text: str) -> dict[str, Any] | None:
+    title = str(listing.get("title") or "").strip()
+    if not title or lookup_text_is_generic_only(title):
+        return None
+    if not listing_title_looks_like_single_physical_game(title, text):
+        return None
+    price = payload_price(listing, "price", "listing_price")
+    if price is None:
+        return None
+    return {
+        "name": title,
+        "canonical_name": None,
+        "catalog_item_id": None,
+        "catalog_match_confidence": "none",
+        "item_type": "game",
+        "platform": infer_platform_from_listing_text(text),
+        "quantity": 1,
+        "condition": "unknown",
+        "is_physical": True,
+        "price_rub": price,
+        "price": price,
+        "price_source_type": "listing_price_single_item",
+        "price_scope": "per_item",
+        "price_confidence": "medium",
+        "use_for_market_pricing": True,
+        "lot_unit_buy_price_rub": None,
+        "use_for_lot_cost_estimate": False,
+        "price_source_text": title,
+        "notes": "crm_title_single_item_fallback",
+    }
+
+
+def listing_title_looks_like_single_physical_game(title: str, text: str) -> bool:
+    normalized_title = normalize_lookup_text(title)
+    normalized_text = normalize_lookup_text(text)
+    raw_text = str(text or "").casefold().replace("ё", "е")
+    if any(marker in normalized_text or marker in raw_text for marker in ("цифров", "аккаунт", "аренда", "прокат", "прошивка")):
+        return False
+    if any(marker in normalized_title for marker in ("игры", "диски", "лот", "комплект", "набор", "обмен продажа")):
+        return False
+    platform_present = bool(re.search(r"\b(ps4|ps5|psp|playstation|switch|xbox)\b", normalized_text))
+    physical_present = any(
+        marker in normalized_text or marker in raw_text
+        for marker in ("диск", "картридж", "physical", "физическ")
+    )
+    return platform_present and physical_present
+
+
+def clean_price_line(value: str) -> str:
+    return re.sub(r"\s+", " ", str(value or "").replace("\xa0", " ")).strip(" .")
+
+
+def clean_price_line_name(value: str) -> str:
+    return re.sub(r"\s+", " ", str(value or "")).strip(" -–—_:.,")
+
+
+def price_line_is_unavailable(line: str) -> bool:
+    lowered = normalize_lookup_text(line)
+    return any(marker in lowered for marker in ("продан", "продано", "sold", "бронь", "забронировано", "нет в наличии"))
+
+
+def price_line_name_is_not_product(name: str) -> bool:
+    lowered = normalize_lookup_text(name)
+    if not re.search(r"[a-zа-яё]", lowered):
+        return True
+    bad_markers = (
+        "цена",
+        "доставка",
+        "самовывоз",
+        "отправ",
+        "торг",
+        "скидк",
+        "гарант",
+        "чек",
+        "каждый день",
+        "артикул",
+        "адрес",
+        "график",
+        "выкуп",
+        "trade in",
+        "обмен продажа",
+        "игры обмен",
+        "обменяю ваш",
+    )
+    return lookup_text_is_generic_only(lowered) or any(marker in lowered for marker in bad_markers)
+
+
+def infer_platform_from_listing_text(text: str) -> str | None:
+    normalized = normalize_lookup_text(text)
+    if re.search(r"\bps5\b|playstation 5", normalized):
+        return "PS5"
+    if re.search(r"\bps4\b|playstation 4", normalized):
+        return "PS4"
+    if re.search(r"\bpsp\b|playstation portable", normalized):
+        return "PSP"
+    if "switch" in normalized:
+        return "Nintendo Switch"
+    if "xbox" in normalized:
+        return "Xbox"
+    return None
+
+
 def apply_lot_cost_observations(items: list[dict[str, Any]], raw_json: dict[str, Any]) -> bool:
     rows = raw_json.get("llm_lot_cost_observations")
     if not isinstance(rows, list) or not rows:
@@ -890,11 +1209,39 @@ def listing_content_risks(listing: dict[str, Any], raw_json: dict[str, Any]) -> 
         risks.append("digital_product")
     if any(token in text for token in ("rent", "rental", "аренд", "прокат")):
         risks.append("rental")
-    if any(token in text for token in ("subscription", "подпис")):
+    if listing_has_subscription_product_marker(text):
         risks.append("subscription")
     if has_missing_console_storage_text(text):
         risks.append("console_storage_missing")
     return risks
+
+
+def listing_has_subscription_product_marker(text: str) -> bool:
+    if not text:
+        return False
+    harmless_markers = (
+        "подписаться",
+        "подписывайтесь",
+        "подпишитесь",
+        "подписка на профиль",
+        "подписывайтесь на профиль",
+    )
+    cleaned = text
+    for marker in harmless_markers:
+        cleaned = cleaned.replace(marker, " ")
+    return any(
+        marker in cleaned
+        for marker in (
+            "subscription",
+            "подписка ps",
+            "ps plus",
+            "playstation plus",
+            "plus extra",
+            "plus deluxe",
+            "подписка до",
+            "подписка включена",
+        )
+    )
 
 
 def has_missing_console_storage_text(text: str) -> bool:
@@ -918,8 +1265,13 @@ def item_is_console(item: dict[str, Any]) -> bool:
     item_type = str(item.get("item_type") or "").strip().lower()
     if item_type in {"console", "game_console"}:
         return True
+    if item_type == "game":
+        return False
     text = normalize_lookup_text(" ".join(str(item.get(key) or "") for key in ("name", "canonical_name", "catalog_item_id")))
-    return bool(re.search(r"\b(ps4|ps5|playstation\s*[45])\b", text))
+    return bool(
+        re.search(r"\b(ps4|ps5|playstation\s*[45])\b", text)
+        and any(marker in text for marker in ("slim", "fat", "pro", "digital", "500", "825", "1tb", "1000", "cuh"))
+    )
 
 
 def listing_guard_text(listing: dict[str, Any]) -> str:
@@ -1000,6 +1352,72 @@ def clear_unsafe_catalog_match(item: dict[str, Any], *, listing_text: str, reaso
     item["unsafe_match_reason"] = reason
     if item_is_console(item) and listing_looks_like_game_disc(listing_text):
         item["item_type"] = "game"
+
+
+def append_alias_review_for_unpriced_item(*, item: dict[str, Any], listing: dict[str, Any]) -> None:
+    if not should_queue_alias_review_item(item):
+        return
+    record = {
+        "queued_at": datetime.now().isoformat(timespec="seconds"),
+        "reason": item.get("unsafe_match_reason") or "no_crm_price_match",
+        "listing_external_id": listing.get("external_id") or listing.get("bot_listing_id"),
+        "listing_title": listing.get("title"),
+        "raw_item_name": item.get("name"),
+        "raw_canonical_name": item.get("canonical_name"),
+        "raw_catalog_item_id": item.get("catalog_item_id"),
+        "raw_catalog_entry_id": item.get("catalog_entry_id"),
+        "raw_item_type": item.get("item_type") or item.get("type"),
+        "platform": item.get("platform"),
+    }
+    try:
+        ALIAS_REVIEW_QUEUE_PATH.parent.mkdir(parents=True, exist_ok=True)
+        if alias_review_record_already_queued(record):
+            return
+        with ALIAS_REVIEW_QUEUE_PATH.open("a", encoding="utf-8") as file:
+            file.write(json.dumps(record, ensure_ascii=False, sort_keys=True) + "\n")
+        ALIAS_REVIEW_KEYS_CACHE.setdefault(str(ALIAS_REVIEW_QUEUE_PATH), set()).add(alias_review_record_key(record))
+    except OSError:
+        return
+
+
+def alias_review_record_already_queued(record: dict[str, Any]) -> bool:
+    cache_key = str(ALIAS_REVIEW_QUEUE_PATH)
+    if cache_key in ALIAS_REVIEW_KEYS_CACHE:
+        return alias_review_record_key(record) in ALIAS_REVIEW_KEYS_CACHE[cache_key]
+    ALIAS_REVIEW_KEYS_CACHE[cache_key] = set()
+    if not ALIAS_REVIEW_QUEUE_PATH.exists():
+        return False
+    wanted_key = alias_review_record_key(record)
+    try:
+        with ALIAS_REVIEW_QUEUE_PATH.open("r", encoding="utf-8") as file:
+            for line in file:
+                try:
+                    existing = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                existing_key = alias_review_record_key(existing)
+                ALIAS_REVIEW_KEYS_CACHE[cache_key].add(existing_key)
+                if existing_key == wanted_key:
+                    return True
+    except OSError:
+        return False
+    return False
+
+
+def alias_review_record_key(record: dict[str, Any]) -> tuple[str, str, str]:
+    return (
+        str(record.get("listing_external_id") or "").strip(),
+        normalize_lookup_text(str(record.get("raw_item_name") or "")),
+        str(record.get("reason") or "").strip(),
+    )
+
+
+def should_queue_alias_review_item(item: dict[str, Any]) -> bool:
+    name = str(item.get("name") or "").strip()
+    if not name or generic_unknown_item_name(item):
+        return False
+    item_type = str(item.get("item_type") or item.get("type") or "").strip().lower()
+    return item_type in {"game", "console", "game_console", "controller", "accessory", "unknown", ""}
 
 
 def guard_unsafe_extracted_item(item: dict[str, Any], *, listing_text: str) -> None:
@@ -1116,6 +1534,8 @@ def normalize_extracted_items(items: list[dict[str, Any]], *, listing: dict[str,
             "unsafe_match_reason": None,
         }
         guard_unsafe_extracted_item(item, listing_text=listing_text)
+        if extracted_item_is_non_product(item, listing=listing or {}):
+            continue
         result.append(item)
     return dedupe_console_items(result)
 
@@ -1353,7 +1773,37 @@ def payload_price(payload: dict[str, Any], *keys: str) -> float | None:
 
 
 def payload_delivery_price(payload: dict[str, Any]) -> float | None:
-    return payload_price(payload, "delivery_price_rub", "delivery_price", "delivery")
+    value = payload_price(payload, "delivery_price_rub", "delivery_price", "delivery")
+    if value is None:
+        return None
+    listing_price = payload_price(payload, "price", "listing_price")
+    raw_json = payload.get("raw_json")
+    raw_json = raw_json if isinstance(raw_json, dict) else {}
+    delivery_status = str(payload.get("delivery_status") or raw_json.get("delivery_status") or "")
+    if delivery_status and "price_found" not in delivery_status:
+        return None
+    if delivery_price_looks_contaminated_by_item_price(value, listing_price, payload, raw_json):
+        return None
+    return value
+
+
+def delivery_price_looks_contaminated_by_item_price(
+    delivery_price: float,
+    listing_price: float | None,
+    payload: dict[str, Any],
+    raw_json: dict[str, Any],
+) -> bool:
+    if delivery_price <= 0:
+        return False
+    title_text = normalize_lookup_text(
+        " ".join(str(value or "") for value in (payload.get("title"), raw_json.get("title"), payload.get("type"), raw_json.get("type")))
+    )
+    looks_like_game = any(marker in title_text for marker in ("game", "игра", "диск", "ps4", "ps5", "psp", "switch"))
+    if listing_price and listing_price <= 5_000 and delivery_price >= listing_price * 0.5:
+        return True
+    if looks_like_game and delivery_price > 1_000:
+        return True
+    return False
 
 
 def first_price(payload: dict[str, Any], *keys: str) -> float | None:
@@ -1379,15 +1829,84 @@ def text_match_quality(needle: str, candidate: str) -> float:
     if not needle or not candidate:
         return 0.0
     if needle == candidate:
-        return 1.0
+        return 0.0 if lookup_text_is_generic_only(needle) else 1.0
+    if has_conflicting_important_numbers(needle, candidate):
+        return 0.0
+    if franchise_only_match_is_unsafe(needle, candidate):
+        return 0.0
+    needle_meaningful = meaningful_lookup_tokens(needle)
+    candidate_meaningful = meaningful_lookup_tokens(candidate)
+    if not needle_meaningful or not candidate_meaningful:
+        return 0.0
     if needle in candidate or candidate in needle:
         return 0.78
-    needle_tokens = set(needle.split())
-    candidate_tokens = set(candidate.split())
-    if not needle_tokens or not candidate_tokens:
-        return 0.0
-    overlap = len(needle_tokens & candidate_tokens) / len(needle_tokens)
+    shared = needle_meaningful & candidate_meaningful
+    if len(shared) >= 2 and len(shared) / len(candidate_meaningful) >= 0.75:
+        return 0.9
+    overlap = len(shared) / len(needle_meaningful)
     return 0.62 if overlap >= 0.75 else 0.0
+
+
+def meaningful_lookup_tokens(value: str) -> set[str]:
+    return {
+        token
+        for token in normalize_lookup_text(str(value or "")).split()
+        if len(token) >= 2 and token not in GENERIC_MATCH_TOKENS and not token.isdigit()
+    }
+
+
+def has_conflicting_important_numbers(left: str, right: str) -> bool:
+    left_numbers = important_number_tokens(left)
+    right_numbers = important_number_tokens(right)
+    return bool(left_numbers and right_numbers and left_numbers.isdisjoint(right_numbers))
+
+
+AMBIGUOUS_FRANCHISE_TOKEN_GROUPS = (
+    {"resident", "evil"},
+    {"call", "duty"},
+    {"assassin", "creed"},
+    {"lego"},
+)
+
+
+def franchise_only_match_is_unsafe(left: str, right: str) -> bool:
+    left_tokens = meaningful_lookup_tokens(left)
+    right_tokens = meaningful_lookup_tokens(right)
+    if not left_tokens or not right_tokens:
+        return False
+    shared = left_tokens & right_tokens
+    if not shared:
+        return False
+    for franchise_tokens in AMBIGUOUS_FRANCHISE_TOKEN_GROUPS:
+        if franchise_tokens <= left_tokens and franchise_tokens <= right_tokens:
+            left_identity = left_tokens - franchise_tokens
+            right_identity = right_tokens - franchise_tokens
+            left_numbers = important_number_tokens(left)
+            right_numbers = important_number_tokens(right)
+            left_has_identity = bool(left_identity or left_numbers)
+            right_has_identity = bool(right_identity or right_numbers)
+            if not left_has_identity and not right_has_identity:
+                return False
+            if left_has_identity != right_has_identity:
+                return True
+            return not bool((left_identity & right_identity) or (left_numbers & right_numbers))
+    return False
+
+
+def important_number_tokens(value: str) -> set[str]:
+    text = normalize_lookup_text(str(value or ""))
+    text = re.sub(r"\b(?:ps|playstation)\s*[45]\b", " ", text)
+    return {
+        token
+        for token in re.findall(r"\b\d{1,4}\b", text)
+    }
+
+
+def lookup_text_is_generic_only(value: str) -> bool:
+    tokens = set(normalize_lookup_text(str(value or "")).split())
+    if not tokens:
+        return True
+    return not meaningful_lookup_tokens(" ".join(tokens))
 
 
 def alias_score(name: str, alias: str, weight: int) -> int:
@@ -1618,7 +2137,7 @@ def listing_decision(
     *,
     matched_count: int,
     total_count: int,
-    expected_profit: float,
+    expected_profit: float | None,
     profit_percent: float | None,
     risks: list[str],
     fallback_only: bool = False,
@@ -1626,6 +2145,8 @@ def listing_decision(
     if matched_count == 0 or "listing_price_missing" in risks:
         return "skip"
     if any(risk in risks for risk in ("digital_product", "rental", "subscription", "console_storage_missing")):
+        return "skip"
+    if expected_profit is None:
         return "skip"
     if expected_profit <= 0:
         return "skip"
@@ -1636,7 +2157,7 @@ def listing_decision(
     return "skip"
 
 
-def listing_summary(decision: str, matched_count: int, expected_profit: float) -> str:
+def listing_summary(decision: str, matched_count: int, expected_profit: float | None) -> str:
     if decision == "good":
         return f"Можно смотреть: {matched_count} поз. распознано, ожидаемый профит около {money_text(expected_profit)}."
     if decision == "check":

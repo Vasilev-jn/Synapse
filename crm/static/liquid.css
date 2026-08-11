@@ -110,11 +110,11 @@ body.crm-liquid::after {
   border: 1px solid var(--liquid-border);
   border-radius: 999px;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, .16), rgba(255, 255, 255, .035) 36%, rgba(255, 255, 255, .075)),
-    var(--liquid-surface);
+    linear-gradient(135deg, rgba(34, 46, 68, .90), rgba(18, 28, 44, .82) 42%, rgba(49, 41, 76, .80)),
+    rgba(16, 22, 34, .78);
   box-shadow: var(--liquid-shadow);
-  backdrop-filter: blur(2px) saturate(148%) contrast(1.04);
-  -webkit-backdrop-filter: blur(2px) saturate(148%) contrast(1.04);
+  backdrop-filter: blur(6px) saturate(148%) contrast(1.04);
+  -webkit-backdrop-filter: blur(6px) saturate(148%) contrast(1.04);
 }
 
 .liquid-topbar::before {
@@ -163,15 +163,15 @@ body.crm-liquid::after {
 .synapse-brand {
   position: relative;
   flex: 0 0 auto;
-  width: 108px;
-  min-width: 108px;
+  width: 194px;
+  min-width: 194px;
   height: 44px;
-  padding: 4px;
+  padding: 5px 12px;
   overflow: hidden;
   background:
-    radial-gradient(circle at 28% 12%, rgba(255, 255, 255, .52), transparent 34%),
-    linear-gradient(135deg, rgba(124, 199, 255, .22), rgba(167, 139, 250, .10));
-  border: 1px solid rgba(255, 255, 255, .30);
+    radial-gradient(circle at 24% 8%, rgba(255, 255, 255, .32), transparent 36%),
+    linear-gradient(135deg, rgba(235, 244, 255, .18), rgba(122, 157, 210, .08) 48%, rgba(255, 255, 255, .05));
+  border: 1px solid rgba(255, 255, 255, .38);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .46),
     inset 0 -12px 24px rgba(255, 255, 255, .08),
@@ -194,7 +194,7 @@ body.crm-liquid::after {
   width: 100%;
   height: 100%;
   border-radius: 999px;
-  object-fit: cover;
+  object-fit: contain;
   object-position: center;
   filter: saturate(1.08) contrast(1.04);
 }
@@ -243,8 +243,30 @@ body.crm-liquid::after {
 }
 
 .topbar-tools {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  align-self: stretch;
   margin-left: auto;
   padding-left: 8px;
+  min-height: 44px;
+}
+
+.topbar-tools form {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
+
+.topbar-tools .button,
+.topbar-tools button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  height: 36px;
+  line-height: 1;
 }
 
 .topbar-setting {

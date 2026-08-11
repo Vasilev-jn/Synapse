@@ -583,6 +583,7 @@ def process_details(
     source_path: str | Path | None = None,
     send_telegram: bool = True,
     send_crm: bool = True,
+    analysis_enabled: bool = True,
 ) -> dict[str, Any]:
     settings = load_automation_settings(SETTINGS_PATH)
     record = monitor_json_to_record(details)
@@ -600,18 +601,28 @@ def process_details(
     profit_telegram_result = None
     if send_telegram and not suppression_reason:
         full_description = record.description
-        record.description = summarize_description_if_needed(
-            record.description,
-            settings,
-            threshold=description_summary_threshold(settings),
-        )
+        if analysis_enabled:
+            record.description = summarize_description_if_needed(
+                record.description,
+                settings,
+                threshold=description_summary_threshold(settings),
+            )
+        else:
+            record.description = truncate_description_for_telegram(
+                record.description,
+                threshold=description_summary_threshold(settings),
+            )
         telegram_result = send_listing_plain_if_configured(record, settings)
         record.description = full_description
 
-    llm_items = extract_listing_items_if_configured(
-        record,
-        settings,
-        original_description=original_description,
+    llm_items = (
+        extract_listing_items_if_configured(
+            record,
+            settings,
+            original_description=original_description,
+        )
+        if analysis_enabled
+        else None
     )
     if llm_items is not None:
         setattr(record, "llm_extracted_items", llm_items)
@@ -640,18 +651,21 @@ def process_details(
     db_result = save_record_to_db(saved_payload, source_path=source_path)
     if send_crm:
         crm_result = {"ok": True, "stored_by": "save_record_to_db", "database": "postgresql"}
-        crm_evaluation_result = evaluate_record_profit_if_configured(
-            record,
-            original_description=original_description,
-            saved_payload=saved_payload,
-        )
-        response = crm_evaluation_result.get("response")
-        if crm_evaluation_result.get("ok") and isinstance(response, dict):
-            response["external_id"] = getattr(record, "external_id", None)
-            response["bot_listing_id"] = getattr(record, "bot_listing_id", None) or getattr(record, "external_id", None)
-            saved_payload["crm_evaluation_result"] = response
-            saved_payload["crm_evaluation_saved_at"] = datetime.now().astimezone().isoformat(timespec="seconds")
-            save_record_to_db(saved_payload, source_path=source_path)
+        if analysis_enabled:
+            crm_evaluation_result = evaluate_record_profit_if_configured(
+                record,
+                original_description=original_description,
+                saved_payload=saved_payload,
+            )
+            response = crm_evaluation_result.get("response")
+            if crm_evaluation_result.get("ok") and isinstance(response, dict):
+                response["external_id"] = getattr(record, "external_id", None)
+                response["bot_listing_id"] = getattr(record, "bot_listing_id", None) or getattr(record, "external_id", None)
+                saved_payload["crm_evaluation_result"] = response
+                saved_payload["crm_evaluation_saved_at"] = datetime.now().astimezone().isoformat(timespec="seconds")
+                save_record_to_db(saved_payload, source_path=source_path)
+        else:
+            crm_evaluation_result = {"ok": True, "skipped": True, "reason": "analysis_disabled"}
     else:
         crm_result = {"ok": True, "skipped": True, "reason": "disabled"}
         crm_evaluation_result = {"ok": True, "skipped": True, "reason": "disabled"}
@@ -679,6 +693,7 @@ def process_details(
         "title": record.title,
         "url": record.url,
         "telegram_suppression_reason": suppression_reason,
+        "analysis_enabled": analysis_enabled,
         "llm_items_count": len(getattr(record, "llm_extracted_items", []) or []),
         "db_result": {
             "inserted": db_result.inserted,
@@ -693,17 +708,35 @@ def process_details(
     }
 
 
-def process_file(path: str | Path, *, send_telegram: bool = False, send_crm: bool = True) -> dict[str, Any]:
+def process_file(
+    path: str | Path,
+    *,
+    send_telegram: bool = False,
+    send_crm: bool = True,
+    analysis_enabled: bool = True,
+) -> dict[str, Any]:
     source_path = Path(path)
     details = json.loads(source_path.read_text(encoding="utf-8"))
     if isinstance(details, dict) and isinstance(details.get("items"), list):
         results = [
-            process_details(item, source_path=source_path, send_telegram=send_telegram, send_crm=send_crm)
+            process_details(
+                item,
+                source_path=source_path,
+                send_telegram=send_telegram,
+                send_crm=send_crm,
+                analysis_enabled=analysis_enabled,
+            )
             for item in details["items"]
             if isinstance(item, dict)
         ]
         return {"ok": all(bool(item.get("ok")) for item in results), "count": len(results), "items": results}
-    return process_details(details, source_path=source_path, send_telegram=send_telegram, send_crm=send_crm)
+    return process_details(
+        details,
+        source_path=source_path,
+        send_telegram=send_telegram,
+        send_crm=send_crm,
+        analysis_enabled=analysis_enabled,
+    )
 
 
 def main() -> int:
@@ -713,10 +746,16 @@ def main() -> int:
     parser.add_argument("paths", nargs="+", help="JSON files produced by qa_automation.py")
     parser.add_argument("--telegram", action="store_true", help="Send Telegram messages too")
     parser.add_argument("--no-crm", action="store_true", help="Do not send CRM requests")
+    parser.add_argument("--no-analysis", action="store_true", help="Skip LLM and CRM profit evaluation")
     args = parser.parse_args()
 
     for raw_path in args.paths:
-        result = process_file(raw_path, send_telegram=args.telegram, send_crm=not args.no_crm)
+        result = process_file(
+            raw_path,
+            send_telegram=args.telegram,
+            send_crm=not args.no_crm,
+            analysis_enabled=not args.no_analysis,
+        )
         print(json.dumps(result, ensure_ascii=True, indent=2))
     return 0
 
