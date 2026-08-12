@@ -44,7 +44,7 @@ MONITOR_RANDOM_PAUSE_MAX_SECONDS = 20
 FAILED_RETRY_DELAY_SECONDS = 5 * 60
 MAX_NEW_ITEMS_PER_CYCLE = 10
 MAX_OPEN_PAGES_TO_KEEP = 2
-MONITOR_MAX_RUNTIME_SECONDS = int(2.5 * 60 * 60)
+MONITOR_MAX_RUNTIME_SECONDS: int | None = None
 MIN_PAUSE_MS = 300
 MAX_PAUSE_MS = 900
 
@@ -1317,10 +1317,10 @@ def run_qa(
         cycle_number = 0
         monitor_started_at = time.time()
         bootstrap_completed = False
-        runtime_limit = max_runtime_seconds or MONITOR_MAX_RUNTIME_SECONDS
+        runtime_limit = max_runtime_seconds if max_runtime_seconds is not None else MONITOR_MAX_RUNTIME_SECONDS
         finish_status = "finished"
-        finish_reason = "runtime_limit_reached"
-        while time.time() - monitor_started_at < runtime_limit:
+        finish_reason = "runtime_limit_reached" if runtime_limit is not None else "monitor_loop_exited"
+        while runtime_limit is None or time.time() - monitor_started_at < runtime_limit:
             if CONTROL_STOP_FILE.exists():
                 log_event(
                     "monitor_stop_requested",
@@ -1435,8 +1435,10 @@ def run_qa(
         )
         if finish_status == "stopped":
             print("[MONITOR] Остановлен по команде, завершаю работу")
-        else:
+        elif runtime_limit is not None:
             print("[MONITOR] Лимит времени достигнут, завершаю работу")
+        else:
+            print("[MONITOR] Цикл мониторинга завершён")
         # Профиль AdsPower не закрываем.
 
 
@@ -1447,7 +1449,7 @@ if __name__ == "__main__":
         "--max-runtime-seconds",
         type=int,
         default=None,
-        help="Override monitor runtime limit",
+        help="Optional runtime limit. By default the monitor runs until stopped.",
     )
     parser.add_argument(
         "--no-analysis",
