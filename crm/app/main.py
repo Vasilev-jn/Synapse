@@ -9,6 +9,7 @@ from collections import Counter
 from contextlib import asynccontextmanager
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from statistics import median
 from typing import Any
 from urllib.parse import urlencode
 from zoneinfo import ZoneInfo
@@ -256,8 +257,6 @@ def stats_page(request: Request, db: Session = Depends(get_db)) -> HTMLResponse:
         {
             "page_title": "Статистика",
             "stats": inventory_stats(rows, db),
-            "analysis_summary": analysis_sales_summary(db),
-            "price_observations": price_observation_summary(db),
         },
     )
 
@@ -1219,36 +1218,27 @@ def inventory_stats(items: list[Item], db: Session | None = None) -> dict[str, A
     sold_rows = [item for item in items if item.status == "Продан"]
     available_rows = [item for item in items if item.status == "Есть"]
     stock_cost = sum(item.calculated_cost or 0 for item in available_rows)
-    rough_rows = rough_stock_valuation_rows(available_rows, db)
-    rough_stock = rough_stock_valuation_stats(available_rows, rough_rows)
     sold_stats = sold_inventory_stats(sold_rows)
     return {
         "total": len(items),
         "available": len(available_rows),
         "sold": len(sold_rows),
         "stock_cost": stock_cost,
-        "expected_stock_revenue": sum(item.expected_sale_price or 0 for item in available_rows),
         "category_rows": inventory_category_rows(items),
-        "daily_sales": daily_sales_rows(sold_rows),
+        "sold_count_by_category": sold_count_by_category(sold_rows),
+        "average_profit_by_category": average_profit_by_category(sold_rows),
         "sales_chart": sales_chart_payload(sold_rows, "month"),
-        "rough_stock": rough_stock,
-        "business_metrics": business_metrics(stock_cost, rough_stock, sold_stats),
-        "capital_category_rows": capital_category_rows(available_rows, sold_rows, rough_rows),
-        "pricing_rows": pricing_recommendation_rows(available_rows, rough_rows),
-        "sell_priority_rows": sell_priority_rows(available_rows, sold_rows, rough_rows),
+        "business_metrics": business_metrics(sold_rows, sold_stats),
+        "sale_speed_by_category": sale_speed_by_category(sold_rows),
         **sold_stats,
     }
 
 
-def business_metrics(stock_cost: float, rough_stock: dict[str, Any], sold_stats: dict[str, Any]) -> list[dict[str, Any]]:
+def business_metrics(sold_rows: list[Item], sold_stats: dict[str, Any]) -> list[dict[str, Any]]:
     sold_cost = sold_stats["sold_cost"]
-    sold_revenue = sold_stats["sold_revenue"]
     sold_profit = sold_stats["sold_profit"]
-    total_known_cost = sold_cost + stock_cost
     sold_roi = sold_profit / sold_cost * 100 if sold_cost else None
-    sold_margin = sold_profit / sold_revenue * 100 if sold_revenue else None
-    stock_cover = rough_stock["estimated_net_revenue"] / stock_cost * 100 if stock_cost else None
-    frozen_share = stock_cost / total_known_cost * 100 if total_known_cost else None
+    speed_days = sale_speed_days(sold_rows)
     return [
         {
             "label": "ROI продаж",
@@ -1257,23 +1247,60 @@ def business_metrics(stock_cost: float, rough_stock: dict[str, Any], sold_stats:
             "class": percent_tone(sold_roi, good_at=30, neutral_at=0),
         },
         {
-            "label": "Маржа продаж",
-            "value": percent_label(sold_margin),
-            "caption": "прибыль / выручка",
-            "class": percent_tone(sold_margin, good_at=20, neutral_at=0),
+            "label": "Скорость продажи",
+            "value": format_day_count(speed_days) if speed_days is not None else "—",
+            "caption": "медиана: дата продажи − дата покупки" if speed_days is not None else "Недостаточно данных",
+            "class": "metric-neutral",
+            "expandable": True,
         },
-        {
-            "label": "Покрытие остатка",
-            "value": percent_label(stock_cover),
-            "caption": "оценка чистыми / себестоимость остатка",
-            "class": percent_tone(stock_cover, good_at=130, neutral_at=100),
-        },
-        {
-            "label": "Заморозка капитала",
-            "value": percent_label(frozen_share),
-            "caption": "остаток / весь учтённый капитал",
-            "class": inverse_percent_tone(frozen_share, good_at=55, neutral_at=75),
-        },
+    ]
+
+
+def sold_count_by_category(sold_rows: list[Item]) -> list[dict[str, Any]]:
+    counter: Counter[str] = Counter()
+    for item in sold_rows:
+        counter[top_level_category_name(item.category)] += 1
+    return [
+        {"name": name, "count": count}
+        for name, count in sorted(counter.items(), key=lambda pair: (-pair[1], pair[0].casefold()))
+    ]
+
+
+def average_profit_by_category(sold_rows: list[Item]) -> list[dict[str, Any]]:
+    groups: dict[str, list[float]] = {}
+    for item in sold_rows:
+        profit = item_profit(item)
+        if profit is None:
+            continue
+        groups.setdefault(top_level_category_name(item.category), []).append(profit)
+    return [
+        {"name": name, "average_profit": sum(values) / len(values)}
+        for name, values in sorted(groups.items(), key=lambda pair: pair[0].casefold())
+        if values
+    ]
+
+
+def sale_speed_days(sold_rows: list[Item]) -> int | None:
+    values = [
+        max((item.sold_at.date() - item.purchased_at.date()).days, 0)
+        for item in sold_rows
+        if item.sold_at is not None and item.purchased_at is not None
+    ]
+    return int(round(median(values))) if values else None
+
+
+def sale_speed_by_category(sold_rows: list[Item]) -> list[dict[str, Any]]:
+    groups: dict[str, list[int]] = {}
+    for item in sold_rows:
+        if item.sold_at is None or item.purchased_at is None:
+            continue
+        groups.setdefault(top_level_category_name(item.category), []).append(
+            max((item.sold_at.date() - item.purchased_at.date()).days, 0)
+        )
+    return [
+        {"name": name, "days": int(round(median(values))), "count": len(values)}
+        for name, values in sorted(groups.items(), key=lambda pair: pair[0].casefold())
+        if values
     ]
 
 
@@ -1846,9 +1873,10 @@ def inventory_category_rows(items: list[Item]) -> list[dict[str, Any]]:
     total = len(items) or 1
     rows: dict[str, dict[str, Any]] = {}
     for item in items:
+        category_name = top_level_category_name(item.category)
         row = rows.setdefault(
-            item.category.name,
-            {"name": item.category.name, "total": 0, "available": 0, "sold": 0, "stock_cost": 0.0},
+            category_name,
+            {"name": category_name, "total": 0, "available": 0, "sold": 0, "stock_cost": 0.0},
         )
         row["total"] += 1
         if item.status == "Продан":
@@ -1941,10 +1969,12 @@ def sales_chart_payload(items: list[Item], period: str = "month") -> dict[str, A
         key = sales_chart_bucket_key(sold_date.date(), period)
         if key is None or key not in rows:
             continue
+        rows[key]["sold_count"] += 1
         rows[key]["count"] += 1
         rows[key]["revenue"] += item.sale_price or 0
         profit = item_profit(item)
-        rows[key]["profit"] += profit or 0
+        if profit is not None:
+            rows[key]["profit"] += profit
     prepared_rows = prepare_sales_chart_rows(list(rows.values()))
     return {
         "period": period,
@@ -1963,42 +1993,47 @@ def empty_sales_chart_rows(period: str) -> dict[Any, dict[str, Any]]:
                 "label": RU_MONTH_SHORT[month - 1],
                 "full_label": f"{RU_MONTH_NAMES[month - 1]} {today.year}",
                 "count": 0,
+                "sold_count": 0,
                 "revenue": 0.0,
                 "profit": 0.0,
             }
             for month in range(1, 13)
         }
     if period == "weeks":
-        current_week_start = today - timedelta(days=today.weekday())
-        starts = [current_week_start - timedelta(weeks=11 - index) for index in range(12)]
+        starts = [today - timedelta(days=13 - index) for index in range(14)]
         return {
-            start: {
-                "key": start.isoformat(),
-                "label": f"{start.strftime('%d.%m')}–{(start + timedelta(days=6)).strftime('%d.%m')}",
-                "full_label": f"{start.strftime('%d.%m.%Y')} — {(start + timedelta(days=6)).strftime('%d.%m.%Y')}",
+            day: {
+                "key": day.isoformat(),
+                "label": day.strftime("%d.%m"),
+                "full_label": day.strftime("%d.%m.%Y"),
                 "count": 0,
+                "sold_count": 0,
                 "revenue": 0.0,
                 "profit": 0.0,
             }
-            for start in starts
+            for day in starts
         }
     first_day = today.replace(day=1)
     if today.month == 12:
         next_month = date(today.year + 1, 1, 1)
     else:
         next_month = date(today.year, today.month + 1, 1)
-    days = (next_month - first_day).days
-    dates = [first_day + timedelta(days=index) for index in range(days)]
+    starts: list[date] = []
+    cursor = first_day
+    while cursor < next_month:
+        starts.append(cursor)
+        cursor += timedelta(days=7)
     return {
-        day: {
-            "key": day.isoformat(),
-            "label": day.strftime("%d.%m"),
-            "full_label": day.strftime("%d.%m.%Y"),
+        start: {
+            "key": start.isoformat(),
+            "label": f"{start.strftime('%d.%m')}–{(min(start + timedelta(days=6), next_month - timedelta(days=1))).strftime('%d.%m')}",
+            "full_label": f"{start.strftime('%d.%m.%Y')} — {(min(start + timedelta(days=6), next_month - timedelta(days=1))).strftime('%d.%m.%Y')}",
             "count": 0,
+            "sold_count": 0,
             "revenue": 0.0,
             "profit": 0.0,
         }
-        for day in dates
+        for start in starts
     }
 
 
@@ -2009,12 +2044,10 @@ def sales_chart_bucket_key(day: date, period: str) -> Any | None:
             return None
         return day.month
     if period == "weeks":
-        current_week_start = today - timedelta(days=today.weekday())
-        first_week_start = current_week_start - timedelta(weeks=11)
-        week_start = day - timedelta(days=day.weekday())
-        if week_start < first_week_start or week_start > current_week_start:
+        first_day = today - timedelta(days=13)
+        if day < first_day or day > today:
             return None
-        return week_start
+        return day
     first_day = today.replace(day=1)
     if today.month == 12:
         next_month = date(today.year + 1, 1, 1)
@@ -2022,14 +2055,15 @@ def sales_chart_bucket_key(day: date, period: str) -> Any | None:
         next_month = date(today.year, today.month + 1, 1)
     if day < first_day or day >= next_month:
         return None
-    return day
+    return first_day + timedelta(days=((day - first_day).days // 7) * 7)
 
 
 def prepare_sales_chart_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    max_revenue = max((row["revenue"] for row in rows), default=0) or 1
+    max_profit = max((abs(row["profit"]) for row in rows), default=0) or 1
     for row in rows:
-        row["revenue_height"] = round(row["revenue"] / max_revenue * 100, 1) if row["revenue"] else 0
         profit = row["profit"]
+        row["profit_height"] = round(abs(profit) / max_profit * 100, 1) if profit else 0
+        row["margin_percent"] = (profit / row["revenue"] * 100) if row["revenue"] else 0
         row["profit_class"] = (
             "metric-good"
             if profit > SOLD_NEAR_ZERO_PROFIT
@@ -2039,6 +2073,7 @@ def prepare_sales_chart_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]
         )
         row["revenue_label"] = money(row["revenue"])
         row["profit_label"] = money(row["profit"])
+        row["margin_label"] = f"{row['margin_percent']:.1f}%"
     return rows
 
 
@@ -2047,8 +2082,14 @@ def sales_chart_range_label(period: str) -> str:
     if period == "year":
         return f"{today.year} год"
     if period == "weeks":
-        return "последние 12 недель"
-    return f"{RU_MONTH_NAMES[today.month - 1]} {today.year}"
+        start = today - timedelta(days=13)
+        return f"{start.strftime('%d.%m.%Y')} — {today.strftime('%d.%m.%Y')}"
+    first_day = today.replace(day=1)
+    if today.month == 12:
+        last_day = date(today.year + 1, 1, 1) - timedelta(days=1)
+    else:
+        last_day = date(today.year, today.month + 1, 1) - timedelta(days=1)
+    return f"{first_day.strftime('%d.%m.%Y')} — {last_day.strftime('%d.%m.%Y')}"
 
 
 def donut_style(segments: list[dict[str, Any]]) -> str:

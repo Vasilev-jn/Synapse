@@ -163,15 +163,16 @@ body.crm-liquid::after {
 .synapse-brand {
   position: relative;
   flex: 0 0 auto;
-  width: 194px;
-  min-width: 194px;
+  width: 150px;
+  min-width: 150px;
   height: 44px;
-  padding: 5px 12px;
+  padding: 0;
   overflow: hidden;
+  border-radius: 999px;
   background:
-    radial-gradient(circle at 24% 8%, rgba(255, 255, 255, .32), transparent 36%),
-    linear-gradient(135deg, rgba(235, 244, 255, .18), rgba(122, 157, 210, .08) 48%, rgba(255, 255, 255, .05));
-  border: 1px solid rgba(255, 255, 255, .38);
+    radial-gradient(circle at 28% 12%, rgba(255, 255, 255, .52), transparent 34%),
+    linear-gradient(135deg, rgba(124, 199, 255, .22), rgba(167, 139, 250, .10));
+  border: 1px solid rgba(255, 255, 255, .30);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, .46),
     inset 0 -12px 24px rgba(255, 255, 255, .08),
@@ -193,8 +194,8 @@ body.crm-liquid::after {
   display: block;
   width: 100%;
   height: 100%;
-  border-radius: 999px;
-  object-fit: contain;
+  border-radius: inherit;
+  object-fit: cover;
   object-position: center;
   filter: saturate(1.08) contrast(1.04);
 }
@@ -568,6 +569,12 @@ body.crm-liquid .sales-point circle {
   vector-effect: non-scaling-stroke;
 }
 
+body.crm-liquid .sales-point-hit {
+  fill: transparent !important;
+  stroke: transparent !important;
+  pointer-events: all;
+}
+
 body.crm-liquid .sales-point.metric-good circle {
   stroke: #3fb950;
 }
@@ -608,6 +615,202 @@ body.crm-liquid .sales-line-axis span {
 
 body.crm-liquid .sales-line-axis span.muted {
   opacity: .34;
+}
+
+body.crm-liquid .stats-primary-metrics,
+body.crm-liquid .stats-secondary-grid {
+  width: calc(100vw - 56px);
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.crm-liquid .stats-primary-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+body.crm-liquid .stats-primary-metric {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+body.crm-liquid .stats-primary-metric > strong {
+  font-size: clamp(30px, 3vw, 46px);
+  line-height: 1;
+}
+
+body.crm-liquid .metric-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+body.crm-liquid .metric-expand-button {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  min-height: 30px;
+  padding: 0;
+  border-radius: 999px;
+  line-height: 1;
+}
+
+body.crm-liquid .metric-category-breakdown {
+  margin-top: 14px;
+  display: grid;
+  gap: 7px;
+}
+
+body.crm-liquid .metric-category-breakdown[hidden] {
+  display: none;
+}
+
+body.crm-liquid .metric-category-breakdown > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--liquid-text-muted);
+}
+
+body.crm-liquid .metric-category-breakdown strong {
+  color: var(--liquid-text);
+  white-space: nowrap;
+}
+
+body.crm-liquid .content > .sales-panel {
+  width: calc(100vw - 56px);
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 16px;
+  min-height: 520px;
+}
+
+body.crm-liquid .stats-secondary-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, .9fr) minmax(340px, 1.1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+body.crm-liquid .sales-count-panel,
+body.crm-liquid .business-panel {
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+}
+
+body.crm-liquid .sales-count-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(64px, 9vw, 120px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.06em;
+  text-shadow: 0 18px 42px rgba(0, 0, 0, .32);
+}
+
+body.crm-liquid .sales-count-categories {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  color: var(--liquid-text-muted);
+}
+
+body.crm-liquid .sales-count-categories span {
+  display: inline-flex;
+  gap: 5px;
+}
+
+body.crm-liquid .stats-business-compact {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+body.crm-liquid .stats-business-compact .business-metric {
+  min-height: 0;
+}
+
+body.crm-liquid .sale-speed-breakdown {
+  margin-top: 12px;
+}
+
+body.crm-liquid .stats-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+body.crm-liquid .profit-table-scroll {
+  max-height: 520px;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  border-radius: 18px;
+}
+
+body.crm-liquid .profit-table-scroll thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  background: rgba(10, 16, 24, .82);
+}
+
+body.crm-liquid .sales-line-chart {
+  position: relative;
+}
+
+body.crm-liquid .sales-chart-tooltip {
+  position: absolute;
+  left: var(--tooltip-x, 50%);
+  top: var(--tooltip-y, 50%);
+  z-index: 5;
+  min-width: 220px;
+  transform: translate(-50%, calc(-100% - 14px));
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 18px;
+  color: var(--liquid-text);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, .11), rgba(255, 255, 255, .045)),
+    rgba(8, 15, 26, .86);
+  box-shadow: 0 18px 46px rgba(0, 0, 0, .34), inset 0 1px 0 rgba(255, 255, 255, .26);
+  backdrop-filter: blur(18px) saturate(145%);
+  -webkit-backdrop-filter: blur(18px) saturate(145%);
+  pointer-events: none;
+}
+
+body.crm-liquid .sales-chart-tooltip[hidden] {
+  display: none;
+}
+
+body.crm-liquid .sales-chart-tooltip strong {
+  display: block;
+  margin-bottom: 8px;
+}
+
+body.crm-liquid .sales-chart-tooltip div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  color: var(--liquid-text-muted);
+  font-size: 13px;
+}
+
+body.crm-liquid .sales-chart-tooltip b {
+  color: var(--liquid-text);
+  font-weight: 800;
 }
 
 body.crm-liquid .price-source-summary {
@@ -1414,6 +1617,8 @@ body.crm-liquid .error {
   body.crm-liquid .content > .panel,
   body.crm-liquid .content > .grid,
   body.crm-liquid .content > .stats-dashboard,
+  body.crm-liquid .content > .stats-primary-metrics,
+  body.crm-liquid .content > .stats-secondary-grid,
   body.crm-liquid .content > .history-layout,
   body.crm-liquid .content > .exchange-grid,
   body.crm-liquid .content > .wizard,
@@ -1440,6 +1645,15 @@ body.crm-liquid .error {
 
 @media (max-width: 1100px) {
   body.crm-liquid .stats-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  body.crm-liquid .stats-primary-metrics,
+  body.crm-liquid .stats-secondary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.crm-liquid .stats-business-compact {
     grid-template-columns: 1fr;
   }
 
@@ -1490,6 +1704,12 @@ body.crm-liquid .error {
 }
 
 @media (max-width: 760px) {
+  body.crm-liquid .stats-primary-metrics,
+  body.crm-liquid .stats-secondary-grid,
+  body.crm-liquid .content > .sales-panel {
+    width: calc(100vw - 16px);
+  }
+
   body.crm-liquid .business-panel .business-metrics {
     grid-template-columns: 1fr;
   }

@@ -1,3 +1,7 @@
+param(
+    [switch]$RestartTelegram
+)
+
 $ErrorActionPreference = "Stop"
 
 $MonitorRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -114,8 +118,15 @@ function Start-CrmIfNeeded {
 function Start-TelegramControlIfNeeded {
     $existing = Get-CommandLineProcess -Pattern "*telegram_control_bot.py*"
     if ($null -ne $existing) {
-        Write-Host "Telegram panel: already running (PID $($existing.ProcessId))" -ForegroundColor Green
-        return
+        if ($RestartTelegram) {
+            Write-Host "Telegram panel: restarting old PID $($existing.ProcessId)..." -ForegroundColor Yellow
+            Stop-Process -Id $existing.ProcessId -Force
+            Start-Sleep -Seconds 2
+        }
+        else {
+            Write-Host "Telegram panel: already running (PID $($existing.ProcessId))" -ForegroundColor Green
+            return
+        }
     }
 
     Write-Host "Telegram panel: starting..." -ForegroundColor Yellow

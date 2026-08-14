@@ -729,6 +729,7 @@ function initSalesChart(){
   const endpoint=chart.dataset.endpoint || '/api/stats/sales-chart';
   const range=document.querySelector('[data-sales-chart-range]');
   const buttons=Array.from(document.querySelectorAll('[data-sales-chart-period]'));
+  const tooltip=chart.querySelector('[data-sales-chart-tooltip]');
   function escapeHtml(value){
     return String(value ?? '').replace(/[&<>"']/g,char=>({
       '&':'&amp;',
@@ -737,6 +738,23 @@ function initSalesChart(){
       '"':'&quot;',
       "'":'&#39;'
     }[char]));
+  }
+  function hideTooltip(){
+    if(tooltip){ tooltip.hidden=true; }
+  }
+  function showTooltip(point){
+    if(!tooltip){ return; }
+    const row=point.row || {};
+    tooltip.innerHTML=`
+      <strong>${escapeHtml(row.full_label || row.label || '')}</strong>
+      <div><span>Прибыль</span><b>${escapeHtml(row.profit_label || '0 ₽')}</b></div>
+      <div><span>Выручка</span><b>${escapeHtml(row.revenue_label || '0 ₽')}</b></div>
+      <div><span>Продано</span><b>${escapeHtml(row.sold_count ?? row.count ?? 0)} ${Number(row.sold_count ?? row.count ?? 0)===1 ? 'товар' : 'тов.'}</b></div>
+      <div><span>Маржа</span><b>${escapeHtml(row.margin_label || '0.0%')}</b></div>
+    `;
+    tooltip.style.setProperty('--tooltip-x',`${point.x/10}%`);
+    tooltip.style.setProperty('--tooltip-y',`${Math.max(12,point.y/3)}%`);
+    tooltip.hidden=false;
   }
   function render(payload){
     chart.dataset.period=payload.period || '';
@@ -750,13 +768,15 @@ function initSalesChart(){
     const padX=42;
     const padTop=34;
     const padBottom=44;
-    const values=rows.map(row=>Number(row.revenue) || 0);
-    const maxValue=Math.max(...values,1);
+    const values=rows.map(row=>Number(row.profit) || 0);
+    const minValue=Math.min(...values,0);
+    const maxValue=Math.max(...values,0);
+    const spanValue=(maxValue-minValue) || 1;
     const step=rows.length>1 ? (width-padX*2)/(rows.length-1) : 0;
     const points=rows.map((row,index)=>{
       const x=rows.length>1 ? padX + step*index : width/2;
-      const value=Number(row.revenue) || 0;
-      const y=padTop + (height-padTop-padBottom) * (1 - value/maxValue);
+      const value=Number(row.profit) || 0;
+      const y=padTop + (height-padTop-padBottom) * (1 - (value-minValue)/spanValue);
       return {row,index,x,y,value};
     });
     const pointAttr=points.map(point=>`${point.x.toFixed(2)},${point.y.toFixed(2)}`).join(' ');
@@ -770,13 +790,13 @@ function initSalesChart(){
     }).join('');
     const circles=points.map(point=>{
       const row=point.row;
-      const title=`${row.full_label || row.label}: ${row.count} шт, выручка ${row.revenue_label}, прибыль ${row.profit_label}`;
       const tone=row.profit_class || 'metric-neutral';
-      const countLabel=Number(row.count) ? `<text class="sales-point-count" x="${point.x.toFixed(2)}" y="${(point.y-14).toFixed(2)}">${escapeHtml(row.count)}</text>` : '';
+      const count=Number(row.sold_count ?? row.count) || 0;
+      const countLabel=count ? `<text class="sales-point-count" x="${point.x.toFixed(2)}" y="${(point.y-14).toFixed(2)}">${escapeHtml(count)}</text>` : '';
       return `
-        <g class="sales-point ${escapeHtml(tone)}">
-          <title>${escapeHtml(title)}</title>
-          <circle cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="${Number(row.count) ? 7 : 4}"></circle>
+        <g class="sales-point ${escapeHtml(tone)}" data-sales-point-index="${point.index}">
+          <circle cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="${count ? 7 : 4}"></circle>
+          <circle class="sales-point-hit" cx="${point.x.toFixed(2)}" cy="${point.y.toFixed(2)}" r="18"></circle>
           ${countLabel}
         </g>`;
     }).join('');
@@ -791,6 +811,18 @@ function initSalesChart(){
       <path class="sales-line-area" d="${areaPath}"></path>
       <polyline class="sales-line-path" points="${pointAttr}"></polyline>
       ${circles}`;
+    svg.querySelectorAll('[data-sales-point-index]').forEach(node=>{
+      node.addEventListener('mouseenter',()=>{
+        const point=points[Number(node.dataset.salesPointIndex)];
+        if(point){ showTooltip(point); }
+      });
+      node.addEventListener('focusin',()=>{
+        const point=points[Number(node.dataset.salesPointIndex)];
+        if(point){ showTooltip(point); }
+      });
+    });
+    svg.addEventListener('mouseleave',hideTooltip);
+    svg.addEventListener('focusout',hideTooltip);
     const every=rows.length>18 ? Math.ceil(rows.length/12) : 1;
     axis.innerHTML=rows.map((row,index)=>{
       const muted=index % every ? ' muted' : '';
@@ -825,6 +857,23 @@ function initSalesChart(){
   load(chart.dataset.period || 'month');
 }
 
+function initStatsBreakdowns(){
+  [
+    ['[data-profit-category-toggle]','[data-profit-category-breakdown]'],
+    ['[data-sale-speed-toggle]','[data-sale-speed-breakdown]']
+  ].forEach(([buttonSelector,panelSelector])=>{
+    const button=document.querySelector(buttonSelector);
+    const panel=document.querySelector(panelSelector);
+    if(!button || !panel){ return; }
+    button.addEventListener('click',()=>{
+      const opening=panel.hidden;
+      panel.hidden=!opening;
+      button.setAttribute('aria-expanded',String(opening));
+      button.textContent=opening ? '⌃' : '⌄';
+    });
+  });
+}
+
 document.addEventListener('DOMContentLoaded',()=>{
   initMenu();
   const wizard=document.querySelector('[data-disc-wizard]');
@@ -839,6 +888,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   initAdListBuilder();
   initMarketApiLiveSummary();
   initSalesChart();
+  initStatsBreakdowns();
   document.querySelectorAll('[data-fill]').forEach(button=>{
     button.addEventListener('click',()=>{
       const target=document.querySelector(button.dataset.fill);

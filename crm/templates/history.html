@@ -90,9 +90,11 @@
       {% for row in imports %}
       <article class="import-card">
         <div>
-          <strong>{{ row.source_name or row.source_key }}</strong>
+          <strong>Импорт данных</strong>
           <span class="muted-line">{{ datetime_label(row.imported_at) }}</span>
-          <span class="muted-line">{{ row.filename or "—" }}</span>
+          {% if row.filename %}
+          <span class="muted-line">{{ row.filename }}</span>
+          {% endif %}
         </div>
         <div class="import-facts">
           <span>{{ row.item_count }} тов.</span>

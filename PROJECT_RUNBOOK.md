@@ -51,6 +51,327 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\start_all.ps1
 
 Проверить, что всё живо, можно кнопкой `📊 Статус` в Telegram.
 
+## Команды и флаги
+
+Это единый справочник команд проекта. Все команды ниже предполагают, что терминал открыт в:
+
+```powershell
+C:\Users\Кирилл\Desktop\Monitor
+```
+
+### Общий запуск стека
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\start_all.ps1
+```
+
+Что делает:
+
+- проверяет PostgreSQL на `5432`;
+- запускает PostgreSQL, если он не поднят;
+- проверяет CRM на `127.0.0.1:8001`;
+- запускает CRM;
+- запускает Telegram-панель, если она ещё не работает.
+
+Флаги:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\start_all.ps1 -RestartTelegram
+```
+
+`-RestartTelegram` — принудительно убивает старый процесс `telegram_control_bot.py` и запускает панель заново. Использовать после правок `.env`, Telegram chat IDs, клавиатуры или логики панели.
+
+### Telegram-панель
+
+Запуск через отдельный PowerShell-скрипт:
+
+```powershell
+.\start_telegram_control_bot.ps1
+```
+
+Прямой запуск:
+
+```powershell
+python -u telegram_control_bot.py --announce
+```
+
+Флаги:
+
+- `--announce` — отправить клавиатуру всем разрешённым chat/user ID при старте.
+
+Без `--announce`:
+
+```powershell
+python -u telegram_control_bot.py
+```
+
+Бот будет слушать команды, но не будет сам рассылать стартовое сообщение с клавиатурой.
+
+Важное:
+
+- Telegram не даёт боту первым написать человеку в личку;
+- новый пользователь должен открыть бота и нажать Start или написать любое сообщение;
+- после изменения `.env` лучше запускать `start_all.ps1 -RestartTelegram`.
+
+### Marketplace monitor / `qa_automation.py`
+
+Обычно монитор запускается кнопками Telegram-панели. Ручной запуск нужен для отладки.
+
+Запуск с последней/дефолтной ссылкой:
+
+```powershell
+python .\qa_automation.py
+```
+
+Запуск по конкретной ссылке:
+
+```powershell
+python .\qa_automation.py --target-url "https://example.com/search-url"
+```
+
+Запуск без LLM/CRM profit analysis:
+
+```powershell
+python .\qa_automation.py --no-analysis
+```
+
+Запуск с лимитом времени:
+
+```powershell
+python .\qa_automation.py --max-runtime-seconds 9000
+```
+
+Флаги:
+
+- `--target-url <url>` — ссылка выдачи для мониторинга.
+- `--no-analysis` — собирать/сохранять/слать объявления без платного LLM-анализа и без profit-сообщения.
+- `--max-runtime-seconds <seconds>` — ограничить время работы. По умолчанию лимита нет, монитор работает до кнопки остановки/stop-флага/ошибки.
+
+Пример: 30 минут без анализа:
+
+```powershell
+python .\qa_automation.py --no-analysis --max-runtime-seconds 1800
+```
+
+### CRM FastAPI
+
+Обычно CRM запускается через `start_all.ps1`.
+
+Ручной запуск:
+
+```powershell
+cd .\crm
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8001
+cd ..
+```
+
+Полезные флаги `uvicorn`:
+
+- `--host 127.0.0.1` — доступ только с текущего ПК.
+- `--host 0.0.0.0` — доступ из локальной сети.
+- `--port 8001` — рабочий порт CRM.
+- `--reload` — автоперезапуск при изменении кода, удобно для разработки, не нужен для обычной работы.
+
+Пример для разработки:
+
+```powershell
+cd .\crm
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 --reload
+cd ..
+```
+
+### CRM CLI
+
+Все команды CRM CLI запускаются из папки `crm`:
+
+```powershell
+cd .\crm
+python -m app.cli --help
+cd ..
+```
+
+Создать таблицы:
+
+```powershell
+cd .\crm
+python -m app.cli init-db
+cd ..
+```
+
+Заполнить базовые категории/каталог:
+
+```powershell
+cd .\crm
+python -m app.cli seed
+cd ..
+```
+
+Дедупликация технических дублей:
+
+```powershell
+cd .\crm
+python -m app.cli dedupe
+cd ..
+```
+
+Статистика в консоль:
+
+```powershell
+cd .\crm
+python -m app.cli stats
+cd ..
+```
+
+Экспорт товаров в CSV:
+
+```powershell
+cd .\crm
+python -m app.cli export-items
+cd ..
+```
+
+Импорт локальных JSON-выгрузок рынка:
+
+```powershell
+cd .\crm
+python -m app.cli import-market "data/import/*.json"
+cd ..
+```
+
+Аргументы:
+
+- `import-market <files...>` — один или несколько файлов/масок.
+
+Миграция старой SQLite CRM в PostgreSQL:
+
+```powershell
+cd .\crm
+python -m app.cli migrate-to-postgres --source sqlite:///data/avito_scraper.db --target postgresql+psycopg://postgres:postgres@localhost:5432/crm_inventory
+cd ..
+```
+
+Флаги:
+
+- `--source <url>` — источник SQLite.
+- `--target <url>` — целевая PostgreSQL база.
+- `--replace` — очистить целевые CRM-таблицы перед копированием. Использовать осторожно.
+
+Сбор incremental export-файла:
+
+```powershell
+cd .\crm
+python -m app.cli sync-build-export
+cd ..
+```
+
+Legacy croc-send worker:
+
+```powershell
+cd .\crm
+python -m app.cli sync-send-worker --interval-seconds 300 --timeout-seconds 90
+cd ..
+```
+
+Флаги:
+
+- `--interval-seconds <seconds>` — пауза между проверками очереди, минимум 10.
+- `--timeout-seconds <seconds>` — таймаут одной отправки, минимум 10.
+- `--once` — выполнить одну проверку и выйти.
+
+Legacy croc-receive worker:
+
+```powershell
+cd .\crm
+python -m app.cli sync-receive-worker --once
+cd ..
+```
+
+Флаги:
+
+- `--once` — принять один пакет и выйти.
+
+Legacy установка Windows tasks:
+
+```powershell
+cd .\crm
+python -m app.cli sync-install-windows-tasks
+cd ..
+```
+
+Флаги:
+
+- `--task-name <name>` — legacy-параметр, сейчас в коде почти не используется.
+
+### Проверки и тесты
+
+Компиляция основных файлов:
+
+```powershell
+python -m py_compile qa_automation.py telegram_control_bot.py app\pipeline.py app\env.py crm\app\main.py crm\app\avito_evaluator.py
+```
+
+Корневые тесты:
+
+```powershell
+python -m pytest -q tests
+```
+
+CRM-тесты:
+
+```powershell
+cd .\crm
+python -m pytest -q tests
+cd ..
+```
+
+Targeted evaluator-тесты:
+
+```powershell
+cd .\crm
+python -m pytest -q tests\test_mvp_inventory.py -k "generic or price_lines or delivery or evaluator or resident or transformers or metroid or uncharted"
+cd ..
+```
+
+### Диагностика процессов
+
+Посмотреть все процессы проекта:
+
+```powershell
+Get-CimInstance Win32_Process |
+  Where-Object {
+    $_.CommandLine -like '*qa_automation.py*' -or
+    $_.CommandLine -like '*telegram_control_bot.py*' -or
+    $_.CommandLine -like '*uvicorn app.main*' -or
+    $_.Name -like '*postgres*'
+  } |
+  Select-Object ProcessId,Name,CommandLine
+```
+
+Остановить только монитор:
+
+```powershell
+Get-CimInstance Win32_Process -Filter "name='python.exe'" |
+  Where-Object { $_.CommandLine -like '*qa_automation.py*' } |
+  ForEach-Object { Stop-Process -Id $_.ProcessId }
+```
+
+Остановить только Telegram-панель:
+
+```powershell
+Get-CimInstance Win32_Process -Filter "name='python.exe'" |
+  Where-Object { $_.CommandLine -like '*telegram_control_bot.py*' } |
+  ForEach-Object { Stop-Process -Id $_.ProcessId }
+```
+
+Остановить CRM по порту:
+
+```powershell
+Get-NetTCPConnection -LocalPort 8001 -State Listen |
+  ForEach-Object { Stop-Process -Id $_.OwningProcess }
+```
+
+PostgreSQL лучше не останавливать без причины.
+
 ## Запуск из VS Code
 
 В VS Code:

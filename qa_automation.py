@@ -16,6 +16,8 @@ from typing import Any
 
 from playwright.sync_api import Page, sync_playwright
 
+from app.env import get_env
+
 
 ROOT_DIR = Path(__file__).resolve().parent
 LOCAL_SETTINGS_FILE = ROOT_DIR / "monitor_local_settings.json"
@@ -69,7 +71,7 @@ def monitor_stop_requested() -> bool:
 
 def load_rotation_urls() -> list[str]:
     """Читает ссылки ротации из env или локального не-git файла."""
-    raw = os.environ.get("AVITO_PROXY_ROTATION_URLS", "")
+    raw = get_env("AVITO_PROXY_ROTATION_URLS") or ""
     if raw.strip():
         return [
             value.strip()

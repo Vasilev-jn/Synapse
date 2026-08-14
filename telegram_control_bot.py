@@ -616,7 +616,10 @@ def announce_to_allowed(text: str) -> None:
     for chat_id in sorted(authorized_ids()):
         try:
             send_message(chat_id, text, reply_markup=KEYBOARD)
-        except Exception:
+        except Exception as error:
+            CONTROL_DIR.joinpath("telegram_control_bot.err.log").open("a", encoding="utf-8").write(
+                f"{datetime.now().isoformat(timespec='seconds')} announce_to_allowed chat_id={chat_id}: {error}\n"
+            )
             continue
 
 

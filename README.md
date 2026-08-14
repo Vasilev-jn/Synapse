@@ -122,6 +122,7 @@ Rules:
 - `AVITO_TG_ARTEM_CHAT_ID` / `ARTEM_TG_CHAT_ID` are optional aliases for one extra trusted user.
 - The control panel grants keyboard access if either the Telegram `chat.id` or `from.id` is present in those variables.
 - Listing notifications are sent to every configured chat ID without duplicates.
+- A Telegram bot cannot start a private conversation by itself. Every user must open the bot and press Start or send any message once; only then `--announce` can deliver the keyboard.
 
 After changing `.env`, restart only the Telegram panel or run the common start script again:
 
